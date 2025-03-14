@@ -1,0 +1,24 @@
+fail_fast: true
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.9.6
+    hooks:
+      # Run the Ruff formatter.
+      - id: ruff-format
+        args: [--config=pyproject.toml]
+      # Run the Ruff linter.
+      - id: ruff
+        args: [--exit-non-zero-on-fix, --fix, --config=pyproject.toml]
+  - repo: local
+    hooks:
+      - id: system
+        name: MyPy
+        entry: uv run --no-sync mypy docling_serve
+        pass_filenames: false
+        language: system
+        files: '\.py$'
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    # uv version.
+    rev: 0.6.1
+    hooks:
+      - id: uv-lock

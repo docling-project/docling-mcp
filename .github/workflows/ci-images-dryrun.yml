@@ -1,0 +1,41 @@
+name: Dry run docling-mcp image building
+
+on:
+  workflow_call:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build_image:
+    name: Build ${{ matrix.spec.name }} container image
+    strategy:
+      matrix:
+        spec:
+          - name: ds4sd/docling-mcp
+            build_args: |
+              UV_SYNC_EXTRA_ARGS=--no-extra cu124 --no-extra cpu
+            platforms: linux/amd64, linux/arm64
+          - name: ds4sd/docling-mcp-cpu
+            build_args: |
+              UV_SYNC_EXTRA_ARGS=--no-extra cu124
+            platforms: linux/amd64, linux/arm64
+          - name: ds4sd/docling-mcp-cu124
+            build_args: |
+              UV_SYNC_EXTRA_ARGS=--no-extra cpu
+            platforms: linux/amd64
+
+    permissions:
+      packages: write
+      contents: read
+      attestations: write
+      id-token: write
+
+    uses: ./.github/workflows/job-image.yml
+    with:
+      publish: false
+      build_args: ${{ matrix.spec.build_args }}
+      ghcr_image_name: ${{ matrix.spec.name }}
+      quay_image_name: ""
+      platforms: ${{ matrix.spec.platforms }}

@@ -1,0 +1,47 @@
+name: Publish docling-mcp images
+
+on:
+  push:
+    branches:
+      - main
+  release:
+    types: [published]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build_and_publish_images:
+    name: Build and push ${{ matrix.spec.name }} container image to GHCR and QUAY
+    strategy:
+      matrix:
+        spec:
+          - name: docling-project/docling-mcp
+            build_args: |
+              UV_SYNC_EXTRA_ARGS=--no-extra cu124 --no-extra cpu
+            platforms: linux/amd64, linux/arm64
+          - name: docling-project/docling-mcp-cpu
+            build_args: |
+              UV_SYNC_EXTRA_ARGS=--no-extra cu124
+            platforms: linux/amd64, linux/arm64
+          - name: docling-project/docling-mcp-cu124
+            build_args: |
+              UV_SYNC_EXTRA_ARGS=--no-extra cpu
+            platforms: linux/amd64
+
+    permissions:
+      packages: write
+      contents: read
+      attestations: write
+      id-token: write
+    secrets: inherit
+
+    uses: ./.github/workflows/job-image.yml
+    with:
+      publish: true
+      environment: registry-creds
+      build_args: ${{ matrix.spec.build_args }}
+      ghcr_image_name: ${{ matrix.spec.name }}
+      quay_image_name: ${{ matrix.spec.name }}
+      platforms: ${{ matrix.spec.platforms }}
