@@ -415,6 +415,7 @@ version = "0.5.1"
 source = { editable = "." }
 dependencies = [
     { name = "docling" },
+    { name = "httpx" },
     { name = "mcp", extra = ["cli"] },
     { name = "pydantic" },
     { name = "pydantic-settings" },
@@ -452,6 +453,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "docling", specifier = "~=2.25" },
+    { name = "httpx", specifier = ">=0.28.1" },
     { name = "mcp", extras = ["cli"], specifier = ">=1.4.0" },
     { name = "onnxruntime", marker = "extra == 'rapidocr'", specifier = "~=1.7" },
     { name = "pydantic", specifier = "~=2.10" },
