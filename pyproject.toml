@@ -1,25 +1,26 @@
 [project]
 name = "docling-mcp"
-version = "0.5.1"  # DO NOT EDIT, updated automatically
+version = "0.0.0"  # DO NOT EDIT, updated automatically
 description = "Running Docling as an agent using tools"
 license = {text = "MIT"}
 authors = [
+    {name="Peter Staar", email="taa@zurich.ibm.com"},
+    {name="Adel Zaalouk", email="azaalouk@redhat.com"},    
     {name="Michele Dolfi", email="dol@zurich.ibm.com"},
     {name="Panos Vagenas", email="pva@zurich.ibm.com"},
     {name="Christoph Auer", email="cau@zurich.ibm.com"},
-    {name="Peter Staar", email="taa@zurich.ibm.com"},
 ]
 maintainers = [
+    {name="Peter Staar", email="taa@zurich.ibm.com"},
+    {name="Adel Zaalouk", email="azaalouk@redhat.com"},    
     {name="Michele Dolfi", email="dol@zurich.ibm.com"},
     {name="Panos Vagenas", email="pva@zurich.ibm.com"},
     {name="Christoph Auer", email="cau@zurich.ibm.com"},
-    {name="Peter Staar", email="taa@zurich.ibm.com"},
 ]
 readme = "README.md"
 classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
-    # "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "Typing :: Typed",
     "Programming Language :: Python :: 3"
@@ -106,10 +107,6 @@ Changelog = "https://github.com/docling-project/docling-mcp/blob/main/CHANGELOG.
 target-version = "py39"
 line-length = 88
 respect-gitignore = true
-
-# extend-exclude = [
-#     "tests",
-# ]
 
 [tool.ruff.format]
 skip-magic-trailing-comma = false
