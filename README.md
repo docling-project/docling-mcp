@@ -34,7 +34,7 @@ Docling MCP is a service that provides tools for document conversion, processing
 After installing the dependencies (`uv sync`), you can expose the tools of Docling by running,
 
 ```sh
-uv run ./docling_mcp/server.py
+uv run python -m docling_mcp.server
 ```
 
 ### Integration into Claude Desktop

@@ -54,7 +54,7 @@ jobs:
       - name: Install package
         run: uv pip install dist/*.whl
       - name: Create the server
-        run: python -c 'from docling_serve.app import create_app; create_app()'
+        run: python -c 'import docling_mcp.server'
 
   markdown-lint:
     runs-on: ubuntu-latest
