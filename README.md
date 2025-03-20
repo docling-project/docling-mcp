@@ -11,6 +11,9 @@
 
 A document processing service using the Docling-MCP library and MCP (Message Control Protocol) for tool integration.
 
+ > [!NOTE]
+> This is an unstable draft implementation which will quickly evolve.
+
 ## Overview
 
 Docling MCP is a service that provides tools for document conversion, processing and generation. It uses the Docling library to convert PDF documents into structured formats and provides a caching mechanism to improve performance. The service exposes functionality through a set of tools that can be called by client applications.
