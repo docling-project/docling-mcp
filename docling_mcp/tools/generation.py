@@ -165,13 +165,13 @@ def add_title_to_docling_document(document_key: str, title: str) -> str:
             f"Stack size is zero for document with document-key: {document_key}. Abort document generation"
         )
 
-    if isinstance(local_stack_cache[document_key][-1], GroupItem) and (
-        local_stack_cache[document_key][-1].label == GroupLabel.LIST
-        or local_stack_cache[document_key][-1].label == GroupLabel.UNORDERED_LIST
-    ):
-        raise ValueError(
-            "A list is currently opened. Please close the list before adding paragraphs!"
-        )
+    parent = local_stack_cache[document_key][-1]
+
+    if isinstance(parent, GroupItem):
+        if parent.label == GroupLabel.LIST or parent.label == GroupLabel.ORDERED_LIST:
+            raise ValueError(
+                "A list is currently opened. Please close the list before adding a title!"
+            )
 
     item = local_document_cache[document_key].add_title(text=title)
     local_stack_cache[document_key][-1] = item
@@ -215,13 +215,13 @@ def add_section_heading_to_docling_document(
             f"Stack size is zero for document with document-key: {document_key}. Abort document generation"
         )
 
-    if isinstance(local_stack_cache[document_key][-1], GroupItem) and (
-        local_stack_cache[document_key][-1].label == GroupLabel.LIST
-        or local_stack_cache[document_key][-1].label == GroupLabel.UNORDERED_LIST
-    ):
-        raise ValueError(
-            "A list is currently opened. Please close the list before adding paragraphs!"
-        )
+    parent = local_stack_cache[document_key][-1]
+
+    if isinstance(parent, GroupItem):
+        if parent.label == GroupLabel.LIST or parent.label == GroupLabel.ORDERED_LIST:
+            raise ValueError(
+                "A list is currently opened. Please close the list before adding a section-heading!"
+            )
 
     item = local_document_cache[document_key].add_heading(
         text=section_heading, level=section_level
@@ -263,13 +263,13 @@ def add_paragraph_to_docling_document(document_key: str, paragraph: str) -> str:
             f"Stack size is zero for document with document-key: {document_key}. Abort document generation"
         )
 
-    if isinstance(local_stack_cache[document_key][-1], GroupItem) and (
-        local_stack_cache[document_key][-1].label == GroupLabel.LIST
-        or local_stack_cache[document_key][-1].label == GroupLabel.UNORDERED_LIST
-    ):
-        raise ValueError(
-            "A list is currently opened. Please close the list before adding paragraphs!"
-        )
+    parent = local_stack_cache[document_key][-1]
+
+    if isinstance(parent, GroupItem):
+        if parent.label == GroupLabel.LIST or parent.label == GroupLabel.ORDERED_LIST:
+            raise ValueError(
+                "A list is currently opened. Please close the list before adding a paragraph!"
+            )
 
     item = local_document_cache[document_key].add_text(
         label=DocItemLabel.TEXT, text=paragraph
@@ -392,9 +392,12 @@ def add_listitem_to_list_in_docling_document(
 
     parent = local_stack_cache[document_key][-1]
 
-    if isinstance(parent, GroupItem) and (
-        parent.label != GroupLabel.LIST and parent.label != GroupLabel.UNORDERED_LIST
-    ):
+    if isinstance(parent, GroupItem):
+        if parent.label != GroupLabel.LIST and parent.label != GroupLabel.ORDERED_LIST:
+            raise ValueError(
+                "No list is currently opened. Please open a list before adding list-items!"
+            )
+    else:
         raise ValueError(
             "No list is currently opened. Please open a list before adding list-items!"
         )

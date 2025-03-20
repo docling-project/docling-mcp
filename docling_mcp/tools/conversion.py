@@ -8,7 +8,7 @@ from docling.datamodel.base_models import InputFormat
 from docling.datamodel.pipeline_options import (
     PdfPipelineOptions,
 )
-from docling.document_converter import DocumentConverter, PdfFormatOption
+from docling.document_converter import DocumentConverter, FormatOption, PdfFormatOption
 from docling.utils.accelerator_utils import AcceleratorDevice
 from docling_core.types.doc import DoclingDocument
 
@@ -74,9 +74,7 @@ def convert_pdf_document_into_json_docling_document_from_uri_path(
         # Check if result is cached
         if cache_file.exists():
             logger.info(f"Using cached result for {source}")
-            doc = DoclingDocument.load_from_json(cache_file)
-
-            # return cache_file.read_text()
+            return (True, DoclingDocument.load_from_json(cache_file).export_to_dict())
 
         # Log the start of processing
         logger.info("Set up pipeline options")
@@ -88,7 +86,7 @@ def convert_pdf_document_into_json_docling_document_from_uri_path(
             # ocr_options=ocr_options,
             accelerator_device=AcceleratorDevice.MPS  # Explicitly set MPS
         )
-        format_options = {
+        format_options: dict[InputFormat, FormatOption] = {
             InputFormat.PDF: PdfFormatOption(pipeline_options=pipeline_options)
         }
 
@@ -117,7 +115,7 @@ def convert_pdf_document_into_json_docling_document_from_uri_path(
 
         if has_error:
             error_msg = f"Conversion failed: {error_message}"
-            raise McpError(ErrorData(INTERNAL_ERROR, error_msg))
+            raise McpError(ErrorData(code=INTERNAL_ERROR, message=error_msg))
 
         # Export to markdown
         logger.info("Exporting to JSON")
@@ -135,7 +133,9 @@ def convert_pdf_document_into_json_docling_document_from_uri_path(
 
     except Exception as e:
         logger.exception(f"Error converting document: {source}")
-        raise McpError(ErrorData(INTERNAL_ERROR, f"Unexpected error: {e!s}"))
+        raise McpError(
+            ErrorData(code=INTERNAL_ERROR, message=f"Unexpected error: {e!s}")
+        )
 
 
 @mcp.tool()
