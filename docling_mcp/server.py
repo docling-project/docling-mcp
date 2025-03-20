@@ -1,10 +1,5 @@
-from docling_mcp.shared import mcp
-from docling_mcp.tools import (
-    conversion,
-    generation
-)  # This imports your tools module, registering the tools
-
 from docling_mcp.logger import setup_logger
+from docling_mcp.shared import mcp
 
 if __name__ == "__main__":
     # Create a default project logger
