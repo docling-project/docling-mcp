@@ -27,8 +27,8 @@ jobs:
         with:
           name: python-package-distributions
           path: dist/
-      # - name: Publish distribution 📦 to PyPI
-      #   uses: pypa/gh-action-pypi-publish@release/v1
-      #   with:
-      #     # currently not working with reusable workflows
-      #     attestations: false
+      - name: Publish distribution 📦 to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          # currently not working with reusable workflows
+          attestations: false
