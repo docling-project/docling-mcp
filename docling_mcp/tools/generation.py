@@ -1,17 +1,22 @@
 import hashlib
 
 from docling_mcp.docling_cache import get_cache_dir
-from docling_mcp.shared import mcp, local_document_cache
+from docling_mcp.shared import mcp, local_document_cache, local_stack_cache
 
 from docling_core.types.doc.labels import (
     DocItemLabel,
-    # GroupLabel,
+    GroupLabel,
     # PictureClassificationLabel,
     # TableCellLabel
 )
 
 from docling_core.types.doc.document import (
     DoclingDocument,
+
+    NodeItem,
+    DocItem,
+    GroupItem,
+    
     TitleItem,
     SectionHeaderItem,
     TextItem,
@@ -51,16 +56,18 @@ def create_new_docling_document(prompt: str) -> str:
     """    
     doc = DoclingDocument(name="Generated Document")
 
-    text = doc.add_text(
+    item = doc.add_text(
         label=DocItemLabel.TEXT,
         text=f"prompt: {prompt}",
         content_layer=ContentLayer.FURNITURE
     )
 
-    key = hash_string_md5(prompt)
-    local_document_cache[key] = doc
+    document_key = hash_string_md5(prompt)
+
+    local_document_cache[document_key] = doc
+    local_stack_cache[document_key] = [item]
     
-    return f"document-key: {key} for prompt:`{prompt}`"
+    return f"document-key: {document_key} for prompt:`{prompt}`"
 
 @mcp.tool()
 def export_docling_document_to_markdown(document_key: str) -> str:
@@ -118,7 +125,7 @@ def save_docling_document(document_key: str) -> str:
 
     cache_dir = get_cache_dir()
     
-    local_document_cache[document_key].save_as_markdown(filename = cache_dir / f"{document_key}.md")
+    local_document_cache[document_key].save_as_markdown(filename = cache_dir / f"{document_key}.md", text_width=72)
     local_document_cache[document_key].save_as_json(filename = cache_dir / f"{document_key}.json")
 
     filename = cache_dir / f"{document_key}.md"
@@ -151,8 +158,17 @@ def add_title_to_docling_document(document_key: str, title: str) -> str:
     if document_key not in local_document_cache:
         doc_keys = ", ".join(local_document_cache.keys())
         raise ValueError(f"document-key: {key} is not found. Existing document-keys are: {doc_keys}")
+
+    if len(local_stack_cache[document_key])==0:
+        raise ValueError(f"Stack size is zero for document with document-key: {key}. Abort document generation")
+
+    if isinstance(local_stack_cache[document_key][-1], GroupItem) and \
+       (local_stack_cache[document_key][-1].label==GroupLabel.LIST or \
+        local_stack_cache[document_key][-1].label==GroupLabel.UNORDERED_LIST):
+        raise ValueError(f"A list is currently opened. Please close the list before adding paragraphs!")
     
-    local_document_cache[document_key].add_title(text=title)
+    item = local_document_cache[document_key].add_title(text=title)
+    local_stack_cache[document_key][-1] = item
     
     return f"updated title for document with key: {document_key}"
 
@@ -184,7 +200,16 @@ def add_section_heading_to_docling_document(document_key: str, section_heading: 
         doc_keys = ", ".join(local_document_cache.keys())
         raise ValueError(f"document-key: {key} is not found. Existing document-keys are: {doc_keys}")
 
-    local_document_cache[document_key].add_heading(text=section_heading, level=section_level)
+    if len(local_stack_cache[document_key])==0:
+        raise ValueError(f"Stack size is zero for document with document-key: {key}. Abort document generation")
+
+    if isinstance(local_stack_cache[document_key][-1], GroupItem) and \
+       (local_stack_cache[document_key][-1].label==GroupLabel.LIST or \
+        local_stack_cache[document_key][-1].label==GroupLabel.UNORDERED_LIST):
+        raise ValueError(f"A list is currently opened. Please close the list before adding paragraphs!")
+    
+    item = local_document_cache[document_key].add_heading(text=section_heading, level=section_level)
+    local_stack_cache[document_key][-1] = item
     
     return f"added section-heading of level {section_level} for document with key: {document_key}"
 
@@ -213,21 +238,129 @@ def add_paragraph_to_docling_document(document_key: str, paragraph: str) -> str:
         doc_keys = ", ".join(local_document_cache.keys())
         raise ValueError(f"document-key: {key} is not found. Existing document-keys are: {doc_keys}")
 
-    local_document_cache[document_key].add_text(label=DocItemLabel.TEXT, text=paragraph)
+    if len(local_stack_cache[document_key])==0:
+        raise ValueError(f"Stack size is zero for document with document-key: {key}. Abort document generation")
+
+    if isinstance(local_stack_cache[document_key][-1], GroupItem) and (local_stack_cache[document_key][-1].label==GroupLabel.LIST or local_stack_cache[document_key][-1].label==GroupLabel.UNORDERED_LIST):
+        raise ValueError(f"A list is currently opened. Please close the list before adding paragraphs!")
+    
+    item = local_document_cache[document_key].add_text(label=DocItemLabel.TEXT, text=paragraph)
+    local_stack_cache[document_key][-1] = item
     
     return f"added paragraph for document with key: {document_key}"
 
+
+@mcp.tool()
+def open_list_in_docling_document(document_key: str) -> str:
+    """
+    Opens a new list group in an existing document in the local document cache.
+    
+    This tool creates a new list structure within a document that has already been 
+    processed and stored in the local cache. It requires that the document already exists
+    and that there is at least one item in the document's stack cache.
+
+    Args:
+        document_key (str): The unique identifier for the document in the local cache.
+        
+    Returns:
+        str: A confirmation message indicating the list was successfully opened.
+        
+    Raises:
+        ValueError: If the specified document_key does not exist in the local cache.
+        
+    Example:
+        open_list_docling_document(document_key="doc123")
+    """
+    if document_key not in local_document_cache:
+        doc_keys = ", ".join(local_document_cache.keys())
+        raise ValueError(f"document-key: {key} is not found. Existing document-keys are: {doc_keys}")
+
+    if len(local_stack_cache[document_key])==0:
+        raise ValueError(f"Stack size is zero for document with document-key: {key}. Abort document generation")
+    
+    item = local_document_cache[document_key].add_group(label=GroupLabel.LIST)
+    local_stack_cache[document_key].append(item)
+    
+    return f"opened a new list for document with key: {document_key}"
+
+@mcp.tool()
+def close_list_in_docling_document(document_key: str) -> str:
+    """
+    Closes a list group in an existing document in the local document cache.
+    
+    This tool closes a previously opened list structure within a document.
+    It requires that the document exists and that there is more than one item
+    in the document's stack cache.
+
+    Args:
+        document_key (str): The unique identifier for the document in the local cache.
+        
+    Returns:
+        str: A confirmation message indicating the list was successfully closed.
+        
+    Raises:
+        ValueError: If the specified document_key does not exist in the local cache.
+        
+    Example:
+        close_list_docling_document(document_key="doc123")
+    """    
+    if document_key not in local_document_cache:
+        doc_keys = ", ".join(local_document_cache.keys())
+        raise ValueError(f"document-key: {key} is not found. Existing document-keys are: {doc_keys}")
+
+    if len(local_stack_cache[document_key])<=1:
+        raise ValueError(f"Stack size is zero for document with document-key: {key}. Abort document generation")
+    
+    local_stack_cache[document_key].pop()
+    
+    return f"closed list for document with key: {document_key}"
+
+@mcp.tool()
+def add_listitem_to_list_in_docling_document(document_key: str, listitem_text: str, listmarker_text: str) -> str:
+    """
+    Adds a list item to an open list in an existing document in the local document cache.
+    
+    This tool inserts a new list item with the specified text and marker into an
+    open list within a document. It requires that the document exists and that
+    there is at least one item in the document's stack cache.
+
+    Args:
+        document_key (str): The unique identifier for the document in the local cache.
+        listitem_text (str): The content text for the list item.
+        listmarker_text (str): The marker text to use for the list item (e.g., "-", "1.", "•").
+        
+    Returns:
+        str: A confirmation message indicating the list item was successfully added.
+        
+    Raises:
+        ValueError: If the specified document_key does not exist in the local cache.
+        
+    Example:
+        add_listitem_to_docling_document(document_key="doc123", listitem_text="First item in the list", listmarker_text="-")
+    """    
+    if document_key not in local_document_cache:
+        doc_keys = ", ".join(local_document_cache.keys())
+        raise ValueError(f"document-key: {key} is not found. Existing document-keys are: {doc_keys}")
+
+    if len(local_stack_cache[document_key])==0:
+        raise ValueError(f"Stack size is zero for document with document-key: {key}. Abort document generation")
+
+    parent = local_stack_cache[document_key][-1]
+    
+    if isinstance(parent, GroupItem) and \
+       (parent.label!=GroupLabel.LIST and \
+        parent.label!=GroupLabel.UNORDERED_LIST):
+        raise ValueError(f"No list is currently opened. Please open a list before adding list-items!")
+    
+    item = local_document_cache[document_key].add_list_item(
+        text=listitem_text,
+        marker=listmarker_text,
+        parent=parent
+    )
+    
+    return f"added listitem to list in document with key: {document_key}"
+
 """
-@mcp.tool()
-def add_new_list_docling_document(document_key: str) -> str:
-    
-    return ""
-
-@mcp.tool()
-def add_listitem_to_docling_document(document_key: str, listitem_text: str, listmarker_text: str) -> str:
-    
-    return ""
-
 @mcp.tool()
 def add_html_table_to_docling_document(document_key: str, html_table: str) -> str:
     
