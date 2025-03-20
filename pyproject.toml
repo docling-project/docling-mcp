@@ -1,6 +1,6 @@
 [project]
 name = "docling-mcp"
-version = "0.1.0"  # DO NOT EDIT, updated automatically
+version = "0.3.0"  # DO NOT EDIT, updated automatically
 description = "Running Docling as an agent using tools"
 license = {text = "MIT"}
 authors = [
