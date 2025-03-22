@@ -1,5 +1,15 @@
 import hashlib
+from io import BytesIO
 
+# from bs4 import BeautifulSoup  # , NavigableString, PageElement, Tag
+from docling.datamodel.base_models import ConversionStatus, DocumentStream, InputFormat
+from docling.datamodel.document import (
+    ConversionResult,
+    DoclingDocument,
+)
+from docling.document_converter import DocumentConverter
+
+# from docling.backend.html_backend import HTMLDocumentBackend
 from docling_core.types.doc.document import (
     ContentLayer,
     DoclingDocument,
@@ -13,7 +23,11 @@ from docling_core.types.doc.labels import (
 )
 
 from docling_mcp.docling_cache import get_cache_dir
+from docling_mcp.logger import setup_logger
 from docling_mcp.shared import local_document_cache, local_stack_cache, mcp
+
+# Create a default project logger
+logger = setup_logger()
 
 
 def hash_string_md5(input_string: str) -> str:
@@ -407,3 +421,88 @@ def add_listitem_to_list_in_docling_document(
     )
 
     return f"added listitem to list in document with key: {document_key}"
+
+
+@mcp.tool()
+def add_table_in_html_format_to_docling_document(
+    document_key: str,
+    html_table: str,
+    table_captions: list[str] = [],
+    table_footnotes: list[str] = [],
+) -> str:
+    """
+    Adds an HTML-formatted table to an existing document in the local document cache.
+
+    This tool parses the provided HTML table string, converts it to a structured table
+    representation, and adds it to the specified document. It also supports optional
+    captions and footnotes for the table.
+
+    Args:
+        document_key (str): The unique identifier for the document in the local cache.
+        html_table (str): The HTML string representation of the table to add.
+        table_captions (list[str], optional): A list of caption strings to associate with the table.
+        table_footnotes (list[str], optional): A list of footnote strings to associate with the table.
+
+    Returns:
+        str: A confirmation message indicating the table was successfully added.
+
+    Raises:
+        ValueError: If the specified document_key does not exist in the local cache.
+        ValueError: If the stack size for the document is zero.
+        HTMLParseError: If the provided HTML table string cannot be properly parsed.
+
+    Example:
+        add_table_in_html_format_to_docling_document(
+            document_key="doc123",
+            html_table="<table><tr><th>Name</th><th>Age</th></tr><tr><td>John</td><td>30</td></tr></table>",
+            table_captions=["Table 1: Sample demographic data"],
+            table_footnotes=["Data collected in 2023"]
+        )
+
+    Example with rowspan and colspan:
+        add_table_in_html_format_to_docling_document(
+            document_key="doc123",
+            html_table="<table><tr><th colspan='2'>Demographics</th></tr><tr><th>Name</th><th>Age</th></tr><tr><td>John</td><td rowspan='2'>30</td></tr><tr><td>Jane</td></tr></table>",
+            table_captions=["Table 2: Complex demographic data with merged cells"]
+        )
+    """
+    if document_key not in local_document_cache:
+        doc_keys = ", ".join(local_document_cache.keys())
+        raise ValueError(
+            f"document-key: {document_key} is not found. Existing document-keys are: {doc_keys}"
+        )
+
+    doc = local_document_cache[document_key]
+
+    if len(local_stack_cache[document_key]) == 0:
+        raise ValueError(
+            f"Stack size is zero for document with document-key: {document_key}. Abort document generation"
+        )
+
+    html_doc: str = f"<html><body>{html_table}</body></html>"
+
+    buff = BytesIO(html_doc.encode("utf-8"))
+    doc_stream = DocumentStream(name="tmp", stream=buff)
+
+    converter = DocumentConverter(allowed_formats=[InputFormat.HTML])
+    conv_result: ConversionResult = converter.convert(doc_stream)
+
+    if (
+        conv_result.status == ConversionStatus.SUCCESS
+        and len(conv_result.document.tables) > 0
+    ):
+        table = doc.add_table(data=conv_result.document.tables[0].data)
+
+        for _ in table_captions:
+            caption = doc.add_text(label=DocItemLabel.CAPTION, text=_)
+            table.captions.append(caption.get_ref())
+
+        for _ in table_footnotes:
+            footnote = doc.add_text(label=DocItemLabel.FOOTNOTE, text=_)
+            table.footnotes.append(footnote.get_ref())
+    else:
+        raise ValueError(
+            "Could not parse the html string of the table! Please fix the html and try again!"
+        )
+
+    return f"Added table to a document with key: {document_key}"

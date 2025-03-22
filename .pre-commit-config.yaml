@@ -9,6 +9,7 @@ repos:
       # Run the Ruff linter.
       - id: ruff
         args: [--exit-non-zero-on-fix, --fix, --config=pyproject.toml]
+        files: ^(docling_mcp|tests)/.*\.py$
   - repo: local
     hooks:
       - id: system

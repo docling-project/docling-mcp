@@ -70,6 +70,7 @@ Changelog = "https://github.com/docling-project/docling-mcp/blob/main/CHANGELOG.
 target-version = "py39"
 line-length = 88
 respect-gitignore = true
+include = ["docling_mcp", "tests"]
 
 [tool.ruff.format]
 skip-magic-trailing-comma = false
@@ -110,7 +111,7 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["E402", "F401"]
-"tests/*.py" = ["ASYNC"] # Disable ASYNC check for tests
+# "tests/*.py" = ["ASYNC"] # Disable ASYNC check for tests
 
 [tool.ruff.lint.mccabe]
 max-complexity = 15
