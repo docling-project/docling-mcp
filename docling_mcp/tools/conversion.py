@@ -10,17 +10,16 @@ from docling.datamodel.pipeline_options import (
 )
 from docling.document_converter import DocumentConverter, FormatOption, PdfFormatOption
 from docling.utils.accelerator_utils import AcceleratorDevice
-from docling_core.types.doc import DoclingDocument
-from docling_core.types.doc.labels import (
-    DocItemLabel,
-)
 from docling_core.types.doc.document import (
     ContentLayer,
 )
+from docling_core.types.doc.labels import (
+    DocItemLabel,
+)
 
-from docling_mcp.docling_cache import get_cache_dir, get_cache_key
+from docling_mcp.docling_cache import get_cache_key
 from docling_mcp.logger import setup_logger
-from docling_mcp.shared import local_document_cache, mcp, local_stack_cache
+from docling_mcp.shared import local_document_cache, local_stack_cache, mcp
 
 # Create a default project logger
 logger = setup_logger()
@@ -79,7 +78,6 @@ def convert_pdf_document_into_json_docling_document_from_uri_path(
         if cache_key in local_document_cache:
             logger.info(f"{source} has previously been added.")
             return False, "Document already exists in the system cache."
-
 
         # Log the start of processing
         logger.info("Set up pipeline options")
