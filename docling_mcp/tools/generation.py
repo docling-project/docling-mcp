@@ -92,6 +92,38 @@ def export_docling_document_to_markdown(document_key: str) -> str:
 
 
 @mcp.tool()
+def export_docling_document_to_json(document_key: str) -> str:
+    """
+    Exports a document from the local document cache to JSON format.
+
+    This tool converts a Docling document that exists in the local cache into
+    a json formatted string, which can be used for display or further processing.
+
+    Args:
+        document_key (str): The unique identifier for the document in the local cache.
+
+    Returns:
+        str: A string containing the JSON representation of the document,
+             along with a header identifying the document key.
+
+    Raises:
+        ValueError: If the specified document_key does not exist in the local cache.
+
+    Example:
+        export_docling_document_to_json("doc123")
+    """
+    if document_key not in local_document_cache:
+        doc_keys = ", ".join(local_document_cache.keys())
+        raise ValueError(
+            f"document-key: {document_key} is not found. Existing document-keys are: {doc_keys}"
+        )
+
+    document: dict = local_document_cache[document_key].export_to_dict()
+
+    return f"JSON export for document with key: {document_key}\n\n{document}\n\n"
+
+
+@mcp.tool()
 def save_docling_document(document_key: str) -> str:
     """
     Saves a document from the local document cache to disk in both markdown and JSON formats.
