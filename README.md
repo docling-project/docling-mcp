@@ -31,6 +31,18 @@ Docling MCP is a service that provides tools for document conversion, processing
 
 ## Getting started
 
+Install dependencies
+
+```sh
+uv sync
+```
+
+Install the docling_mcp package
+
+```sh
+uv pip install -e .
+```
+
 After installing the dependencies (`uv sync`), you can expose the tools of Docling by running,
 
 ```sh
