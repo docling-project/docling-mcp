@@ -51,7 +51,7 @@ def convert_pdf_document_into_json_docling_document_from_uri_path(
     source: str,
 ) -> tuple[bool, str]:
     """
-    Convert a PDF document from a URL or local path to Docling document and then store in local cache.
+    Convert a PDF document from a URL or local path and store in local cache.
 
     Args:
         source: URL or local file path to the document
