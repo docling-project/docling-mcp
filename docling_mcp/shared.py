@@ -3,8 +3,6 @@ from mcp.server.fastmcp import FastMCP
 from docling_core.types.doc.document import (
     DoclingDocument,
     NodeItem,
-    # DocItem,
-    # GroupItem
 )
 
 # Create a single shared FastMCP instance
