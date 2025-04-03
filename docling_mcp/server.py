@@ -15,6 +15,12 @@ from docling_mcp.tools.generation import (  # noqa: F401
     open_list_in_docling_document,
     save_docling_document,
 )
+from docling_mcp.tools.manipulation import (  # noqa: F401
+    delete_document_items_at_anchors,
+    get_overview_of_document_anchors,
+    get_text_of_document_item_at_anchor,
+    update_text_of_document_item_at_anchor,
+)
 
 if __name__ == "__main__":
     # Create a default project logger

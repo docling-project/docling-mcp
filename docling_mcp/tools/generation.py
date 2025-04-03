@@ -1,15 +1,12 @@
 import hashlib
 from io import BytesIO
 
-# from bs4 import BeautifulSoup  # , NavigableString, PageElement, Tag
 from docling.datamodel.base_models import ConversionStatus, DocumentStream, InputFormat
 from docling.datamodel.document import (
     ConversionResult,
     DoclingDocument,
 )
 from docling.document_converter import DocumentConverter
-
-# from docling.backend.html_backend import HTMLDocumentBackend
 from docling_core.types.doc.document import (
     ContentLayer,
     DoclingDocument,

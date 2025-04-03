@@ -327,8 +327,8 @@ wheels = [
 
 [[package]]
 name = "docling-core"
-version = "2.23.0"
-source = { registry = "https://pypi.org/simple" }
+version = "2.25.0"
+source = { git = "https://github.com/docling-project/docling-core.git?rev=dev%2Fadd-doclingdocument-manipulation#c4a7e81661a291c4e558d2e21615c778a6f520ef" }
 dependencies = [
     { name = "jsonref" },
     { name = "jsonschema" },
@@ -340,10 +340,6 @@ dependencies = [
     { name = "tabulate" },
     { name = "typer" },
     { name = "typing-extensions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/20/2e/edca276605a7a8619eb9bf29af84875ead2ba75d9c5f0970a3c505999598/docling_core-2.23.0.tar.gz", hash = "sha256:16a5dbca0a639aa5c49b58ceb7a98e7e1dd24cd956912c68f573f77164c96526", size = 92476 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/92/5e/4f0d655b9e843767690db1ab58f9e4d2bb3b8a275856c1eee428e4f620b3/docling_core-2.23.0-py3-none-any.whl", hash = "sha256:de17e2821216cc1817f99e226d2bad28f226289644fbffdf442ad282c842a79a", size = 115595 },
 ]
 
 [package.optional-dependencies]
@@ -381,6 +377,7 @@ version = "0.3.0"
 source = { virtual = "." }
 dependencies = [
     { name = "docling" },
+    { name = "docling-core" },
     { name = "httpx" },
     { name = "mcp", extra = ["cli"] },
     { name = "pydantic" },
@@ -409,6 +406,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "docling", specifier = "~=2.25" },
+    { name = "docling-core", git = "https://github.com/docling-project/docling-core.git?rev=dev%2Fadd-doclingdocument-manipulation" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "mcp", extras = ["cli"], specifier = ">=1.4.0" },
     { name = "onnxruntime", marker = "extra == 'rapidocr'", specifier = "~=1.7" },
