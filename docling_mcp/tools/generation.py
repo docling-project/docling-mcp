@@ -24,7 +24,9 @@ from docling_core.types.doc.labels import (
 
 from docling_mcp.docling_cache import get_cache_dir
 from docling_mcp.logger import setup_logger
-from docling_mcp.shared import local_document_cache, local_stack_cache, mcp
+from docling_mcp.shared import local_document_cache, local_stack_cache, mcp, reader, node_parser, vector_store, Settings
+
+from llama_index.core import StorageContext, VectorStoreIndex, Document
 
 # Create a default project logger
 logger = setup_logger()
@@ -71,6 +73,55 @@ def create_new_docling_document(prompt: str) -> str:
     local_stack_cache[document_key] = [item]
 
     return f"document-key: {document_key} for prompt:`{prompt}`"
+
+
+@mcp.tool()
+def export_docling_document_to_vector_db(document_key: str) -> str:
+    if document_key not in local_document_cache:
+        doc_keys = ", ".join(local_document_cache.keys())
+        raise ValueError(
+            f"document-key: {document_key} is not found. Existing document-keys are: {doc_keys}"
+        )
+
+    docling_document: DoclingDocument = local_document_cache[document_key]
+    markdown = docling_document.export_to_markdown()
+
+    document = Document(
+        text=markdown,
+        metadata={"filename": docling_document.name},
+    )
+
+
+    index = VectorStoreIndex.from_documents(
+        documents=[document],
+        transformations=[node_parser],
+        storage_context=StorageContext.from_defaults(vector_store=vector_store),
+    )
+
+    index.insert(document)
+
+    return "successful initialisation"
+
+@mcp.tool()
+def search_documents(query: str) -> str:
+    """
+    Use this function to search the already uploaded documents.
+    Args:
+        query: Query the documents for context
+
+    Returns: Context: str
+
+    """
+    index = VectorStoreIndex.from_vector_store(
+        vector_store, storage_context=StorageContext.from_defaults(vector_store=vector_store)
+    )
+
+    query_engine = index.as_query_engine()
+    response = query_engine.query(query)
+
+    return response.response
+
+
 
 
 @mcp.tool()
@@ -195,7 +246,7 @@ def add_title_to_docling_document(document_key: str, title: str) -> str:
 
 @mcp.tool()
 def add_section_heading_to_docling_document(
-    document_key: str, section_heading: str, section_level: int
+        document_key: str, section_heading: str, section_level: int
 ) -> str:
     """
     Adds a section heading to an existing document in the local document cache.
@@ -370,7 +421,7 @@ def close_list_in_docling_document(document_key: str) -> str:
 
 @mcp.tool()
 def add_listitem_to_list_in_docling_document(
-    document_key: str, listitem_text: str, listmarker_text: str
+        document_key: str, listitem_text: str, listmarker_text: str
 ) -> str:
     """
     Adds a list item to an open list in an existing document in the local document cache.
@@ -425,10 +476,10 @@ def add_listitem_to_list_in_docling_document(
 
 @mcp.tool()
 def add_table_in_html_format_to_docling_document(
-    document_key: str,
-    html_table: str,
-    table_captions: list[str] = [],
-    table_footnotes: list[str] = [],
+        document_key: str,
+        html_table: str,
+        table_captions: list[str] = [],
+        table_footnotes: list[str] = [],
 ) -> str:
     """
     Adds an HTML-formatted table to an existing document in the local document cache.
@@ -488,8 +539,8 @@ def add_table_in_html_format_to_docling_document(
     conv_result: ConversionResult = converter.convert(doc_stream)
 
     if (
-        conv_result.status == ConversionStatus.SUCCESS
-        and len(conv_result.document.tables) > 0
+            conv_result.status == ConversionStatus.SUCCESS
+            and len(conv_result.document.tables) > 0
     ):
         table = doc.add_table(data=conv_result.document.tables[0].data)
 

@@ -27,8 +27,18 @@ classifiers = [
 ]
 requires-python = ">=3.10"
 dependencies = [
+    "chromadb>=1.0.0",
     "docling~=2.25",
     "httpx>=0.28.1",
+    "llama-index-core>=0.12.28",
+    "llama-index-embeddings-huggingface>=0.5.2",
+    "llama-index-embeddings-openai>=0.3.1",
+    "llama-index-llms-ollama>=0.5.4",
+    "llama-index-node-parser-docling>=0.3.1",
+    "llama-index-readers-docling>=0.3.2",
+    "llama-index-readers-file>=0.4.7",
+    "llama-index-vector-stores-chroma>=0.4.1",
+    "llama-index-vector-stores-milvus>=0.7.2",
     "mcp[cli]>=1.4.0",
     "pydantic~=2.10",
     "pydantic-settings~=2.4",
