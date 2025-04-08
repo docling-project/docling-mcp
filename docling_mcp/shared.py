@@ -1,4 +1,5 @@
 from mcp.server.fastmcp import FastMCP
+import os
 
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from pathlib import Path
@@ -8,12 +9,12 @@ from llama_index.core.node_parser import MarkdownNodeParser
 from llama_index.readers.docling import DoclingReader
 import chromadb
 from llama_index.vector_stores.chroma import ChromaVectorStore
-from llama_index.vector_stores.milvus import MilvusVectorStore
 from llama_index.llms.ollama import Ollama
 from llama_index.core import Settings
 
+from dotenv import load_dotenv
 
-
+load_dotenv()
 
 from docling_core.types.doc.document import (
     DoclingDocument,
@@ -29,16 +30,16 @@ mcp = FastMCP("docling")
 local_document_cache: dict[str, DoclingDocument] = {}
 local_stack_cache: dict[str, list[NodeItem]] = {}
 
+if os.getenv("RAG_ENABLED") == "true" and os.getenv("OLLAMA_MODEL") != "":
+    Settings.embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-base-en-v1.5")
+    Settings.llm = Ollama(model=os.getenv("OLLAMA_MODEL"), request_timeout=120.0)
+    MILVUS_URI = str(Path(mkdtemp()) / "docling.db")
 
-Settings.embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-base-en-v1.5")
-Settings.llm = Ollama(model="granite3.2:latest", request_timeout=120.0)
-MILVUS_URI = str(Path(mkdtemp()) / "docling.db")
+    reader = DoclingReader()
+    node_parser = MarkdownNodeParser()
 
-reader = DoclingReader()
-node_parser = MarkdownNodeParser()
+    db = chromadb.PersistentClient(path="./chroma_db")
 
-db = chromadb.PersistentClient(path="./chroma_db")
+    chroma_collection = db.get_or_create_collection("docling-mcp-example")
 
-chroma_collection = db.get_or_create_collection("quickstart")
-
-vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
+    vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
