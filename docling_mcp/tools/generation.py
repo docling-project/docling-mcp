@@ -25,7 +25,7 @@ from docling_core.types.doc.labels import (
 
 from docling_mcp.docling_cache import get_cache_dir
 from docling_mcp.logger import setup_logger
-from docling_mcp.shared import local_document_cache, local_stack_cache, mcp, node_parser, vector_store
+from docling_mcp.shared import local_document_cache, local_stack_cache, mcp
 
 from llama_index.core import StorageContext, VectorStoreIndex, Document
 
@@ -509,7 +509,10 @@ def add_table_in_html_format_to_docling_document(
 
     return f"Added table to a document with key: {document_key}"
 
+
 if os.getenv("RAG_ENABLED") == "true" and os.getenv("OLLAMA_MODEL") != "":
+    from docling_mcp.shared import node_parser, vector_store
+
     @mcp.tool()
     def export_docling_document_to_vector_db(document_key: str) -> str:
         if document_key not in local_document_cache:
@@ -525,7 +528,6 @@ if os.getenv("RAG_ENABLED") == "true" and os.getenv("OLLAMA_MODEL") != "":
             text=markdown,
             metadata={"filename": docling_document.name},
         )
-
 
         index = VectorStoreIndex.from_documents(
             documents=[document],
