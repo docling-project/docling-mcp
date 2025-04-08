@@ -2,11 +2,8 @@ from mcp.server.fastmcp import FastMCP
 import os
 
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
-from pathlib import Path
-from tempfile import mkdtemp
 
 from llama_index.core.node_parser import MarkdownNodeParser
-from llama_index.readers.docling import DoclingReader
 import chromadb
 from llama_index.vector_stores.chroma import ChromaVectorStore
 from llama_index.llms.ollama import Ollama
@@ -33,9 +30,7 @@ local_stack_cache: dict[str, list[NodeItem]] = {}
 if os.getenv("RAG_ENABLED") == "true" and os.getenv("OLLAMA_MODEL") != "":
     Settings.embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-base-en-v1.5")
     Settings.llm = Ollama(model=os.getenv("OLLAMA_MODEL"), request_timeout=120.0)
-    MILVUS_URI = str(Path(mkdtemp()) / "docling.db")
 
-    reader = DoclingReader()
     node_parser = MarkdownNodeParser()
 
     db = chromadb.PersistentClient(path="./chroma_db")
