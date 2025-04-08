@@ -1,5 +1,6 @@
 import hashlib
 from io import BytesIO
+import os
 
 # from bs4 import BeautifulSoup  # , NavigableString, PageElement, Tag
 from docling.datamodel.base_models import ConversionStatus, DocumentStream, InputFormat
@@ -24,7 +25,7 @@ from docling_core.types.doc.labels import (
 
 from docling_mcp.docling_cache import get_cache_dir
 from docling_mcp.logger import setup_logger
-from docling_mcp.shared import local_document_cache, local_stack_cache, mcp, reader, node_parser, vector_store, Settings
+from docling_mcp.shared import local_document_cache, local_stack_cache, mcp, node_parser, vector_store
 
 from llama_index.core import StorageContext, VectorStoreIndex, Document
 
@@ -73,56 +74,6 @@ def create_new_docling_document(prompt: str) -> str:
     local_stack_cache[document_key] = [item]
 
     return f"document-key: {document_key} for prompt:`{prompt}`"
-
-
-@mcp.tool()
-def export_docling_document_to_vector_db(document_key: str) -> str:
-    if document_key not in local_document_cache:
-        doc_keys = ", ".join(local_document_cache.keys())
-        raise ValueError(
-            f"document-key: {document_key} is not found. Existing document-keys are: {doc_keys}"
-        )
-
-    docling_document: DoclingDocument = local_document_cache[document_key]
-    markdown = docling_document.export_to_markdown()
-
-    document = Document(
-        text=markdown,
-        metadata={"filename": docling_document.name},
-    )
-
-
-    index = VectorStoreIndex.from_documents(
-        documents=[document],
-        transformations=[node_parser],
-        storage_context=StorageContext.from_defaults(vector_store=vector_store),
-    )
-
-    index.insert(document)
-
-    return "successful initialisation"
-
-@mcp.tool()
-def search_documents(query: str) -> str:
-    """
-    Use this function to search the already uploaded documents.
-    Args:
-        query: Query the documents for context
-
-    Returns: Context: str
-
-    """
-    index = VectorStoreIndex.from_vector_store(
-        vector_store, storage_context=StorageContext.from_defaults(vector_store=vector_store)
-    )
-
-    query_engine = index.as_query_engine()
-    response = query_engine.query(query)
-
-    return response.response
-
-
-
 
 @mcp.tool()
 def export_docling_document_to_markdown(document_key: str) -> str:
@@ -557,3 +508,50 @@ def add_table_in_html_format_to_docling_document(
         )
 
     return f"Added table to a document with key: {document_key}"
+
+if os.getenv("RAG_ENABLED") == "true" and os.getenv("OLLAMA_MODEL") != "":
+    @mcp.tool()
+    def export_docling_document_to_vector_db(document_key: str) -> str:
+        if document_key not in local_document_cache:
+            doc_keys = ", ".join(local_document_cache.keys())
+            raise ValueError(
+                f"document-key: {document_key} is not found. Existing document-keys are: {doc_keys}"
+            )
+
+        docling_document: DoclingDocument = local_document_cache[document_key]
+        markdown = docling_document.export_to_markdown()
+
+        document = Document(
+            text=markdown,
+            metadata={"filename": docling_document.name},
+        )
+
+
+        index = VectorStoreIndex.from_documents(
+            documents=[document],
+            transformations=[node_parser],
+            storage_context=StorageContext.from_defaults(vector_store=vector_store),
+        )
+
+        index.insert(document)
+
+        return f"Successful initialisation for document with id {document_key}"
+
+    @mcp.tool()
+    def search_documents(query: str) -> str:
+        """
+        Use this function to search the already uploaded documents.
+        Args:
+            query: Query the documents for context
+
+        Returns: Context: str
+
+        """
+        index = VectorStoreIndex.from_vector_store(
+            vector_store, storage_context=StorageContext.from_defaults(vector_store=vector_store)
+        )
+
+        query_engine = index.as_query_engine()
+        response = query_engine.query(query)
+
+        return response.response
