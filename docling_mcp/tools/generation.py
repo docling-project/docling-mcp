@@ -27,7 +27,6 @@ from docling_mcp.docling_cache import get_cache_dir
 from docling_mcp.logger import setup_logger
 from docling_mcp.shared import local_document_cache, local_stack_cache, mcp
 
-
 # Create a default project logger
 logger = setup_logger()
 
@@ -73,6 +72,7 @@ def create_new_docling_document(prompt: str) -> str:
     local_stack_cache[document_key] = [item]
 
     return f"document-key: {document_key} for prompt:`{prompt}`"
+
 
 @mcp.tool()
 def export_docling_document_to_markdown(document_key: str) -> str:
@@ -513,8 +513,28 @@ if os.getenv("RAG_ENABLED") == "true" and os.getenv("OLLAMA_MODEL") != "":
     from llama_index.core import StorageContext, VectorStoreIndex, Document
     from docling_mcp.shared import node_parser, vector_store
 
+
     @mcp.tool()
     def export_docling_document_to_vector_db(document_key: str) -> str:
+        """
+        Exports a document from the local document cache to a vector database for search capabilities.
+
+        This tool converts a Docling document that exists in the local cache into markdown format,
+        then loads it into a vector database index. This allows the document to be searched using
+        semantic search techniques.
+
+        Args:
+            document_key (str): The unique identifier for the document in the local cache.
+
+        Returns:
+            str: A confirmation message indicating the document was successfully indexed.
+
+        Raises:
+            ValueError: If the specified document_key does not exist in the local cache.
+
+        Example:
+            export_docling_document_to_vector_db("doc123")
+        """
         if document_key not in local_document_cache:
             doc_keys = ", ".join(local_document_cache.keys())
             raise ValueError(
@@ -539,15 +559,25 @@ if os.getenv("RAG_ENABLED") == "true" and os.getenv("OLLAMA_MODEL") != "":
 
         return f"Successful initialisation for document with id {document_key}"
 
+
     @mcp.tool()
     def search_documents(query: str) -> str:
         """
-        Use this function to search the already uploaded documents.
+        Searches through previously uploaded and indexed documents using semantic search.
+
+        This function retrieves relevant information from documents that have been processed
+        and added to the vector database. It uses semantic similarity to find content that
+        best matches the query, rather than simple keyword matching.
+
         Args:
-            query: Query the documents for context
+            query (str): The search query text used to find relevant information in the indexed documents.
 
-        Returns: Context: str
+        Returns:
+            str: A string containing the relevant contextual information retrieved from the documents
+                 that best matches the query.
 
+        Example:
+            search_documents("What are the main findings about climate change?")
         """
         index = VectorStoreIndex.from_vector_store(
             vector_store, storage_context=StorageContext.from_defaults(vector_store=vector_store)
