@@ -28,8 +28,38 @@ Docling MCP is a service that provides tools for document conversion, processing
 - Support for local files and URLs as document sources
 - Memory management for handling large documents
 - Logging system for debugging and monitoring
+- ChromaDB upload and retrieval
 
 ## Getting started
+
+### Part 1 - RAG configuration (this can be skipped if you do not want RAG)
+
+Copy the .env.example file to .env in the root of the project.
+
+```sh
+cp .env.example .env
+```
+
+If you want to use the RAG ChromaDB functionality edit the new .env file to set both environment variables.
+
+```text
+RAG_ENABLED=true
+OLLAMA_MODEL=granite3.2:latest
+```
+
+Note:
+
+ollama can be downloaded here https://ollama.com/. Once you have ollama download the model you want to use and then add the model string to the .env file.
+
+For example we are using `granite3.2:latest` to perform the RAG search.
+
+To download this model run:
+
+```sh
+ollama pull granite3.2:latest
+```
+
+### Part 2 - Environment setup
 
 Install dependencies
 
@@ -70,6 +100,20 @@ During the writing process, you can check what has been written already by calli
 
 The document should investigate the impact of tokenizers on the quality of LLM's.
 ```
+
+## RAG documents
+
+Example prompt for RAG system:
+
+```prompt
+Process this file /Users/name/example/mock.pdf 
+
+Upload it to the vector store. 
+
+Then summarize xyz that is contained within the document.
+```
+
+
 
 ## License
 
