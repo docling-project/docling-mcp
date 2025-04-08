@@ -27,7 +27,6 @@ from docling_mcp.docling_cache import get_cache_dir
 from docling_mcp.logger import setup_logger
 from docling_mcp.shared import local_document_cache, local_stack_cache, mcp
 
-from llama_index.core import StorageContext, VectorStoreIndex, Document
 
 # Create a default project logger
 logger = setup_logger()
@@ -511,6 +510,7 @@ def add_table_in_html_format_to_docling_document(
 
 
 if os.getenv("RAG_ENABLED") == "true" and os.getenv("OLLAMA_MODEL") != "":
+    from llama_index.core import StorageContext, VectorStoreIndex, Document
     from docling_mcp.shared import node_parser, vector_store
 
     @mcp.tool()
