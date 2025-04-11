@@ -28,6 +28,7 @@ classifiers = [
 requires-python = ">=3.10"
 dependencies = [
     "docling~=2.25",
+    "docling-core",
     "httpx>=0.28.1",
     "mcp[cli]>=1.4.0",
     "pydantic~=2.10",
@@ -170,3 +171,6 @@ branch = "main"
 parser_angular_allowed_types = "build,chore,ci,docs,feat,fix,perf,style,refactor,test"
 parser_angular_minor_types = "feat"
 parser_angular_patch_types = "fix,perf"
+
+[tool.uv.sources]
+docling-core = { git = "https://github.com/docling-project/docling-core.git", rev = "dev/add-doclingdocument-manipulation" }

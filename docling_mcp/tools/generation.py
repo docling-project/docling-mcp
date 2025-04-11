@@ -1,15 +1,11 @@
-import hashlib
 from io import BytesIO
 
-# from bs4 import BeautifulSoup  # , NavigableString, PageElement, Tag
 from docling.datamodel.base_models import ConversionStatus, DocumentStream, InputFormat
 from docling.datamodel.document import (
     ConversionResult,
     DoclingDocument,
 )
 from docling.document_converter import DocumentConverter
-
-# from docling.backend.html_backend import HTMLDocumentBackend
 from docling_core.types.doc.document import (
     ContentLayer,
     DoclingDocument,
@@ -22,17 +18,12 @@ from docling_core.types.doc.labels import (
     # TableCellLabel
 )
 
-from docling_mcp.docling_cache import get_cache_dir
+from docling_mcp.docling_cache import get_cache_dir, hash_string_md5
 from docling_mcp.logger import setup_logger
 from docling_mcp.shared import local_document_cache, local_stack_cache, mcp
 
 # Create a default project logger
 logger = setup_logger()
-
-
-def hash_string_md5(input_string: str) -> str:
-    """Creates an md5 hash-string from the input string."""
-    return hashlib.md5(input_string.encode()).hexdigest()
 
 
 @mcp.tool()
