@@ -71,6 +71,7 @@ def get_overview_of_document_anchors(document_key: str) -> str:
     return "\n".join(lines)
 
 
+@mcp.tool()
 def get_text_of_document_item_at_anchor(document_key: str, document_anchor: str) -> str:
     """
     Retrieves the text content of a specific document item identified by its anchor.
@@ -115,6 +116,7 @@ def get_text_of_document_item_at_anchor(document_key: str, document_anchor: str)
     return f"The text of {document_anchor} for document-key with {document_key} is:\n\n```{text}```\n\n"
 
 
+@mcp.tool()
 def update_text_of_document_item_at_anchor(
     document_key: str, document_anchor: str, updated_text: str
 ) -> str:
@@ -161,6 +163,7 @@ def update_text_of_document_item_at_anchor(
     return f"Updated the text at {document_anchor} for document with key {document_key}"
 
 
+@mcp.tool()
 def delete_document_items_at_anchors(
     document_key: str, document_anchors: list[str]
 ) -> str:
