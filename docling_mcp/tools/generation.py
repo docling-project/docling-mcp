@@ -1,6 +1,6 @@
 import hashlib
-from io import BytesIO
 import os
+from io import BytesIO
 
 # from bs4 import BeautifulSoup  # , NavigableString, PageElement, Tag
 from docling.datamodel.base_models import ConversionStatus, DocumentStream, InputFormat
@@ -196,7 +196,7 @@ def add_title_to_docling_document(document_key: str, title: str) -> str:
 
 @mcp.tool()
 def add_section_heading_to_docling_document(
-        document_key: str, section_heading: str, section_level: int
+    document_key: str, section_heading: str, section_level: int
 ) -> str:
     """
     Adds a section heading to an existing document in the local document cache.
@@ -371,7 +371,7 @@ def close_list_in_docling_document(document_key: str) -> str:
 
 @mcp.tool()
 def add_listitem_to_list_in_docling_document(
-        document_key: str, listitem_text: str, listmarker_text: str
+    document_key: str, listitem_text: str, listmarker_text: str
 ) -> str:
     """
     Adds a list item to an open list in an existing document in the local document cache.
@@ -426,10 +426,10 @@ def add_listitem_to_list_in_docling_document(
 
 @mcp.tool()
 def add_table_in_html_format_to_docling_document(
-        document_key: str,
-        html_table: str,
-        table_captions: list[str] = [],
-        table_footnotes: list[str] = [],
+    document_key: str,
+    html_table: str,
+    table_captions: list[str] = [],
+    table_footnotes: list[str] = [],
 ) -> str:
     """
     Adds an HTML-formatted table to an existing document in the local document cache.
@@ -489,8 +489,8 @@ def add_table_in_html_format_to_docling_document(
     conv_result: ConversionResult = converter.convert(doc_stream)
 
     if (
-            conv_result.status == ConversionStatus.SUCCESS
-            and len(conv_result.document.tables) > 0
+        conv_result.status == ConversionStatus.SUCCESS
+        and len(conv_result.document.tables) > 0
     ):
         table = doc.add_table(data=conv_result.document.tables[0].data)
 
@@ -509,11 +509,16 @@ def add_table_in_html_format_to_docling_document(
     return f"Added table to a document with key: {document_key}"
 
 
-if os.getenv("RAG_ENABLED") == "true" and os.getenv("OLLAMA_MODEL") != "" and os.getenv("EMBEDDING_MODEL") != "":
-    from llama_index.core import StorageContext, VectorStoreIndex, Document
-    from docling_mcp.shared import node_parser, milvus_vector_store, local_index_cache
+if (
+    os.getenv("RAG_ENABLED") == "true"
+    and os.getenv("OLLAMA_MODEL") != ""
+    and os.getenv("EMBEDDING_MODEL") != ""
+):
     import json
 
+    from llama_index.core import Document, StorageContext, VectorStoreIndex
+
+    from docling_mcp.shared import local_index_cache, milvus_vector_store, node_parser
 
     @mcp.tool()
     def export_docling_document_to_vector_db(document_key: str) -> str:
@@ -554,15 +559,16 @@ if os.getenv("RAG_ENABLED") == "true" and os.getenv("OLLAMA_MODEL") != "" and os
         index = VectorStoreIndex.from_documents(
             documents=[document],
             transformations=[node_parser],
-            storage_context=StorageContext.from_defaults(vector_store=milvus_vector_store),
+            storage_context=StorageContext.from_defaults(
+                vector_store=milvus_vector_store
+            ),
         )
 
         index.insert(document)
 
-        local_index_cache['milvus_index'] = index
+        local_index_cache["milvus_index"] = index
 
         return f"Successful initialisation for document with id {document_key}"
-
 
     @mcp.tool()
     def search_documents(query: str) -> str:
@@ -583,7 +589,7 @@ if os.getenv("RAG_ENABLED") == "true" and os.getenv("OLLAMA_MODEL") != "" and os
         Example:
             search_documents("What are the main findings about climate change?")
         """
-        index = local_index_cache['milvus_index']
+        index = local_index_cache["milvus_index"]
 
         query_engine = index.as_query_engine()
         response = query_engine.query(query)
