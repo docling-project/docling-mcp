@@ -509,7 +509,7 @@ def add_table_in_html_format_to_docling_document(
     return f"Added table to a document with key: {document_key}"
 
 
-if os.getenv("RAG_ENABLED") == "true" and os.getenv("OLLAMA_MODEL") != "":
+if os.getenv("RAG_ENABLED") == "true" and os.getenv("OLLAMA_MODEL") != "" and os.getenv("EMBEDDING_MODEL") != "":
     from llama_index.core import StorageContext, VectorStoreIndex, Document
     from docling_mcp.shared import node_parser, vector_store
 

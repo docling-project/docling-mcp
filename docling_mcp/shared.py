@@ -27,8 +27,8 @@ mcp = FastMCP("docling")
 local_document_cache: dict[str, DoclingDocument] = {}
 local_stack_cache: dict[str, list[NodeItem]] = {}
 
-if os.getenv("RAG_ENABLED") == "true" and os.getenv("OLLAMA_MODEL") != "":
-    Settings.embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-base-en-v1.5")
+if os.getenv("RAG_ENABLED") == "true" and os.getenv("OLLAMA_MODEL") != "" and os.getenv("EMBEDDING_MODEL") != "":
+    Settings.embed_model = HuggingFaceEmbedding(model_name=os.getenv("EMBEDDING_MODEL"))
     Settings.llm = Ollama(model=os.getenv("OLLAMA_MODEL"), request_timeout=120.0)
 
     node_parser = MarkdownNodeParser()
