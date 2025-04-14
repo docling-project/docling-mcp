@@ -511,7 +511,8 @@ def add_table_in_html_format_to_docling_document(
 
 if os.getenv("RAG_ENABLED") == "true" and os.getenv("OLLAMA_MODEL") != "" and os.getenv("EMBEDDING_MODEL") != "":
     from llama_index.core import StorageContext, VectorStoreIndex, Document
-    from docling_mcp.shared import node_parser, vector_store
+    from docling_mcp.shared import node_parser, milvus_vector_store, local_index_cache
+    import json
 
 
     @mcp.tool()
@@ -542,20 +543,23 @@ if os.getenv("RAG_ENABLED") == "true" and os.getenv("OLLAMA_MODEL") != "" and os
             )
 
         docling_document: DoclingDocument = local_document_cache[document_key]
-        markdown = docling_document.export_to_markdown()
+        document_dict: dict = docling_document.export_to_dict()
+        document_json: str = json.dumps(document_dict)
 
         document = Document(
-            text=markdown,
+            text=document_json,
             metadata={"filename": docling_document.name},
         )
 
         index = VectorStoreIndex.from_documents(
             documents=[document],
             transformations=[node_parser],
-            storage_context=StorageContext.from_defaults(vector_store=vector_store),
+            storage_context=StorageContext.from_defaults(vector_store=milvus_vector_store),
         )
 
         index.insert(document)
+
+        local_index_cache['milvus_index'] = index
 
         return f"Successful initialisation for document with id {document_key}"
 
@@ -579,9 +583,7 @@ if os.getenv("RAG_ENABLED") == "true" and os.getenv("OLLAMA_MODEL") != "" and os
         Example:
             search_documents("What are the main findings about climate change?")
         """
-        index = VectorStoreIndex.from_vector_store(
-            vector_store, storage_context=StorageContext.from_defaults(vector_store=vector_store)
-        )
+        index = local_index_cache['milvus_index']
 
         query_engine = index.as_query_engine()
         response = query_engine.query(query)

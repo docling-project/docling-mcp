@@ -3,11 +3,12 @@ import os
 
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 
-from llama_index.core.node_parser import MarkdownNodeParser
-import chromadb
-from llama_index.vector_stores.chroma import ChromaVectorStore
+from llama_index.node_parser.docling import DoclingNodeParser
+from llama_index.vector_stores.milvus import MilvusVectorStore
+from llama_index.core.indices.vector_store.base import VectorStoreIndex
+
 from llama_index.llms.ollama import Ollama
-from llama_index.core import Settings
+from llama_index.core import Settings, StorageContext
 
 from dotenv import load_dotenv
 
@@ -28,13 +29,16 @@ local_document_cache: dict[str, DoclingDocument] = {}
 local_stack_cache: dict[str, list[NodeItem]] = {}
 
 if os.getenv("RAG_ENABLED") == "true" and os.getenv("OLLAMA_MODEL") != "" and os.getenv("EMBEDDING_MODEL") != "":
-    Settings.embed_model = HuggingFaceEmbedding(model_name=os.getenv("EMBEDDING_MODEL"))
+    embed_model = HuggingFaceEmbedding(model_name=os.getenv("EMBEDDING_MODEL"))
+    Settings.embed_model = embed_model
     Settings.llm = Ollama(model=os.getenv("OLLAMA_MODEL"), request_timeout=120.0)
 
-    node_parser = MarkdownNodeParser()
+    node_parser = DoclingNodeParser()
 
-    db = chromadb.PersistentClient(path="./chroma_db")
+    embed_dim = len(embed_model.get_text_embedding("hi"))
 
-    chroma_collection = db.get_or_create_collection("docling-mcp-example")
+    milvus_vector_store = MilvusVectorStore(
+        uri="./milvus_demo.db", dim=embed_dim, overwrite=True
+    )
 
-    vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
+    local_index_cache: dict[str, VectorStoreIndex] = {}
