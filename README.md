@@ -28,7 +28,7 @@ Docling MCP is a service that provides tools for document conversion, processing
 - Support for local files and URLs as document sources
 - Memory management for handling large documents
 - Logging system for debugging and monitoring
-- ChromaDB upload and retrieval
+- Milvus upload and retrieval
 
 ## Getting started
 
