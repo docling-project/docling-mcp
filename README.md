@@ -40,11 +40,12 @@ Copy the .env.example file to .env in the root of the project.
 cp .env.example .env
 ```
 
-If you want to use the RAG ChromaDB functionality edit the new .env file to set both environment variables.
+If you want to use the RAG Milvus functionality edit the new .env file to set both environment variables.
 
 ```text
 RAG_ENABLED=true
 OLLAMA_MODEL=granite3.2:latest
+EMBEDDING_MODEL=BAAI/bge-small-en-v1.5
 ```
 
 Note:
