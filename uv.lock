@@ -378,7 +378,7 @@ wheels = [
 [[package]]
 name = "docling-mcp"
 version = "0.3.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "docling" },
     { name = "httpx" },
