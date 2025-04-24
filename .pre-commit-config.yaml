@@ -23,7 +23,7 @@ repos:
       - id: pytest
         name: Pytest
         language: system
-        entry: uv run --no-sync pytest tests
+        entry: uv run --no-sync pytest --cov=docling_mcp --cov-report=xml tests
         pass_filenames: false
         files: '\.py$'
   - repo: https://github.com/astral-sh/uv-pre-commit

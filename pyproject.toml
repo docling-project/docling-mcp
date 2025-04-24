@@ -60,6 +60,7 @@ dev = [
     "pre-commit-uv~=4.1",
     "pytest~=8.3",
     "pytest-check~=2.4",
+    "pytest-cov>=6.1.1",
     "python-semantic-release~=7.32",
     "ruff>=0.9.6",
 ]
