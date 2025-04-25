@@ -1,5 +1,4 @@
 """This module initializes and runs the Docling MCP server."""
-
 from docling_mcp.logger import setup_logger
 from docling_mcp.shared import mcp
 from docling_mcp.tools.conversion import (
@@ -16,6 +15,11 @@ from docling_mcp.tools.generation import (
     export_docling_document_to_markdown,
     open_list_in_docling_document,
     save_docling_document,
+)
+
+from docling_mcp.tools.applications import (
+    export_docling_document_to_vector_db,
+    search_documents,
 )
 
 

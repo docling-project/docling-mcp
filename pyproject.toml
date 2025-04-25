@@ -40,6 +40,7 @@ requires-python = ">=3.10"
 dependencies = [
     "docling~=2.25",
     "httpx>=0.28.1",
+    "llama-index>=0.12.33",
     "llama-index-core>=0.12.28",
     "llama-index-embeddings-huggingface>=0.5.2",
     "llama-index-embeddings-openai>=0.3.1",
