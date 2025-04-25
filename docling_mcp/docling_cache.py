@@ -1,3 +1,5 @@
+"""This module manages the cache directory to run Docling MCP tools."""
+
 import hashlib
 import json
 import os
@@ -12,8 +14,7 @@ logger = setup_logger()
 
 
 def get_cache_dir() -> Path:
-    """
-    Get the cache directory for the application.
+    """Get the cache directory for the application.
 
     Returns:
         Path: A Path object pointing to the cache directory.
@@ -63,7 +64,7 @@ def get_cache_dir() -> Path:
 
 
 def get_cache_key(
-    source: str, enable_ocr: bool = False, ocr_language: Optional[list[str]] = []
+    source: str, enable_ocr: bool = False, ocr_language: Optional[list[str]] = None
 ) -> str:
     """Generate a cache key for the document conversion."""
     key_data = {

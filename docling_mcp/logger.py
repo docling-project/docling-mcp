@@ -1,10 +1,12 @@
+"""Utility module for logging."""
+
 import logging
 
 
-def setup_logger(log_file="docling_mcp.log"):
+def setup_logger() -> logging.Logger:
     """Setup and return a logger for the entire project."""
     # Create logger
-    logger = logging.getLogger("project_name")
+    logger = logging.getLogger("docling_mcp")
     logger.setLevel(logging.INFO)
 
     # Create a handler and set its level to INFO
