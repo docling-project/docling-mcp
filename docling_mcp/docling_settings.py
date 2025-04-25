@@ -1,5 +1,7 @@
+"""This module manages the settings for Docling."""
+
+from docling.datamodel.pipeline_options import AcceleratorDevice
 from docling.datamodel.settings import settings
-from docling.utils.accelerator_utils import AcceleratorDevice
 
 from docling_mcp.logger import setup_logger
 
@@ -8,7 +10,7 @@ logger = setup_logger()
 
 
 # Configure accelerator settings
-def configure_accelerator(doc_batch_size: int = 1):
+def configure_accelerator(doc_batch_size: int = 1) -> bool:
     """Configure the accelerator device for Docling."""
     try:
         # Check if the accelerator_device attribute exists

@@ -1,3 +1,5 @@
+"""Tools for converting documents into DoclingDocument objects."""
+
 import gc
 from typing import Annotated, Any
 
@@ -6,10 +8,10 @@ from mcp.types import INTERNAL_ERROR, ErrorData
 
 from docling.datamodel.base_models import InputFormat
 from docling.datamodel.pipeline_options import (
+    AcceleratorDevice,
     PdfPipelineOptions,
 )
 from docling.document_converter import DocumentConverter, FormatOption, PdfFormatOption
-from docling.utils.accelerator_utils import AcceleratorDevice
 from docling_core.types.doc.document import (
     ContentLayer,
 )
@@ -25,7 +27,7 @@ from docling_mcp.shared import local_document_cache, local_stack_cache, mcp
 logger = setup_logger()
 
 
-def cleanup_memory():
+def cleanup_memory() -> None:
     """Force garbage collection to free up memory."""
     logger.info("Performed memory cleanup")
     gc.collect()
@@ -33,15 +35,13 @@ def cleanup_memory():
 
 @mcp.tool()
 def is_document_in_local_cache(cache_key: str) -> bool:
-    """
-    Verify if document is already converted and in the local cache.
+    """Verify if document is already converted and in the local cache.
 
     Args:
-        key: string
+        cache_key: Document identifier in the cache.
 
     Returns:
-
-        success: bool
+        Whether the document is already converted and in the local cache.
     """
     return cache_key in local_document_cache
 
@@ -50,8 +50,7 @@ def is_document_in_local_cache(cache_key: str) -> bool:
 def convert_pdf_document_into_json_docling_document_from_uri_path(
     source: str,
 ) -> tuple[bool, str]:
-    """
-    Convert a PDF document from a URL or local path and store in local cache.
+    """Convert a PDF document from a URL or local path and store in local cache.
 
     Args:
         source: URL or local file path to the document
@@ -142,15 +141,14 @@ def convert_pdf_document_into_json_docling_document_from_uri_path(
         logger.exception(f"Error converting document: {source}")
         raise McpError(
             ErrorData(code=INTERNAL_ERROR, message=f"Unexpected error: {e!s}")
-        )
+        ) from e
 
 
 @mcp.tool()
 def convert_attachments_into_docling_document(
     pdf_payloads: list[Annotated[bytes, {"media_type": "application/octet-stream"}]],
 ) -> list[dict[str, Any]]:
-    """
-    Process a pdf files attachment from Claude Desktop.
+    """Process a pdf files attachment from Claude Desktop.
 
     Args:
         pdf_payloads: PDF document as binary data from the attachment

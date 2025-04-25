@@ -4,6 +4,7 @@
 - Christoph Auer - [@cau-git](https://github.com/cau-git)
 - Michele Dolfi - [@dolfim-ibm](https://github.com/dolfim-ibm)
 - Panos Vagenas - [@vagenas](https://github.com/vagenas)
+- Cesar Berrospi Ramis - [@ceberam](https://github.com/ceberam)
 
 
 Maintainers can be contacted at [deepsearch-core@zurich.ibm.com](mailto:deepsearch-core@zurich.ibm.com).

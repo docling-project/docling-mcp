@@ -1,5 +1,5 @@
+"""This module defines shared resources."""
 import os
-
 from dotenv import load_dotenv
 from llama_index.core import Settings
 from llama_index.core.indices.vector_store.base import VectorStoreIndex
@@ -7,6 +7,7 @@ from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.llms.ollama import Ollama
 from llama_index.node_parser.docling import DoclingNodeParser
 from llama_index.vector_stores.milvus import MilvusVectorStore
+
 from mcp.server.fastmcp import FastMCP
 
 load_dotenv()
@@ -14,8 +15,6 @@ load_dotenv()
 from docling_core.types.doc.document import (
     DoclingDocument,
     NodeItem,
-    # DocItem,
-    # GroupItem
 )
 
 # Create a single shared FastMCP instance
