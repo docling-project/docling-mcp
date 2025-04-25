@@ -32,36 +32,6 @@ Docling MCP is a service that provides tools for document conversion, processing
 
 ## Getting started
 
-### Part 1 - RAG configuration (this can be skipped if you do not want RAG)
-
-Copy the .env.example file to .env in the root of the project.
-
-```sh
-cp .env.example .env
-```
-
-If you want to use the RAG Milvus functionality edit the new .env file to set both environment variables.
-
-```text
-RAG_ENABLED=true
-OLLAMA_MODEL=granite3.2:latest
-EMBEDDING_MODEL=BAAI/bge-small-en-v1.5
-```
-
-Note:
-
-ollama can be downloaded here https://ollama.com/. Once you have ollama download the model you want to use and then add the model string to the .env file.
-
-For example we are using `granite3.2:latest` to perform the RAG search.
-
-To download this model run:
-
-```sh
-ollama pull granite3.2:latest
-```
-
-### Part 2 - Environment setup
-
 Install dependencies
 
 ```sh
@@ -102,9 +72,37 @@ During the writing process, you can check what has been written already by calli
 The document should investigate the impact of tokenizers on the quality of LLM's.
 ```
 
-## RAG documents
+## Applications
 
-Example prompt for RAG system:
+### Milvus RAG configuration
+
+Copy the .env.example file to .env in the root of the project.
+
+```sh
+cp .env.example .env
+```
+
+If you want to use the RAG Milvus functionality edit the new .env file to set both environment variables.
+
+```text
+RAG_ENABLED=true
+OLLAMA_MODEL=granite3.2:latest
+EMBEDDING_MODEL=BAAI/bge-small-en-v1.5
+```
+
+Note:
+
+ollama can be downloaded here https://ollama.com/. Once you have ollama download the model you want to use and then add the model string to the .env file.
+
+For example we are using `granite3.2:latest` to perform the RAG search.
+
+To download this model run:
+
+```sh
+ollama pull granite3.2:latest
+```
+
+When using the docling-mcp server with RAG this would be a simple example prompt:
 
 ```prompt
 Process this file /Users/name/example/mock.pdf 
