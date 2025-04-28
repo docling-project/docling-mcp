@@ -119,6 +119,9 @@ Upload it to the vector store.
 Then summarize xyz that is contained within the document.
 ```
 
+Known issues
+
+When restarting the MCP client (e.g. Claude desktop) the client sometimes errors due to the `.milvus_demo.db.lock` file. Delete this before restarting.
 
 
 ## License
