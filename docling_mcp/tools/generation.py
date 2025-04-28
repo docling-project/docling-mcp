@@ -3,6 +3,8 @@
 import hashlib
 from io import BytesIO
 
+from pydantic import BaseModel
+
 # from bs4 import BeautifulSoup  # , NavigableString, PageElement, Tag
 from docling.datamodel.base_models import ConversionStatus, InputFormat
 from docling.datamodel.document import (
@@ -362,20 +364,26 @@ def close_list_in_docling_document(document_key: str) -> str:
     return f"closed list for document with key: {document_key}"
 
 
-@mcp.tool()
-def add_listitem_to_list_in_docling_document(
-    document_key: str, listitem_text: str, listmarker_text: str
-) -> str:
-    """Adds a list item to an open list in an existing document in the local document cache.
+class ListItem(BaseModel):
+    """A class to represent a list item pairing."""
 
-    This tool inserts a new list item with the specified text and marker into an
+    list_item_text: str
+    list_marker_text: str
+
+
+@mcp.tool()
+def add_list_items_to_list_in_docling_document(
+    document_key: str, list_items: list[ListItem]
+) -> str:
+    """Adds list items to an open list in an existing document in the local document cache.
+
+    This tool inserts new list items with the specified text and marker into an
     open list within a document. It requires that the document exists and that
     there is at least one item in the document's stack cache.
 
     Args:
         document_key (str): The unique identifier for the document in the local cache.
-        listitem_text (str): The content text for the list item.
-        listmarker_text (str): The marker text to use for the list item (e.g., "-", "1.", "•").
+        list_items (list[ListItem]): A list of list_item_text and list_marker_text items
 
     Returns:
         str: A confirmation message indicating the list item was successfully added.
@@ -384,7 +392,7 @@ def add_listitem_to_list_in_docling_document(
         ValueError: If the specified document_key does not exist in the local cache.
 
     Example:
-        add_listitem_to_docling_document(document_key="doc123", listitem_text="First item in the list", listmarker_text="-")
+        add_list_items_to_list_in_docling_document(document_key="doc123", list_items=[ListItem(list_item_text="First item in the list", list_marker_text="-")])
     """
     if document_key not in local_document_cache:
         doc_keys = ", ".join(local_document_cache.keys())
@@ -409,11 +417,14 @@ def add_listitem_to_list_in_docling_document(
             "No list is currently opened. Please open a list before adding list-items!"
         )
 
-    local_document_cache[document_key].add_list_item(
-        text=listitem_text, marker=listmarker_text, parent=parent
-    )
+    for list_item in list_items:
+        local_document_cache[document_key].add_list_item(
+            text=list_item.list_item_text,
+            marker=list_item.list_marker_text,
+            parent=parent,
+        )
 
-    return f"added listitem to list in document with key: {document_key}"
+    return f"added list_items to list in document with key: {document_key}"
 
 
 @mcp.tool()
