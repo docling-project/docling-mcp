@@ -9,7 +9,7 @@ from docling_mcp.tools.conversion import (
     is_document_in_local_cache,
 )
 from docling_mcp.tools.generation import (
-    add_listitem_to_list_in_docling_document,
+    add_list_items_to_list_in_docling_document,
     add_paragraph_to_docling_document,
     add_section_heading_to_docling_document,
     add_title_to_docling_document,
