@@ -1,7 +1,7 @@
 """This module defines applications."""
 
 import os
-from typing import Any, Union
+from typing import Any
 
 from docling_core.types.doc.document import DoclingDocument
 
@@ -19,10 +19,8 @@ if (
 
     from llama_index.core import Document, StorageContext, VectorStoreIndex
     from llama_index.core.base.response.schema import (
-        AsyncStreamingResponse,
-        PydanticResponse,
+        RESPONSE_TYPE,
         Response,
-        StreamingResponse,
     )
     from mcp.shared.exceptions import McpError
     from mcp.types import INTERNAL_ERROR, ErrorData
@@ -99,27 +97,18 @@ if (
         index = local_index_cache["milvus_index"]
 
         query_engine = index.as_query_engine()
-        response: Union[
-            Response, StreamingResponse, AsyncStreamingResponse, PydanticResponse
-        ] = query_engine.query(query)
-
-        if response is None:
-            raise McpError(
-                ErrorData(code=INTERNAL_ERROR, message="No response from the vector db")
-            )
-
-        # Handle different response types appropriately
-        if hasattr(response, "response") and response.response is None:
-            raise McpError(
-                ErrorData(
-                    code=INTERNAL_ERROR,
-                    message="Response object has no response content",
-                )
-            )
+        response: RESPONSE_TYPE = query_engine.query(query)
 
         if isinstance(response, Response):
-            assert response.response is not None
-            return response.response
+            if response.response is not None:
+                return response.response
+            else:
+                raise McpError(
+                    ErrorData(
+                        code=INTERNAL_ERROR,
+                        message="Response object has no response content",
+                    )
+                )
         else:
             raise McpError(
                 ErrorData(
