@@ -1,11 +1,9 @@
 """This module initializes and runs the Docling MCP server."""
 
+import os
+
 from docling_mcp.logger import setup_logger
 from docling_mcp.shared import mcp
-from docling_mcp.tools.applications import (
-    export_docling_document_to_vector_db,
-    search_documents,
-)
 from docling_mcp.tools.conversion import (
     convert_pdf_document_into_json_docling_document_from_uri_path,
     is_document_in_local_cache,
@@ -21,6 +19,16 @@ from docling_mcp.tools.generation import (
     open_list_in_docling_document,
     save_docling_document,
 )
+
+if (
+    os.getenv("RAG_ENABLED") == "true"
+    and os.getenv("OLLAMA_MODEL") != ""
+    and os.getenv("EMBEDDING_MODEL") != ""
+):
+    from docling_mcp.tools.applications import (
+        export_docling_document_to_vector_db,
+        search_documents,
+    )
 
 
 def main() -> None:
