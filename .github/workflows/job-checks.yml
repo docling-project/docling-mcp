@@ -65,4 +65,4 @@ jobs:
       - name: Install package
         run: uv pip install dist/*.whl
       - name: Create the server
-        run: python -c 'import docling_mcp.server'
+        run: python -c 'import docling_mcp.servers.mcp_server'
