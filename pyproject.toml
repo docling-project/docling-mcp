@@ -56,7 +56,7 @@ dependencies = [
     "pydantic~=2.10",
     "pydantic-settings~=2.4",
     "python-dotenv>=1.1.0",
-    "smolagents>=1.16.1",
+    "smolagents[litellm,mcp]>=1.16.1",
 ]
 
 [project.optional-dependencies]
@@ -80,7 +80,7 @@ dev = [
 ]
 
 [project.scripts]
-docling-mcp-server = "docling_mcp.server:main"
+docling-mcp-server = "docling_mcp.servers.mcp_server:main"
 
 [project.urls]
 Homepage = "https://github.com/docling-project/docling-mcp"
@@ -134,7 +134,7 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["E402", "F401"]  # import violations, module imported but unused
-"docling_mcp/server.py" = ["F401"]  # module inmported but unused
+"docling_mcp/servers/mcp_server.py" = ["F401"]  # module inmported but unused
 "tests/**.py" = ["D"]  # ignore flake8-docstrings in tests
 
 [tool.ruff.lint.pep8-naming]
@@ -172,10 +172,12 @@ python_version = "3.10"
 
 [[tool.mypy.overrides]]
 module = [
+    "colorama.*",
     "easyocr.*",
     "tesserocr.*",
     "rapidocr_onnxruntime.*",
     "requests.*",
+    "smolagents.*",
 ]
 ignore_missing_imports = true
 

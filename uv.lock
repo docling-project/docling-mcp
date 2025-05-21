@@ -765,7 +765,7 @@ dependencies = [
     { name = "pydantic" },
     { name = "pydantic-settings" },
     { name = "python-dotenv" },
-    { name = "smolagents" },
+    { name = "smolagents", extra = ["litellm", "mcp"] },
 ]
 
 [package.optional-dependencies]
@@ -810,7 +810,7 @@ requires-dist = [
     { name = "pydantic-settings", specifier = "~=2.4" },
     { name = "python-dotenv", specifier = ">=1.1.0" },
     { name = "rapidocr-onnxruntime", marker = "python_full_version < '3.13' and extra == 'rapidocr'", specifier = "~=1.4" },
-    { name = "smolagents", specifier = ">=1.16.1" },
+    { name = "smolagents", extras = ["litellm", "mcp"], specifier = ">=1.16.1" },
     { name = "tesserocr", marker = "extra == 'tesserocr'", specifier = "~=2.7" },
 ]
 provides-extras = ["tesserocr", "rapidocr"]
@@ -1668,6 +1668,29 @@ wheels = [
 ]
 
 [[package]]
+name = "litellm"
+version = "1.70.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "aiohttp" },
+    { name = "click" },
+    { name = "httpx" },
+    { name = "importlib-metadata" },
+    { name = "jinja2" },
+    { name = "jsonschema" },
+    { name = "openai" },
+    { name = "pydantic" },
+    { name = "python-dotenv" },
+    { name = "tiktoken" },
+    { name = "tokenizers", version = "0.19.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.13' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
+    { name = "tokenizers", version = "0.21.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.13' or platform_machine != 'x86_64' or sys_platform != 'darwin'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/22/74/b217e0f930a91746798328ee06311d1bdb844d597760b17f41d6a64136bd/litellm-1.70.2.tar.gz", hash = "sha256:d2e45076f76d668f2b420c98067c9a992dfaa7fea3031a02d0ed89589a2f8841", size = 7805487, upload-time = "2025-05-21T00:12:24.789Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e5/76/9173b68dd6db6d7e150ad3f535ef441832054e68220d48edda08394cde49/litellm-1.70.2-py3-none-any.whl", hash = "sha256:765bb4314e0f764735cb036dcfabfddfec84320831df17275a47d3bb48b577a3", size = 7892617, upload-time = "2025-05-21T00:12:21.155Z" },
+]
+
+[[package]]
 name = "llama-cloud"
 version = "0.1.21"
 source = { registry = "https://pypi.org/simple" }
@@ -2170,6 +2193,21 @@ wheels = [
 cli = [
     { name = "python-dotenv" },
     { name = "typer" },
+]
+
+[[package]]
+name = "mcpadapt"
+version = "0.1.7"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "jsonref" },
+    { name = "mcp" },
+    { name = "pydantic" },
+    { name = "python-dotenv" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/fc/15/0e6b412dc81e30577adde9f69c0c075d9f0a47a735cdd20cfec33875279e/mcpadapt-0.1.7.tar.gz", hash = "sha256:450a1e1e681088aef6129351d6666c9ecf71e5dc49a3ce46c44230111f987697", size = 3537144, upload-time = "2025-05-18T20:12:10.835Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b2/9a/d68d0f0235fda5c7b4aac141519f02f5af62f642374b51cbf5a3e5b7d4bf/mcpadapt-0.1.7-py3-none-any.whl", hash = "sha256:8fd686d36ca06464ec76b651d46e5c13c212e2c88c33b08d30b8f953e8421705", size = 17039, upload-time = "2025-05-18T20:12:08.947Z" },
 ]
 
 [[package]]
@@ -2772,7 +2810,7 @@ wheels = [
 
 [[package]]
 name = "openai"
-version = "1.79.0"
+version = "1.75.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
@@ -2784,9 +2822,9 @@ dependencies = [
     { name = "tqdm" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/52/cf/4901077dbbfd0d82a814d721600fa0c3a61a093d7f0bf84d0e4732448dc9/openai-1.79.0.tar.gz", hash = "sha256:e3b627aa82858d3e42d16616edc22aa9f7477ee5eb3e6819e9f44a961d899a4c", size = 444736, upload-time = "2025-05-16T19:49:59.738Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/99/b1/318f5d4c482f19c5fcbcde190801bfaaaec23413cda0b88a29f6897448ff/openai-1.75.0.tar.gz", hash = "sha256:fb3ea907efbdb1bcfd0c44507ad9c961afd7dce3147292b54505ecfd17be8fd1", size = 429492, upload-time = "2025-04-16T16:49:29.25Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/81/d2/e3992bb7c6641b765c1008e3c96e076e0b50381be2cce344e6ff177bad80/openai-1.79.0-py3-none-any.whl", hash = "sha256:d5050b92d5ef83f869cb8dcd0aca0b2291c3413412500eec40c66981b3966992", size = 683334, upload-time = "2025-05-16T19:49:57.445Z" },
+    { url = "https://files.pythonhosted.org/packages/80/9a/f34f163294345f123673ed03e77c33dee2534f3ac1f9d18120384457304d/openai-1.75.0-py3-none-any.whl", hash = "sha256:fe6f932d2ded3b429ff67cc9ad118c71327db32eb9d32dd723de3acfca337125", size = 646972, upload-time = "2025-04-16T16:49:27.196Z" },
 ]
 
 [[package]]
@@ -4517,6 +4555,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/78/3f/499b17e9c15ea1847188ad000622eb86e71a30ed4e5323445d1e5ec79181/smolagents-1.16.1.tar.gz", hash = "sha256:189f61332fb71ce2e9a5fd6f9a111cdce1333b3991a04e7044c510630e338978", size = 170260, upload-time = "2025-05-16T15:04:24.742Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/0a/ce/d1ff6ec5237fee354ccf666272660bfc0ece0d9f2388d1a57dfcaaa86ca3/smolagents-1.16.1-py3-none-any.whl", hash = "sha256:21407b39c1292b0c9b326c54042e1fe88f5bed23e095f31bd75cc467cd89d083", size = 125250, upload-time = "2025-05-16T15:04:22.839Z" },
+]
+
+[package.optional-dependencies]
+litellm = [
+    { name = "litellm" },
+]
+mcp = [
+    { name = "mcp" },
+    { name = "mcpadapt" },
 ]
 
 [[package]]

@@ -1,3 +1,5 @@
+"""ACP servers for docling agents."""
+
 import os
 from collections.abc import AsyncGenerator
 
@@ -16,20 +18,21 @@ load_dotenv()
 server = Server()
 
 model = LiteLLMModel(
-    model_id=os.getenv("OLLAMA_MODEL"),
+    model_id="watsonx/meta-llama/llama-4-maverick-17b-128e-instruct-fp8",
+    api_key=os.environ["WATSONX_APIKEY"],
     num_ctx=8192,
 )
 
 # Outline STDIO stuff to get to MCP Tools
 server_parameters = StdioServerParameters(
     command="uv",
-    args=["run", "docling_mcp/server.py"],
+    args=["run", "docling-mcp-server"],
     env=None,
 )
 
 
 @server.agent()
-async def convert_agent(
+async def docling_agent(
     input: list[Message], context: Context
 ) -> AsyncGenerator[RunYield, RunYieldResume]:
     """This is a CodeAgent which supports convering PDF documents."""
