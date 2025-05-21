@@ -38,6 +38,8 @@ classifiers = [
 ]
 requires-python = ">=3.10"
 dependencies = [
+    "acp-sdk>=0.0.6",
+    "anthropic>=0.51.0",
     "docling~=2.25",
     "httpx>=0.28.1",
     "llama-index>=0.12.33",
@@ -50,9 +52,11 @@ dependencies = [
     "llama-index-readers-file>=0.4.7",
     "llama-index-vector-stores-milvus>=0.7.2",
     "mcp[cli]>=1.4.0",
+    "opencv-python>=4.11.0.86",
     "pydantic~=2.10",
     "pydantic-settings~=2.4",
     "python-dotenv>=1.1.0",
+    "smolagents>=1.16.1",
 ]
 
 [project.optional-dependencies]
