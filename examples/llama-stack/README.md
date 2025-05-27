@@ -25,7 +25,7 @@ podman run \
   --port $LLAMA_STACK_PORT \
   --env INFERENCE_MODEL=$INFERENCE_MODEL \
   --env OLLAMA_URL=http://host.containers.internal:11434
-  ```
+```
 
 ### Connect your agents
 
