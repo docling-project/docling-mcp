@@ -8,8 +8,8 @@ from colorama import Fore
 
 async def run_conversion_workflow() -> None:
     """Run the document conversion workflow by calling the docling_agent."""
-    async with Client(base_url="http://localhost:4242") as hospital:
-        run1 = await hospital.run_sync(
+    async with Client(base_url="http://localhost:4242") as acp_client:
+        run1 = await acp_client.run_sync(
             agent="docling_agent",
             input="Please convert the document at https://arxiv.org/pdf/2408.09869 to markdown and summarize its content.",
         )
