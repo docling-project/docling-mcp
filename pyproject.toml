@@ -76,7 +76,7 @@ dev = [
 ]
 
 [project.scripts]
-docling-mcp-server = "docling_mcp.servers.mcp_server:main"
+docling-mcp-server = "docling_mcp.servers.mcp_server:app"
 
 [project.urls]
 Homepage = "https://github.com/docling-project/docling-mcp"

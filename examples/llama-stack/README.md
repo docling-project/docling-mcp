@@ -32,7 +32,7 @@ podman run \
 1. Make sure the Docling MCP server is running with the `sse` option
 
     ```shell
-    docling-mcp-server --protocol sse --sse-port 8000
+    docling-mcp-server --transport sse --sse-port 8000
     ```
 
 2. Register the agent (NOT YET WORKING)
