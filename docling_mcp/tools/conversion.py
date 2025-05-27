@@ -1,3 +1,5 @@
+"""Tools for converting documents into DoclingDocument objects."""
+
 import gc
 from typing import Annotated, Any
 
@@ -6,21 +8,26 @@ from mcp.types import INTERNAL_ERROR, ErrorData
 
 from docling.datamodel.base_models import InputFormat
 from docling.datamodel.pipeline_options import (
+    AcceleratorDevice,
     PdfPipelineOptions,
 )
 from docling.document_converter import DocumentConverter, FormatOption, PdfFormatOption
-from docling.utils.accelerator_utils import AcceleratorDevice
-from docling_core.types.doc import DoclingDocument
+from docling_core.types.doc.document import (
+    ContentLayer,
+)
+from docling_core.types.doc.labels import (
+    DocItemLabel,
+)
 
-from docling_mcp.docling_cache import get_cache_dir, get_cache_key
+from docling_mcp.docling_cache import get_cache_key
 from docling_mcp.logger import setup_logger
-from docling_mcp.shared import local_document_cache, mcp
+from docling_mcp.shared import local_document_cache, local_stack_cache, mcp
 
 # Create a default project logger
 logger = setup_logger()
 
 
-def cleanup_memory():
+def cleanup_memory() -> None:
     """Force garbage collection to free up memory."""
     logger.info("Performed memory cleanup")
     gc.collect()
@@ -28,15 +35,13 @@ def cleanup_memory():
 
 @mcp.tool()
 def is_document_in_local_cache(cache_key: str) -> bool:
-    """
-    Verify if document is already converted and in the local cache.
+    """Verify if document is already converted and in the local cache.
 
     Args:
-        key: string
+        cache_key: Document identifier in the cache.
 
     Returns:
-
-        success: bool
+        Whether the document is already converted and in the local cache.
     """
     return cache_key in local_document_cache
 
@@ -44,17 +49,16 @@ def is_document_in_local_cache(cache_key: str) -> bool:
 @mcp.tool()
 def convert_pdf_document_into_json_docling_document_from_uri_path(
     source: str,
-) -> tuple[bool, dict]:
-    """
-    Convert a PDF document from a URL or local path to markdown format.
+) -> tuple[bool, str]:
+    """Convert a PDF document from a URL or local path and store in local cache.
 
     Args:
         source: URL or local file path to the document
 
     Returns:
         The tools returns a tuple, the first element being a boolean
-        representing success and the second  for The document content
-        in JSON format or an error message.
+        representing success and the second for the cache_key to allow
+        future access to the file.
 
     Usage:
         convert_document("https://arxiv.org/pdf/2408.09869")
@@ -69,12 +73,10 @@ def convert_pdf_document_into_json_docling_document_from_uri_path(
 
         # Generate cache key
         cache_key = get_cache_key(source)
-        cache_file = get_cache_dir() / f"{cache_key}.json"
 
-        # Check if result is cached
-        if cache_file.exists():
-            logger.info(f"Using cached result for {source}")
-            return (True, DoclingDocument.load_from_json(cache_file).export_to_dict())
+        if cache_key in local_document_cache:
+            logger.info(f"{source} has previously been added.")
+            return False, "Document already exists in the system cache."
 
         # Log the start of processing
         logger.info("Set up pipeline options")
@@ -117,33 +119,36 @@ def convert_pdf_document_into_json_docling_document_from_uri_path(
             error_msg = f"Conversion failed: {error_message}"
             raise McpError(ErrorData(code=INTERNAL_ERROR, message=error_msg))
 
-        # Export to markdown
-        logger.info("Exporting to JSON")
+        local_document_cache[cache_key] = result.document
 
-        result.document.save_as_json(filename=cache_file)
-        doc = result.document.export_to_dict()
+        item = result.document.add_text(
+            label=DocItemLabel.TEXT,
+            text=f"source: {source}",
+            content_layer=ContentLayer.FURNITURE,
+        )
+
+        local_stack_cache[cache_key] = [item]
 
         # Log completion
-        logger.info(f"Successfully converted document: {source}")
+        logger.info(f"Successfully created the Docling document: {source}")
 
         # Clean up memory
         cleanup_memory()
 
-        return (True, doc)
+        return True, cache_key
 
     except Exception as e:
         logger.exception(f"Error converting document: {source}")
         raise McpError(
             ErrorData(code=INTERNAL_ERROR, message=f"Unexpected error: {e!s}")
-        )
+        ) from e
 
 
 @mcp.tool()
 def convert_attachments_into_docling_document(
     pdf_payloads: list[Annotated[bytes, {"media_type": "application/octet-stream"}]],
 ) -> list[dict[str, Any]]:
-    """
-    Process a pdf files attachment from Claude Desktop.
+    """Process a pdf files attachment from Claude Desktop.
 
     Args:
         pdf_payloads: PDF document as binary data from the attachment

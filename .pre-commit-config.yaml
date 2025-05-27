@@ -1,7 +1,7 @@
 fail_fast: true
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.11.0
+    rev: v0.11.6
     hooks:
       # Run the Ruff formatter.
       - id: ruff-format
@@ -18,8 +18,15 @@ repos:
         pass_filenames: false
         language: system
         files: '\.py$'
+  - repo: local
+    hooks:
+      - id: pytest
+        name: Pytest
+        language: system
+        entry: uv run --no-sync pytest --cov=docling_mcp --cov-report=xml tests
+        pass_filenames: false
+        files: '\.py$'
   - repo: https://github.com/astral-sh/uv-pre-commit
-    # uv version.
-    rev: 0.6.1
+    rev: 0.6.16
     hooks:
       - id: uv-lock
