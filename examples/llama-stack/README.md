@@ -40,9 +40,8 @@ podman run \
     The `llama-stack-client` is current broken and fails the registration of tools. We have to use a Python script, see below.
 
     ```shell
-    uvx --from llama-stack-client llama-stack-client toolgroups register \
+    uvx --from llama-stack-client llama-stack-client toolgroups register "mcp::docling" \
       --provider-id="model-context-protocol" \
-      --provider-toolgroup-id="mcp::docling" \
       --mcp-endpoint="http://host.containers.internal:8000/sse"
     ```
 
@@ -66,13 +65,14 @@ podman run \
     ```shell
     uvx --from llama-stack-client llama-stack-client toolgroups list
 
-    ┏━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━┳━━━━━━━━━━━━━━┓
-    ┃ identifier             ┃ provider_id   ┃ args ┃ mcp_endpoint ┃
-    ┡━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━╇━━━━━━━━━━━━━━┩
-    │ builtin::rag           │ rag-runtime   │ None │ None         │
-    │ builtin::websearch     │ tavily-search │ None │ None         │
-    │ builtin::wolfram_alpha │ wolfram-alpha │ None │ None         │
-    └────────────────────────┴───────────────┴──────┴──────────────┘
+    ┏━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+    ┃ identifier             ┃ provider_id            ┃ args ┃ mcp_endpoint                                         ┃
+    ┡━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+    │ builtin::rag           │ rag-runtime            │ None │ None                                                 │
+    │ builtin::websearch     │ tavily-search          │ None │ None                                                 │
+    │ builtin::wolfram_alpha │ wolfram-alpha          │ None │ None                                                 │
+    │ mcp::docling           │ model-context-protocol │ None │ McpEndpoint(uri='http://host.containers.internal:80… │
+    └────────────────────────┴────────────────────────┴──────┴──────────────────────────────────────────────────────┘
     ```
 
 ## Use the Llama Stack agents
