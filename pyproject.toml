@@ -63,6 +63,10 @@ rapidocr = [
     "rapidocr-onnxruntime~=1.4; python_version<'3.13'",
     "onnxruntime~=1.7",
 ]
+llama-stack = [
+    "fire>=0.7.0",
+    "llama-stack-client>=0.2.8",
+]
 
 [dependency-groups]
 dev = [
