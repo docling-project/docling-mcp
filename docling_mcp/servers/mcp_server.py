@@ -1,6 +1,9 @@
 """This module initializes and runs the Docling MCP server."""
 
+import enum
 import os
+
+import typer
 
 from docling_mcp.logger import setup_logger
 from docling_mcp.shared import mcp
@@ -30,16 +33,30 @@ if (
         search_documents,
     )
 
+app = typer.Typer()
 
-def main() -> None:
+
+class TansportType(str, enum.Enum):
+    """List of available protocols."""
+
+    STDIO = "stdio"
+    SSE = "sse"
+
+
+@app.command()
+def main(
+    transport: TansportType = TansportType.STDIO,
+    sse_port: int = 8000,
+) -> None:
     """Initialize and run the Docling MCP server."""
     # Create a default project logger
     logger = setup_logger()
     logger.info("starting up Docling MCP-server ...")
 
     # Initialize and run the server
-    mcp.run(transport="stdio")
+    mcp.settings.port = sse_port
+    mcp.run(transport=transport.value)
 
 
 if __name__ == "__main__":
-    main()
+    app()

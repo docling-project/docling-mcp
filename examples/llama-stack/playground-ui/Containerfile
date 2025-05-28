@@ -1,0 +1,12 @@
+# More info on playground configuration can be found here:
+# https://llama-stack.readthedocs.io/en/latest/playground
+
+FROM registry.access.redhat.com/ubi9/python-311:latest
+WORKDIR /app
+RUN git clone --depth 1 https://github.com/meta-llama/llama-stack
+RUN pip install --upgrade pip && \
+    pip install /app/llama-stack && \
+    pip install -r /app/llama-stack/llama_stack/distribution/ui/requirements.txt
+EXPOSE 8501
+
+ENTRYPOINT ["streamlit", "run", "/app/llama-stack/llama_stack/distribution/ui/app.py", "--server.port=8501", "--server.address=0.0.0.0"]

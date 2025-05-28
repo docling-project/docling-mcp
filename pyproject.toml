@@ -63,6 +63,10 @@ rapidocr = [
     "rapidocr-onnxruntime~=1.4; python_version<'3.13'",
     "onnxruntime~=1.7",
 ]
+llama-stack = [
+    "fire>=0.7.0",
+    "llama-stack-client>=0.2.8",
+]
 
 [dependency-groups]
 dev = [
@@ -76,7 +80,7 @@ dev = [
 ]
 
 [project.scripts]
-docling-mcp-server = "docling_mcp.servers.mcp_server:main"
+docling-mcp-server = "docling_mcp.servers.mcp_server:app"
 
 [project.urls]
 Homepage = "https://github.com/docling-project/docling-mcp"
