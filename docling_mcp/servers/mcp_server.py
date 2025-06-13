@@ -39,9 +39,7 @@ def main() -> None:
     # Initialize and run the server
 
     if os.getenv("STREAMABLE_HTTP") == "true":
-        mcp.run(
-            transport="streamable-http"
-        )
+        mcp.run(transport="streamable-http")
     else:
         mcp.run(transport="stdio")
 
