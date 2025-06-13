@@ -36,9 +36,14 @@ def main() -> None:
     # Create a default project logger
     logger = setup_logger()
     logger.info("starting up Docling MCP-server ...")
-
     # Initialize and run the server
-    mcp.run(transport="stdio")
+
+    if os.getenv("STREAMABLE_HTTP") == "true":
+        mcp.run(
+            transport="streamable-http"
+        )
+    else:
+        mcp.run(transport="stdio")
 
 
 if __name__ == "__main__":
