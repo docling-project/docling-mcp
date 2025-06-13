@@ -3,7 +3,7 @@ import re
 from docling_mcp.logger import setup_logger
 from docling_mcp.shared import local_document_cache
 from docling_mcp.tools.generation import (  # noqa: F401
-    add_listitem_to_list_in_docling_document,
+    add_list_items_to_list_in_docling_document,
     add_paragraph_to_docling_document,
     add_section_heading_to_docling_document,
     add_table_in_html_format_to_docling_document,
