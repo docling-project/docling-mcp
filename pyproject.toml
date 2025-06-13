@@ -76,7 +76,7 @@ dev = [
 ]
 
 [project.scripts]
-docling-mcp-server = "docling_mcp.server:main"
+docling-mcp-server = "docling_mcp.servers.mcp_server:main"
 
 [project.urls]
 Homepage = "https://github.com/docling-project/docling-mcp"
@@ -130,7 +130,7 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["E402", "F401"]  # import violations, module imported but unused
-"docling_mcp/server.py" = ["F401"]  # module inmported but unused
+"docling_mcp/servers/mcp_server.py" = ["F401"]  # module inmported but unused
 "tests/**.py" = ["D"]  # ignore flake8-docstrings in tests
 
 [tool.ruff.lint.pep8-naming]
