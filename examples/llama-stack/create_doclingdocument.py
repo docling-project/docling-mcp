@@ -11,6 +11,8 @@ from urllib.parse import urlparse
 from llama_stack_client import Agent, AgentEventLogger, LlamaStackClient
 from llama_stack_client.lib import get_oauth_token_for_mcp_server
 
+from llama_stack_client.lib.agents.react.agent import ReActAgent
+
 logging.basicConfig(level=logging.INFO)
 _log = logging.getLogger(__name__)
 
@@ -83,6 +85,17 @@ def list_tools(client: LlamaStackClient):
         _log.info(table)
 
 
+def get_toolgroup_ids(client: LlamaStackClient):
+    toolgroup_ids = []
+
+    response = client.toolgroups.list()
+    if response:
+        for item in response:
+            toolgroup_ids.append(item.provider_resource_id)
+
+    return toolgroup_ids
+
+
 def create_agent(
     model_id: str = "qwen3:8b",
     llama_stack_url: str = "http://localhost:8321",
@@ -98,28 +111,13 @@ def create_agent(
 
     list_tools(client)
 
-    if not check_model_exists(client, model_id):
+    if check_model_exists(client, model_id):
+        _log.info(f"model {model_id} detected")
+    else:
         _log.error(f"model {model_id} is not existing")
         return None
-    else:
-        _log.info(f"model {model_id} detected")
 
-    """
-    servers = [s.strip() for s in mcp_servers.split(",")]
-    mcp_headers = get_and_cache_mcp_headers(servers)
-    """
-
-    toolgroup_ids = [docling_mcp_url]
-    """
-    for server in servers:
-        # we cannot use "/" in the toolgroup_id because we have some tech debt from earlier which uses
-        # "/" as a separator for toolgroup_id and tool_name. We should fix this in the future.
-        group_id = urlparse(server).netloc
-        toolgroup_ids.append(group_id)
-        client.toolgroups.register(
-            toolgroup_id=group_id, mcp_endpoint=dict(uri=server), provider_id="model-context-protocol"
-        )
-    """
+    toolgroup_ids = get_toolgroup_ids(client)
 
     agent = Agent(
         client=client,
@@ -128,17 +126,65 @@ def create_agent(
         tools=toolgroup_ids,
         extra_headers={},
     )
-    """
-        extra_headers={
-            "X-LlamaStack-Provider-Data": json.dumps(
-                {
-                    "mcp_headers": mcp_headers,
-                }
-            ),
-        },
-    """
+
     return agent
+
+
+def create_react_agent(
+    model_id: str = "qwen3:8b",
+    llama_stack_url: str = "http://localhost:8321",
+    mcp_servers: str = "https://mcp.asana.com/sse",
+    docling_mcp_url: str = "http://host.containers.internal:8000/sse",
+):
+    client = LlamaStackClient(base_url=llama_stack_url)
+    client.toolgroups.register(
+        toolgroup_id="mcp::docling",
+        provider_id="model-context-protocol",
+        mcp_endpoint={"uri": docling_mcp_url},
+    )
+
+    list_tools(client)
+
+    if check_model_exists(client, model_id):
+        _log.info(f"model {model_id} detected")
+    else:
+        _log.error(f"model {model_id} is not existing")
+        return None
+
+    toolgroup_ids = get_toolgroup_ids(client)
+
+    agent = ReActAgent(
+        client=client,
+        model=model_id,
+        instructions="You are a helpful technical assistant who can use tools when necessary to answer questions.",
+        tools=toolgroup_ids,
+        extra_headers={},
+    )
+
+    return agent
+
+
+def run(agent: Agent, user_input: str, session_name: str, stream: bool = True):
+    session_id = agent.create_session(session_name)
+
+    response = agent.create_turn(
+        session_id=session_id,
+        messages=[{"role": "user", "content": user_input}],
+        stream=stream,
+    )
+
+    if stream:
+        for log in AgentEventLogger().log(response):
+            log.print()
 
 
 if __name__ == "__main__":
     agent = create_agent()
+
+    session_name = "test"
+    user_input = """Please write a DoclingDocument using the tools. The
+    DoclingDocument should be created by consecutively add title, section-headers,
+    paragraphs, lists and tables. The DoclingDocument should discuss polymers
+    for food-packaging and how WVTR is affected by thickness."""
+
+    run(agent, session_name=session_name, user_input=user_input, stream=True)
