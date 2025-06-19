@@ -1,6 +1,9 @@
 """This module initializes and runs the Docling MCP server."""
 
+import enum
 import os
+
+import typer
 
 from docling_mcp.logger import setup_logger
 from docling_mcp.shared import mcp
@@ -9,7 +12,7 @@ from docling_mcp.tools.conversion import (
     is_document_in_local_cache,
 )
 from docling_mcp.tools.generation import (
-    add_listitem_to_list_in_docling_document,
+    add_list_items_to_list_in_docling_document,
     add_paragraph_to_docling_document,
     add_section_heading_to_docling_document,
     add_title_to_docling_document,
@@ -30,18 +33,29 @@ if (
         search_documents,
     )
 
+app = typer.Typer()
 
-def main() -> None:
+
+class TransportType(str, enum.Enum):
+    """List of available protocols."""
+
+    STDIO = "stdio"
+    STREAMABLE_HTTP = "streamable-http"
+
+
+@app.command()
+def main(
+    transport: TransportType = TransportType.STDIO,
+    streamable_http_port: int = 8000,
+) -> None:
     """Initialize and run the Docling MCP server."""
     # Create a default project logger
     logger = setup_logger()
     logger.info("starting up Docling MCP-server ...")
-    # Initialize and run the server
 
-    if os.getenv("STREAMABLE_HTTP") == "true":
-        mcp.run(transport="streamable-http")
-    else:
-        mcp.run(transport="stdio")
+    # Initialize and run the server
+    mcp.settings.port = streamable_http_port
+    mcp.run(transport=transport.value)
 
 
 if __name__ == "__main__":
