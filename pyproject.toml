@@ -65,7 +65,7 @@ rapidocr = [
 ]
 llama-stack = [
     "fire>=0.7.0",
-    "llama-stack-client>=0.2.8",
+    "llama-stack-client>=0.2.12",
 ]
 
 [dependency-groups]
