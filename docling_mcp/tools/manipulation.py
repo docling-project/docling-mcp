@@ -1,3 +1,5 @@
+"""Tools for manipulating Docling documents."""
+
 from docling_core.types.doc.document import (
     DocItem,
     GroupItem,
@@ -16,8 +18,7 @@ logger = setup_logger()
 
 @mcp.tool()
 def get_overview_of_document_anchors(document_key: str) -> str:
-    """
-    Retrieves a structured overview of a document from the local document cache.
+    """Retrieves a structured overview of a document from the local document cache.
 
     This tool returns a text representation of the document's structure, showing
     the hierarchy and types of elements within the document. Each line in the
@@ -73,8 +74,7 @@ def get_overview_of_document_anchors(document_key: str) -> str:
 
 @mcp.tool()
 def get_text_of_document_item_at_anchor(document_key: str, document_anchor: str) -> str:
-    """
-    Retrieves the text content of a specific document item identified by its anchor.
+    """Retrieves the text content of a specific document item identified by its anchor.
 
     This tool extracts the text from a document item at the specified anchor location
     within a document that exists in the local document cache.
@@ -120,8 +120,7 @@ def get_text_of_document_item_at_anchor(document_key: str, document_anchor: str)
 def update_text_of_document_item_at_anchor(
     document_key: str, document_anchor: str, updated_text: str
 ) -> str:
-    """
-    Updates the text content of a specific document item identified by its anchor.
+    """Updates the text content of a specific document item identified by its anchor.
 
     This tool modifies the text of an existing document item at the specified anchor
     location within a document that exists in the local document cache.
@@ -167,8 +166,7 @@ def update_text_of_document_item_at_anchor(
 def delete_document_items_at_anchors(
     document_key: str, document_anchors: list[str]
 ) -> str:
-    """
-    Deletes multiple document items identified by their anchors.
+    """Deletes multiple document items identified by their anchors.
 
     This tool removes specified items from a document that exists in the local
     document cache, based on their anchor references.

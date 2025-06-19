@@ -6,9 +6,9 @@ from typing import Annotated, Any
 from mcp.shared.exceptions import McpError
 from mcp.types import INTERNAL_ERROR, ErrorData
 
+from docling.datamodel.accelerator_options import AcceleratorDevice
 from docling.datamodel.base_models import InputFormat
 from docling.datamodel.pipeline_options import (
-    AcceleratorDevice,
     PdfPipelineOptions,
 )
 from docling.document_converter import DocumentConverter, FormatOption, PdfFormatOption

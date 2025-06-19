@@ -1,6 +1,6 @@
 """This module manages the settings for Docling."""
 
-from docling.datamodel.pipeline_options import AcceleratorDevice
+from docling.datamodel.accelerator_options import AcceleratorDevice
 from docling.datamodel.settings import settings
 
 from docling_mcp.logger import setup_logger
