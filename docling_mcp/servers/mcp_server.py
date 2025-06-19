@@ -40,13 +40,14 @@ class TransportType(str, enum.Enum):
     """List of available protocols."""
 
     STDIO = "stdio"
+    SSE = "sse"
     STREAMABLE_HTTP = "streamable-http"
 
 
 @app.command()
 def main(
     transport: TransportType = TransportType.STDIO,
-    streamable_http_port: int = 8000,
+    http_port: int = 8000,
 ) -> None:
     """Initialize and run the Docling MCP server."""
     # Create a default project logger
@@ -54,7 +55,7 @@ def main(
     logger.info("starting up Docling MCP-server ...")
 
     # Initialize and run the server
-    mcp.settings.port = streamable_http_port
+    mcp.settings.port = http_port
     mcp.run(transport=transport.value)
 
 
