@@ -39,7 +39,6 @@ classifiers = [
 requires-python = ">=3.10"
 dependencies = [
     "docling~=2.25",
-    "docling-core",
     "httpx>=0.28.1",
     "llama-index>=0.12.33",
     "llama-index-core>=0.12.28",
