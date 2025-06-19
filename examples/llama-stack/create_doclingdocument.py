@@ -158,7 +158,7 @@ def create_react_agent(
         model=model_id,
         instructions="You are a helpful technical assistant who can use tools when necessary to answer questions.",
         tools=toolgroup_ids,
-        extra_headers={},
+        # extra_headers={},
     )
 
     return agent
@@ -180,6 +180,16 @@ def run(agent: Agent, user_input: str, session_name: str, stream: bool = True):
 
 if __name__ == "__main__":
     agent = create_agent()
+
+    session_name = "test"
+    user_input = """Please write a DoclingDocument using the tools. The
+    DoclingDocument should be created by consecutively add title, section-headers,
+    paragraphs, lists and tables. The DoclingDocument should discuss polymers
+    for food-packaging and how WVTR is affected by thickness."""
+
+    run(agent, session_name=session_name, user_input=user_input, stream=True)
+
+    agent = create_react_agent()
 
     session_name = "test"
     user_input = """Please write a DoclingDocument using the tools. The
