@@ -1,11 +1,18 @@
+"""Tools for generating Docling documents."""
+
+import hashlib
 from io import BytesIO
 
-from docling.datamodel.base_models import ConversionStatus, DocumentStream, InputFormat
+from pydantic import BaseModel
+
+# from bs4 import BeautifulSoup  # , NavigableString, PageElement, Tag
+from docling.datamodel.base_models import ConversionStatus, InputFormat
 from docling.datamodel.document import (
     ConversionResult,
-    DoclingDocument,
 )
 from docling.document_converter import DocumentConverter
+
+# from docling.backend.html_backend import HTMLDocumentBackend
 from docling_core.types.doc.document import (
     ContentLayer,
     DoclingDocument,
@@ -17,8 +24,9 @@ from docling_core.types.doc.labels import (
     # PictureClassificationLabel,
     # TableCellLabel
 )
+from docling_core.types.io import DocumentStream
 
-from docling_mcp.docling_cache import get_cache_dir, hash_string_md5
+from docling_mcp.docling_cache import get_cache_dir
 from docling_mcp.logger import setup_logger
 from docling_mcp.shared import local_document_cache, local_stack_cache, mcp
 
@@ -26,10 +34,14 @@ from docling_mcp.shared import local_document_cache, local_stack_cache, mcp
 logger = setup_logger()
 
 
+def hash_string_md5(input_string: str) -> str:
+    """Creates an md5 hash-string from the input string."""
+    return hashlib.md5(input_string.encode()).hexdigest()
+
+
 @mcp.tool()
 def create_new_docling_document(prompt: str) -> str:
-    """
-    Creates a new Docling document from a provided prompt string.
+    """Creates a new Docling document from a provided prompt string.
 
     This function generates a new document in the local document cache with the
     provided prompt text. The document is assigned a unique key derived from an MD5
@@ -66,8 +78,7 @@ def create_new_docling_document(prompt: str) -> str:
 
 @mcp.tool()
 def export_docling_document_to_markdown(document_key: str) -> str:
-    """
-    Exports a document from the local document cache to markdown format.
+    """Exports a document from the local document cache to markdown format.
 
     This tool converts a Docling document that exists in the local cache into
     a markdown formatted string, which can be used for display or further processing.
@@ -98,8 +109,7 @@ def export_docling_document_to_markdown(document_key: str) -> str:
 
 @mcp.tool()
 def save_docling_document(document_key: str) -> str:
-    """
-    Saves a document from the local document cache to disk in both markdown and JSON formats.
+    """Saves a document from the local document cache to disk in both markdown and JSON formats.
 
     This tool takes a document that exists in the local cache and saves it to the specified
     cache directory with filenames based on the document key. Both markdown and JSON versions
@@ -139,8 +149,7 @@ def save_docling_document(document_key: str) -> str:
 
 @mcp.tool()
 def add_title_to_docling_document(document_key: str, title: str) -> str:
-    """
-    Adds or updates the title of a document in the local document cache.
+    """Adds or updates the title of a document in the local document cache.
 
     This tool modifies an existing document that has already been processed
     and stored in the local cache. It requires that the document already exists
@@ -188,8 +197,7 @@ def add_title_to_docling_document(document_key: str, title: str) -> str:
 def add_section_heading_to_docling_document(
     document_key: str, section_heading: str, section_level: int
 ) -> str:
-    """
-    Adds a section heading to an existing document in the local document cache.
+    """Adds a section heading to an existing document in the local document cache.
 
     This tool inserts a section heading with the specified heading text and level
     into a document that has already been processed and stored in the local cache.
@@ -238,8 +246,7 @@ def add_section_heading_to_docling_document(
 
 @mcp.tool()
 def add_paragraph_to_docling_document(document_key: str, paragraph: str) -> str:
-    """
-    Adds a paragraph of text to an existing document in the local document cache.
+    """Adds a paragraph of text to an existing document in the local document cache.
 
     This tool inserts a new paragraph under the specified section header and level
     into a document that has already been processed and stored in the cache.
@@ -286,8 +293,7 @@ def add_paragraph_to_docling_document(document_key: str, paragraph: str) -> str:
 
 @mcp.tool()
 def open_list_in_docling_document(document_key: str) -> str:
-    """
-    Opens a new list group in an existing document in the local document cache.
+    """Opens a new list group in an existing document in the local document cache.
 
     This tool creates a new list structure within a document that has already been
     processed and stored in the local cache. It requires that the document already exists
@@ -324,8 +330,7 @@ def open_list_in_docling_document(document_key: str) -> str:
 
 @mcp.tool()
 def close_list_in_docling_document(document_key: str) -> str:
-    """
-    Closes a list group in an existing document in the local document cache.
+    """Closes a list group in an existing document in the local document cache.
 
     This tool closes a previously opened list structure within a document.
     It requires that the document exists and that there is more than one item
@@ -359,21 +364,26 @@ def close_list_in_docling_document(document_key: str) -> str:
     return f"closed list for document with key: {document_key}"
 
 
-@mcp.tool()
-def add_listitem_to_list_in_docling_document(
-    document_key: str, listitem_text: str, listmarker_text: str
-) -> str:
-    """
-    Adds a list item to an open list in an existing document in the local document cache.
+class ListItem(BaseModel):
+    """A class to represent a list item pairing."""
 
-    This tool inserts a new list item with the specified text and marker into an
+    list_item_text: str
+    list_marker_text: str
+
+
+@mcp.tool()
+def add_list_items_to_list_in_docling_document(
+    document_key: str, list_items: list[ListItem]
+) -> str:
+    """Adds list items to an open list in an existing document in the local document cache.
+
+    This tool inserts new list items with the specified text and marker into an
     open list within a document. It requires that the document exists and that
     there is at least one item in the document's stack cache.
 
     Args:
         document_key (str): The unique identifier for the document in the local cache.
-        listitem_text (str): The content text for the list item.
-        listmarker_text (str): The marker text to use for the list item (e.g., "-", "1.", "•").
+        list_items (list[ListItem]): A list of list_item_text and list_marker_text items
 
     Returns:
         str: A confirmation message indicating the list item was successfully added.
@@ -382,7 +392,7 @@ def add_listitem_to_list_in_docling_document(
         ValueError: If the specified document_key does not exist in the local cache.
 
     Example:
-        add_listitem_to_docling_document(document_key="doc123", listitem_text="First item in the list", listmarker_text="-")
+        add_list_items_to_list_in_docling_document(document_key="doc123", list_items=[ListItem(list_item_text="First item in the list", list_marker_text="-")])
     """
     if document_key not in local_document_cache:
         doc_keys = ", ".join(local_document_cache.keys())
@@ -407,22 +417,24 @@ def add_listitem_to_list_in_docling_document(
             "No list is currently opened. Please open a list before adding list-items!"
         )
 
-    local_document_cache[document_key].add_list_item(
-        text=listitem_text, marker=listmarker_text, parent=parent
-    )
+    for list_item in list_items:
+        local_document_cache[document_key].add_list_item(
+            text=list_item.list_item_text,
+            marker=list_item.list_marker_text,
+            parent=parent,
+        )
 
-    return f"added listitem to list in document with key: {document_key}"
+    return f"added list_items to list in document with key: {document_key}"
 
 
 @mcp.tool()
 def add_table_in_html_format_to_docling_document(
     document_key: str,
     html_table: str,
-    table_captions: list[str] = [],
-    table_footnotes: list[str] = [],
+    table_captions: list[str] | None = None,
+    table_footnotes: list[str] | None = None,
 ) -> str:
-    """
-    Adds an HTML-formatted table to an existing document in the local document cache.
+    """Adds an HTML-formatted table to an existing document in the local document cache.
 
     This tool parses the provided HTML table string, converts it to a structured table
     representation, and adds it to the specified document. It also supports optional
@@ -484,11 +496,11 @@ def add_table_in_html_format_to_docling_document(
     ):
         table = doc.add_table(data=conv_result.document.tables[0].data)
 
-        for _ in table_captions:
+        for _ in table_captions or []:
             caption = doc.add_text(label=DocItemLabel.CAPTION, text=_)
             table.captions.append(caption.get_ref())
 
-        for _ in table_footnotes:
+        for _ in table_footnotes or []:
             footnote = doc.add_text(label=DocItemLabel.FOOTNOTE, text=_)
             table.footnotes.append(footnote.get_ref())
     else:

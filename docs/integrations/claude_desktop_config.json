@@ -6,7 +6,7 @@
                 "--directory",
                 "<explicit path to docling-mcp or use output `pwd` in `docling-mcp` folder>",
                 "run",
-                "docling_mcp/server.py"
+                "docling-mcp-server"
             ]
         }	
     }

@@ -1,10 +1,9 @@
 import re
 
-# Create a default project logger
 from docling_mcp.logger import setup_logger
 from docling_mcp.shared import local_document_cache
 from docling_mcp.tools.generation import (  # noqa: F401
-    add_listitem_to_list_in_docling_document,
+    add_list_items_to_list_in_docling_document,
     add_paragraph_to_docling_document,
     add_section_heading_to_docling_document,
     add_table_in_html_format_to_docling_document,
@@ -19,7 +18,7 @@ from docling_mcp.tools.generation import (  # noqa: F401
 logger = setup_logger()
 
 
-def test_create_docling_document():
+def test_create_docling_document() -> None:
     reply = create_new_docling_document(prompt="test-document")
     key = extract_key_from_reply(reply=reply)
 
@@ -34,7 +33,7 @@ def extract_key_from_reply(reply: str) -> str:
     return "<key-not-found>"
 
 
-def test_table_in_html_format_to_docling_document():
+def test_table_in_html_format_to_docling_document() -> None:
     reply = create_new_docling_document(prompt="test-document")
     key = extract_key_from_reply(reply=reply)
 
