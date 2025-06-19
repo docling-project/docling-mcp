@@ -36,17 +36,17 @@ if (
 app = typer.Typer()
 
 
-class TansportType(str, enum.Enum):
+class TransportType(str, enum.Enum):
     """List of available protocols."""
 
     STDIO = "stdio"
-    SSE = "sse"
+    STREAMABLE_HTTP = "streamable-http"
 
 
 @app.command()
 def main(
-    transport: TansportType = TansportType.STDIO,
-    sse_port: int = 8000,
+    transport: TransportType = TransportType.STDIO,
+    streamable_http_port: int = 8000,
 ) -> None:
     """Initialize and run the Docling MCP server."""
     # Create a default project logger
@@ -54,9 +54,9 @@ def main(
     logger.info("starting up Docling MCP-server ...")
 
     # Initialize and run the server
-    mcp.settings.port = sse_port
+    mcp.settings.port = streamable_http_port
     mcp.run(transport=transport.value)
 
 
 if __name__ == "__main__":
-    app()
+    main()

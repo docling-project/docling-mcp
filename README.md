@@ -59,6 +59,14 @@ Once installed, extend Claude for Desktop so that it can read from your computer
 To enable Claude for Desktop with Docling MCP, simply edit the config file `claude_desktop_config.json` (located at `~/Library/Application Support/Claude/claude_desktop_config.json` in MacOS) and add a new item in the `mcpServers` key with the details of a Docling MCP server. You can find an example of those details [here](docs/integrations/claude_desktop_config.json).
 
 
+## Running as streamable-http
+
+Start the server using the following command
+
+```sh
+uv run docling-mcp-server --transport streamable-http --streamable-http-port 8000
+```
+
 ## Converting documents
 
 Example of prompt for converting PDF documents:
