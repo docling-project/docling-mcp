@@ -61,13 +61,11 @@ To enable Claude for Desktop with Docling MCP, simply edit the config file `clau
 
 ## Running as streamable-http
 
-If not already run
+Start the server using the following command
 
 ```sh
-cp .env.example .env
+uv run docling-mcp-server --transport streamable-http --streamable-http-port 8000
 ```
-
-In the .env file set the STREAMABLE_HTTP flag as true.
 
 ## Converting documents
 
