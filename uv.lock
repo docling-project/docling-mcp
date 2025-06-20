@@ -609,7 +609,7 @@ chunking = [
 
 [[package]]
 name = "docling-ibm-models"
-version = "3.5.0"
+version = "3.6.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "docling-core" },
@@ -627,9 +627,9 @@ dependencies = [
     { name = "tqdm" },
     { name = "transformers" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/62/1d/f2001370644dc460cebfabe015512e89c38cfccf9773b9459690a58dd477/docling_ibm_models-3.5.0.tar.gz", hash = "sha256:7c286e616f3a17466b61fa7f01de3d48a18418a2c12a1061aa196b907e517553", size = 81520, upload-time = "2025-06-18T15:53:00.637Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/dc/67/df762264044b91036da27bce2304d78035a38b9060e1a0cef46a98a510c7/docling_ibm_models-3.6.0.tar.gz", hash = "sha256:1ff8ef143d6a41f3d9ae22a2fed297524c3fe45235368e1919962a903b65d9d3", size = 85129, upload-time = "2025-06-20T09:19:30.194Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/68/e2/5d81194405aa5789889543715715665ea8a5dba61599b545e48da1c10191/docling_ibm_models-3.5.0-py3-none-any.whl", hash = "sha256:9586635693f3c00ba1e66066bae20d8ee1f33b003e45a387cbf5ae3ae82e0e19", size = 81251, upload-time = "2025-06-18T15:52:59.497Z" },
+    { url = "https://files.pythonhosted.org/packages/f4/d7/e7ea203d57e4f3eed7d4ccbbdc62e7828ee2ebcf2a9b7f61097537b5c88c/docling_ibm_models-3.6.0-py3-none-any.whl", hash = "sha256:f61a1ca278b55a9dc2570d4c69d62281a1dc9a1e6e08bbab57940b612cab383d", size = 84779, upload-time = "2025-06-20T09:19:28.923Z" },
 ]
 
 [[package]]
@@ -638,7 +638,6 @@ version = "0.3.0"
 source = { editable = "." }
 dependencies = [
     { name = "docling" },
-    { name = "docling-core" },
     { name = "httpx" },
     { name = "llama-index" },
     { name = "llama-index-core" },
@@ -682,7 +681,6 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "docling", specifier = "~=2.25" },
-    { name = "docling-core" },
     { name = "fire", marker = "extra == 'llama-stack'", specifier = ">=0.7.0" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "llama-index", specifier = ">=0.12.33" },
