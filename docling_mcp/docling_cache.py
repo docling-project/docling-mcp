@@ -13,6 +13,11 @@ from docling_mcp.logger import setup_logger
 logger = setup_logger()
 
 
+def hash_string_md5(input_string: str) -> str:
+    """Creates an md5 hash-string from the input string."""
+    return hashlib.sha256(input_string.encode(), usedforsecurity=False).hexdigest()
+
+
 def get_cache_dir() -> Path:
     """Get the cache directory for the application.
 

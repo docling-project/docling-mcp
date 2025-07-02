@@ -203,3 +203,4 @@ branch = "main"
 parser_angular_allowed_types = "build,chore,ci,docs,feat,fix,perf,style,refactor,test"
 parser_angular_minor_types = "feat"
 parser_angular_patch_types = "fix,perf"
+

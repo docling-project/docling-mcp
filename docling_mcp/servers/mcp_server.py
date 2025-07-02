@@ -23,6 +23,13 @@ from docling_mcp.tools.generation import (
     save_docling_document,
 )
 
+from docling_mcp.tools.manipulation import (
+    get_overview_of_document_anchors,
+    get_text_of_document_item_at_anchor,
+    update_text_of_document_item_at_anchor,
+    delete_document_items_at_anchors
+)
+
 if (
     os.getenv("RAG_ENABLED") == "true"
     and os.getenv("OLLAMA_MODEL") != ""
@@ -40,13 +47,14 @@ class TransportType(str, enum.Enum):
     """List of available protocols."""
 
     STDIO = "stdio"
+    SSE = "sse"
     STREAMABLE_HTTP = "streamable-http"
 
 
 @app.command()
 def main(
     transport: TransportType = TransportType.STDIO,
-    streamable_http_port: int = 8000,
+    http_port: int = 8000,
 ) -> None:
     """Initialize and run the Docling MCP server."""
     # Create a default project logger
@@ -54,7 +62,7 @@ def main(
     logger.info("starting up Docling MCP-server ...")
 
     # Initialize and run the server
-    mcp.settings.port = streamable_http_port
+    mcp.settings.port = http_port
     mcp.run(transport=transport.value)
 
 
