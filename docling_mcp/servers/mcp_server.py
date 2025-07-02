@@ -22,12 +22,11 @@ from docling_mcp.tools.generation import (
     open_list_in_docling_document,
     save_docling_document,
 )
-
 from docling_mcp.tools.manipulation import (
+    delete_document_items_at_anchors,
     get_overview_of_document_anchors,
     get_text_of_document_item_at_anchor,
     update_text_of_document_item_at_anchor,
-    delete_document_items_at_anchors
 )
 
 if (
