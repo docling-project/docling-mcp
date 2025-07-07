@@ -1,0 +1,4 @@
+ipykernel~=6.29
+notebook~=7.4
+llama-stack-client~=0.2.14
+mcp~=1.10

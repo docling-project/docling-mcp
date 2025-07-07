@@ -217,6 +217,8 @@ Instruct the agent to generate a `DoclingDocument` from a given topic and add st
 </table>
 
 
-### Test the agent programmatically 🚧
+### Test the agent programmatically
 
-The same results are achieved when calling the Llama Stack agents runtime from a script.
+The notebook [Agents & Docling MCP with Llama Stack](./agents_and_docling_mcp.ipynb) presents an example of
+using the [Llama Stack Client Python API library](https://github.com/meta-llama/llama-stack-client-python)
+to create agents leveraging Docling MCP tools.
