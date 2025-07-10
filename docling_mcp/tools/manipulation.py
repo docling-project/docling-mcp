@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Annotated
 
 from pydantic import Field
+import re
 
 from docling_core.types.doc.document import (
     DocItem,
@@ -16,8 +17,6 @@ from docling_core.types.doc.document import (
 
 from docling_mcp.logger import setup_logger
 from docling_mcp.shared import local_document_cache, mcp
-
-import re
 
 # Create a default project logger
 logger = setup_logger()
@@ -87,20 +86,21 @@ def get_overview_of_document_anchors(
 
     return DocumentAnchorOutput("\n".join(lines))
 
+
 @mcp.tool()
 def search_for_text_in_document_anchors(document_key: str, text: str) -> str:
     """Searches for specific keywords within a document's anchors.
-    
+
     This tool takes a string of text to search for and returns a string of all
-    document anchors that contain the exact text. The search is case-insensitive. 
-    If the exact text is not found, the tool will search for individual keywords 
-    within the text, splitting it on non-alphanumeric characters. If keywords 
+    document anchors that contain the exact text. The search is case-insensitive.
+    If the exact text is not found, the tool will search for individual keywords
+    within the text, splitting it on non-alphanumeric characters. If keywords
     are found, they are listed alongside their number of occurrences in parentheses.
 
     Args:
         document_key (str): The unique identifier for the document in the local cache.
         text (str): A string of text to search for
-    
+
     Returns:
         str: A string listing the result of the search. If matches are found, the result
             will indicated what text matched at which anchors, along with the number of
@@ -109,7 +109,7 @@ def search_for_text_in_document_anchors(document_key: str, text: str) -> str:
 
     Raises:
         ValueError: If the specified document_key does not exist in the local cache.
-    
+
     Example:
         search_for_keywords_in_document_anchors(document_key="doc123", text="example test")
     """
@@ -122,7 +122,11 @@ def search_for_text_in_document_anchors(document_key: str, text: str) -> str:
     doc = local_document_cache[document_key]
     exact_matches = []
     matches = []
-    keywords_set = set([word for word in re.split(r"[~!@#$%^&*()_\-\[\]{}|\\:;\"'<>,.?/\s]+", text.lower()) if word])
+    keywords_set = {
+        word
+        for word in re.split(r"[~!@#$%^&*()_\-\[\]{}|\\:;\"'<>,.?/\s]+", text.lower())
+        if word
+    }
 
     for item, _ in doc.iterate_items():
         if isinstance(item, TextItem):
@@ -132,9 +136,11 @@ def search_for_text_in_document_anchors(document_key: str, text: str) -> str:
                 exact_matches.append(f"[anchor:{ref.cref}]")
 
             if not exact_matches:
-                keyword_occurrences = {}
-                
-                strings = re.split(r"[~!@#$%^&*()_\-\[\]{}|\\:;\"'<>,.?/\s]+", item.text)
+                keyword_occurrences: dict[str, int] = {}
+
+                strings = re.split(
+                    r"[~!@#$%^&*()_\-\[\]{}|\\:;\"'<>,.?/\s]+", item.text
+                )
 
                 for string in strings:
                     lower_string = string.lower()
@@ -143,14 +149,21 @@ def search_for_text_in_document_anchors(document_key: str, text: str) -> str:
                             keyword_occurrences[lower_string] += 1
                         else:
                             keyword_occurrences[lower_string] = 1
-                
+
                 if keyword_occurrences:
-                    matches.append(f"[anchor:{ref.cref}] keyword matches:{','.join([f' {k} ({v} occurrences)' for k, v in keyword_occurrences.items()])}")
-    
+                    matches.append(
+                        f"[anchor:{ref.cref}] keyword matches:{','.join([f' {k} ({v} occurrences)' for k, v in keyword_occurrences.items()])}"
+                    )
+
     if exact_matches:
-        return "Found exact text matches in the following anchors:\n" + "\n".join(exact_matches)
+        return "Found exact text matches in the following anchors:\n" + "\n".join(
+            exact_matches
+        )
     if matches:
-        return "No exact text matches were found. Found individual keyword matches in the following anchors:\n" + "\n".join(matches)
+        return (
+            "No exact text matches were found. Found individual keyword matches in the following anchors:\n"
+            + "\n".join(matches)
+        )
     return f"No exact text matches nor individual keyword matches found for '{text}' in document with key {document_key}."
 
 @dataclass
