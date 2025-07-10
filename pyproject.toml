@@ -73,6 +73,7 @@ dev = [
     "mypy~=1.11",
     "pre-commit-uv~=4.1",
     "pytest~=8.3",
+    "pytest-asyncio>=1.0.0",
     "pytest-check~=2.4",
     "pytest-cov>=6.1.1",
     "python-semantic-release~=7.32",
