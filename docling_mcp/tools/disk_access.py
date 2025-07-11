@@ -1,7 +1,11 @@
 """Tools for accessing Docling documents stored on disk as JSON files."""
 
 import os
+from dataclasses import dataclass
 from pathlib import Path
+from typing import Annotated
+
+from pydantic import Field
 
 from docling_core.types.doc.document import (
     ContentLayer,
@@ -17,44 +21,70 @@ from docling_mcp.shared import local_document_cache, local_stack_cache, mcp
 logger = setup_logger()
 
 
+@dataclass
+class JSONKeys:
+    """Cache keys for JSON files on disk."""
+
+    files_exist: Annotated[
+        bool,
+        Field(
+            description="Indicates whether any JSON files exist in the cache directory."
+        ),
+    ]
+
+    cache_keys: Annotated[
+        str,
+        Field(
+            description="A string containing all cache keys that correspond to json files on the disk."
+        ),
+    ]
+
+
 @mcp.tool()
-def get_json_cache_keys() -> str:
-    """Lists all cache keys that correspond to json files on the disk.
-
-    Args:
-      None
-
-    Returns:
-      This tool returns a string with all cache keys that correspond to json files on the disk.
-
-    Raises:
-      ValueError: If no json files are found in the cache directory.
-    """
+def get_json_cache_keys() -> JSONKeys:
+    """Lists all cache keys that correspond to json files on the disk."""
     cache_dir = get_cache_dir()
     json_files = [f.name for f in Path(cache_dir).glob("*.json")]
 
     if not json_files:
-        raise ValueError("No json files found in the cache directory.")
+        return JSONKeys(
+            files_exist=False, cache_keys="No JSON files found in the cache directory."
+        )
 
-    return "Cache keys corresponding to json files on the disk:\n\n" + "\n".join(
-        json_files
+    return JSONKeys(
+        files_exist=True,
+        cache_keys="Cache keys corresponding to json files on the disk:\n\n"
+        + "\n".join(
+            json_files,
+        ),
     )
 
 
+@dataclass
+class JSONLoadResult:
+    """Result of loading a Docling Document from a JSON file to the local cache."""
+
+    success: Annotated[
+        bool,
+        Field(description="Indicates whether the load operation was successful."),
+    ]
+
+    message: Annotated[
+        str,
+        Field(description="Status message detailing the result of the load operation."),
+    ]
+
+
 @mcp.tool()
-def add_docling_document_from_disk_to_cache(cache_key: str) -> str:
-    """Loads a Docling Document from a json file on the disk and stores in the local cache.
-
-    Args:
-      cache_key (str): Document identifier from the original item in the local cache that was saved to json. Current name of the file on the disk
-
-    Returns:
-      This tool returns a string that indicates the status/result of the operation
-
-    Raises:
-      ValueError: If the specified cache_key does not exist as a json file on the disk.
-      ValueError: If the specified cache_key exists as a json file on the disk, but cannot be loaded as a DoclingDocument.
-    """
+def add_docling_document_from_disk_to_cache(
+    cache_key: Annotated[
+        str,
+        Field(
+            description="Document identifier from the original item in the local cache that was saved to json. Current name of the file on the disk"
+        ),
+    ],
+) -> JSONLoadResult:
+    """Loads a Docling Document from a json file on the disk and stores in the local cache."""
     cache_dir = get_cache_dir()
     file_path = cache_dir / f"{cache_key}.json"
 
@@ -77,12 +107,17 @@ def add_docling_document_from_disk_to_cache(cache_key: str) -> str:
             logger.info(
                 f"Successfully loaded and cached DoclingDocument for cache_key: {cache_key}"
             )
-            return f"DoclingDocument with cache_key {cache_key} loaded and cached successfully."
-        except Exception as e:
-            raise ValueError(
-                f"JSON file for cache_key {cache_key} exists, but could not be loaded as a DoclingDocument."
-            ) from e
+            return JSONLoadResult(
+                success=True,
+                message=f"DoclingDocument with cache_key {cache_key} loaded and cached successfully.",
+            )
+        except Exception:
+            return JSONLoadResult(
+                success=False,
+                message=f"JSON file for cache_key {cache_key} exists, but could not be loaded as a DoclingDocument.",
+            )
 
-    raise ValueError(
-        f"JSON file for cache_key {cache_key} does not exist. Use the 'get_json_cache_keys' tools to list cache keys that correspond to json files on the disk."
+    return JSONLoadResult(
+        success=False,
+        message=f"JSON file for cache_key {cache_key} does not exist. Use the 'get_json_cache_keys' tools to list cache keys that correspond to json files on the disk.",
     )

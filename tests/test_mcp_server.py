@@ -85,6 +85,8 @@ async def test_list_tools(mcp_client: AsyncGenerator[Any, Any]) -> None:
         "is_document_in_local_cache",
         "convert_pdf_document_into_docling_document",
         # "convert_attachments_into_docling_document",
+        "get_json_cache_keys",
+        "add_docling_document_from_disk_to_cache",
         "create_new_docling_document",
         "export_docling_document_to_markdown",
         "save_docling_document",
