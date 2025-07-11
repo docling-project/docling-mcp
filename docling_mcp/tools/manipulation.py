@@ -86,32 +86,40 @@ def get_overview_of_document_anchors(
 
     return DocumentAnchorOutput("\n".join(lines))
 
+@dataclass
+class TextSearchOutput:
+    """Output of the search_for_text_in_document_anchors tool."""
+
+    result: Annotated[
+        str,
+        Field(
+            description=(
+                "A string listing the result of searching for text in the document's "
+                "anchors. If matches were found, the result indicates what text matched "
+                "at which anchors, along with the number of occurrences. If no matches "
+                "were found, the result indicates that no matches were found."
+            )
+        ),
+    ]
 
 @mcp.tool()
-def search_for_text_in_document_anchors(document_key: str, text: str) -> str:
-    """Searches for specific keywords within a document's anchors.
+def search_for_text_in_document_anchors(
+    document_key: Annotated[
+        str,
+        Field(description="The unique identifier of the document in the local cache."),
+    ],
+    text: Annotated[
+        str,
+        Field(description="The string of text to search for in the document's anchors")
+    ],
+) -> TextSearchOutput:
+    """Search for specific text and keywords within a document's anchors.
 
     This tool takes a string of text to search for and returns a string of all
     document anchors that contain the exact text. The search is case-insensitive.
     If the exact text is not found, the tool will search for individual keywords
     within the text, splitting it on non-alphanumeric characters. If keywords
     are found, they are listed alongside their number of occurrences in parentheses.
-
-    Args:
-        document_key (str): The unique identifier for the document in the local cache.
-        text (str): A string of text to search for
-
-    Returns:
-        str: A string listing the result of the search. If matches are found, the result
-            will indicated what text matched at which anchors, along with the number of
-            occurrences. If no matches are found, a message indicating that no matches
-            were found will be returned.
-
-    Raises:
-        ValueError: If the specified document_key does not exist in the local cache.
-
-    Example:
-        search_for_keywords_in_document_anchors(document_key="doc123", text="example test")
     """
     if document_key not in local_document_cache:
         doc_keys = ", ".join(local_document_cache.keys())
@@ -156,15 +164,13 @@ def search_for_text_in_document_anchors(document_key: str, text: str) -> str:
                     )
 
     if exact_matches:
-        return "Found exact text matches in the following anchors:\n" + "\n".join(
-            exact_matches
-        )
+        return TextSearchOutput("Found exact text matches in the following anchors:\n" + "\n".join(exact_matches))
     if matches:
-        return (
+        return TextSearchOutput(
             "No exact text matches were found. Found individual keyword matches in the following anchors:\n"
             + "\n".join(matches)
         )
-    return f"No exact text matches nor individual keyword matches found for '{text}' in document with key {document_key}."
+    return TextSearchOutput(f"No exact text matches nor individual keyword matches found for '{text}' in document with key {document_key}.")
 
 @dataclass
 class DocumentItemText:
