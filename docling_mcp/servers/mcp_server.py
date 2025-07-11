@@ -6,6 +6,7 @@ import os
 import typer
 
 import docling_mcp.tools.conversion
+import docling_mcp.tools.disk_access
 import docling_mcp.tools.generation
 import docling_mcp.tools.manipulation
 from docling_mcp.logger import setup_logger
