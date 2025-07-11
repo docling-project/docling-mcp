@@ -96,6 +96,7 @@ async def test_list_tools(mcp_client: AsyncGenerator[Any, Any]) -> None:
         "add_list_items_to_list_in_docling_document",
         "add_table_in_html_format_to_docling_document",
         "get_overview_of_document_anchors",
+        "search_for_text_in_document_anchors",
         "get_text_of_document_item_at_anchor",
         "update_text_of_document_item_at_anchor",
         "delete_document_items_at_anchors",
