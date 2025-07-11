@@ -80,7 +80,7 @@ def add_docling_document_from_disk_to_cache(
     cache_key: Annotated[
         str,
         Field(
-            description="Document identifier from the original item in the local cache that was saved to json. Current name of the file on the disk"
+            description="Document identifier from the original item in the local cache that was saved to json. Current name of the file on the disk without the .json extension."
         ),
     ],
 ) -> JSONLoadResult:
