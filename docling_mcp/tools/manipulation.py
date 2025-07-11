@@ -1,10 +1,10 @@
 """Tools for manipulating Docling documents."""
 
+import re
 from dataclasses import dataclass
 from typing import Annotated
 
 from pydantic import Field
-import re
 
 from docling_core.types.doc.document import (
     DocItem,
@@ -86,6 +86,7 @@ def get_overview_of_document_anchors(
 
     return DocumentAnchorOutput("\n".join(lines))
 
+
 @dataclass
 class TextSearchOutput:
     """Output of the search_for_text_in_document_anchors tool."""
@@ -102,6 +103,7 @@ class TextSearchOutput:
         ),
     ]
 
+
 @mcp.tool()
 def search_for_text_in_document_anchors(
     document_key: Annotated[
@@ -110,7 +112,7 @@ def search_for_text_in_document_anchors(
     ],
     text: Annotated[
         str,
-        Field(description="The string of text to search for in the document's anchors")
+        Field(description="The string of text to search for in the document's anchors"),
     ],
 ) -> TextSearchOutput:
     """Search for specific text and keywords within a document's anchors.
@@ -164,13 +166,19 @@ def search_for_text_in_document_anchors(
                     )
 
     if exact_matches:
-        return TextSearchOutput("Found exact text matches in the following anchors:\n" + "\n".join(exact_matches))
+        return TextSearchOutput(
+            "Found exact text matches in the following anchors:\n"
+            + "\n".join(exact_matches)
+        )
     if matches:
         return TextSearchOutput(
             "No exact text matches were found. Found individual keyword matches in the following anchors:\n"
             + "\n".join(matches)
         )
-    return TextSearchOutput(f"No exact text matches nor individual keyword matches found for '{text}' in document with key {document_key}.")
+    return TextSearchOutput(
+        f"No exact text matches nor individual keyword matches found for '{text}' in document with key {document_key}."
+    )
+
 
 @dataclass
 class DocumentItemText:
