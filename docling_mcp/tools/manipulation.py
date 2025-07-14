@@ -104,7 +104,7 @@ class TextSearchOutput:
     ]
 
 
-@mcp.tool()
+@mcp.tool(title="Search for text in Docling document anchors")
 def search_for_text_in_document_anchors(
     document_key: Annotated[
         str,
@@ -112,7 +112,9 @@ def search_for_text_in_document_anchors(
     ],
     text: Annotated[
         str,
-        Field(description="The string of text to search for in the document's anchors"),
+        Field(
+            description="The string of text to search for in the document's anchors."
+        ),
     ],
 ) -> TextSearchOutput:
     """Search for specific text and keywords within a document's anchors.
@@ -132,11 +134,7 @@ def search_for_text_in_document_anchors(
     doc = local_document_cache[document_key]
     exact_matches = []
     matches = []
-    keywords_set = {
-        word
-        for word in re.split(r"[~!@#$%^&*()_\-\[\]{}|\\:;\"'<>,.?/\s]+", text.lower())
-        if word
-    }
+    keywords_set = {word for word in set(re.findall(r"\b\w+\b", text.lower())) if word}
 
     for item, _ in doc.iterate_items():
         if isinstance(item, TextItem):
@@ -147,22 +145,24 @@ def search_for_text_in_document_anchors(
 
             if not exact_matches:
                 keyword_occurrences: dict[str, int] = {}
+                total_matches = 0
 
-                strings = re.split(
-                    r"[~!@#$%^&*()_\-\[\]{}|\\:;\"'<>,.?/\s]+", item.text
-                )
+                strings = re.findall(r"\b\w+\b", item.text.lower())
 
                 for string in strings:
-                    lower_string = string.lower()
-                    if lower_string in keywords_set:
-                        if lower_string in keyword_occurrences:
-                            keyword_occurrences[lower_string] += 1
+                    if string in keywords_set:
+                        total_matches += 1
+                        if string in keyword_occurrences:
+                            keyword_occurrences[string] += 1
                         else:
-                            keyword_occurrences[lower_string] = 1
+                            keyword_occurrences[string] = 1
 
                 if keyword_occurrences:
                     matches.append(
-                        f"[anchor:{ref.cref}] keyword matches:{','.join([f' {k} ({v} occurrences)' for k, v in keyword_occurrences.items()])}"
+                        (
+                            f"[anchor:{ref.cref}] keyword matches ({total_matches} total):{','.join([f' {k} ({v} occurrences)' for k, v in sorted(keyword_occurrences.items(), key=lambda x: x[1], reverse=True)])}",
+                            total_matches,
+                        )
                     )
 
     if exact_matches:
@@ -173,7 +173,14 @@ def search_for_text_in_document_anchors(
     if matches:
         return TextSearchOutput(
             "No exact text matches were found. Found individual keyword matches in the following anchors:\n"
-            + "\n".join(matches)
+            + "\n".join(
+                [
+                    match[0]
+                    for match in sorted(
+                        matches, key=lambda match: match[1], reverse=True
+                    )
+                ]
+            )
         )
     return TextSearchOutput(
         f"No exact text matches nor individual keyword matches found for '{text}' in document with key {document_key}."
