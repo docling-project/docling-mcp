@@ -38,8 +38,13 @@ def hash_string_md5(input_string: str) -> str:
     """Creates an md5 hash-string from the input string."""
     return hashlib.md5(input_string.encode()).hexdigest()
 
-def resolve(doc_key: str, anchor: str) -> NodeItem:
-    ref = RefItem(cref=anchor)
+def resolve(doc_key: str, anchor: str | RefItem) -> NodeItem:
+    ref: RefItem = None
+    
+    if isinstance(anchor, RefItem):
+        ref = anchor
+    else:
+        ref = RefItem(cref=anchor)
     return ref.resolve(local_document_cache[doc_key])
 
 
@@ -255,11 +260,15 @@ def insert_title_in_docling_document(
     
     try:
         sibling = resolve(document_key, document_anchor)
-        parent = resolve(document_key, sibling.parent)
+
+        if sibling.parent is None or sibling.parent == local_document_cache[document_key].body.get_ref():
+            parent = local_document_cache[document_key].body
+        else:
+            parent = resolve(document_key, sibling.parent)
     except ValueError as e:
         raise ValueError(
             f"Invalid document-anchor: {document_anchor} for document-key: {document_key}. "
-        ) from None
+        ) from e
 
     if isinstance(parent, GroupItem):
         if parent.label == GroupLabel.LIST or parent.label == GroupLabel.ORDERED_LIST:
@@ -267,7 +276,7 @@ def insert_title_in_docling_document(
                 "You are attempting to insert a title within a list, which is not allowed. Please choose a different location to insert the title"
             )
 
-    item = local_document_cache[document_key].insert_title(sibling=sibling, text=title)
+    item = local_document_cache[document_key].insert_title(sibling=sibling, text=title, after=False)
 
     return UpdateDocumentOutput(document_key)
 
@@ -317,6 +326,73 @@ def add_section_heading_to_docling_document(
         text=section_heading, level=section_level
     )
     local_stack_cache[document_key][-1] = item
+
+    return UpdateDocumentOutput(document_key)
+
+
+@mcp.tool(title="Insert a new section heading within a Docling document")
+def insert_section_heading_in_docling_document(
+    document_key: Annotated[
+        str,
+        Field(description="The unique identifier of the document in the local cache."),
+    ],
+    document_anchor: Annotated[
+        str,
+        Field(
+            description=(
+                "The anchor reference that identifies the specific item within the "
+                "document."
+            ),
+            examples=["#/texts/2"],
+        ),
+    ],
+    section_heading: Annotated[
+        str, Field(description="The text to use for the section heading.")
+    ],
+    section_level: Annotated[
+        LevelNumber,
+        Field(
+            description="The level of the heading, starting from 1, where 1 is the highest level."
+        ),
+    ],
+) -> UpdateDocumentOutput:
+    """Insert a new section heading within a document in the local document cache.
+
+    This tool modifies an existing document that has already been processed
+    and stored in the local cache. It requires that the document already exists
+    in the cache before a section heading can be inserted. Section levels typically
+    represent heading hierarchy (e.g., 1 for H1, 2 for H2).
+    """
+    if document_key not in local_document_cache:
+        doc_keys = ", ".join(local_document_cache.keys())
+        raise ValueError(
+            f"document-key: {document_key} is not found. Existing document-keys are: {doc_keys}"
+        )
+
+    if len(local_stack_cache[document_key]) == 0:
+        raise ValueError(
+            f"Stack size is zero for document with document-key: {document_key}. Abort document generation"
+        )
+    
+    try:
+        sibling = resolve(document_key, document_anchor)
+
+        if sibling.parent is None or sibling.parent == local_document_cache[document_key].body.get_ref():
+            parent = local_document_cache[document_key].body
+        else:
+            parent = resolve(document_key, sibling.parent)
+    except ValueError as e:
+        raise ValueError(
+            f"Invalid document-anchor: {document_anchor} for document-key: {document_key}. "
+        ) from e
+
+    if isinstance(parent, GroupItem):
+        if parent.label == GroupLabel.LIST or parent.label == GroupLabel.ORDERED_LIST:
+            raise ValueError(
+                "You are attempting to insert a section heading within a list, which is not allowed. Please choose a different location to insert the section heading"
+            )
+
+    item = local_document_cache[document_key].insert_heading(sibling=sibling, text=section_heading, level=section_level, after=False)
 
     return UpdateDocumentOutput(document_key)
 
@@ -407,12 +483,9 @@ def insert_paragraph_in_docling_document(
         else:
             parent = resolve(document_key, sibling.parent)
     except ValueError as e:
-        raise e
-        """
         raise ValueError(
             f"Invalid document-anchor: {document_anchor} for document-key: {document_key}. "
-        ) from None
-        """
+        ) from e
 
     if isinstance(parent, GroupItem):
         if parent.label == GroupLabel.LIST or parent.label == GroupLabel.ORDERED_LIST:
@@ -420,7 +493,7 @@ def insert_paragraph_in_docling_document(
                 "You are attempting to insert a paragraph within a list, which is not allowed. Please choose a different location to insert the paragraph"
             )
 
-    item = local_document_cache[document_key].insert_title(sibling=sibling, text=paragraph)
+    item = local_document_cache[document_key].insert_text(sibling=sibling, label=DocItemLabel.TEXT, text=paragraph, after=False)
 
     return UpdateDocumentOutput(document_key)
 
@@ -451,6 +524,51 @@ def open_list_in_docling_document(
 
     item = local_document_cache[document_key].add_group(label=GroupLabel.LIST)
     local_stack_cache[document_key].append(item)
+
+    return UpdateDocumentOutput(document_key)
+
+
+@mcp.tool(title="Insert a new list within a Docling document")
+def insert_list_in_docling_document(
+    document_key: Annotated[
+        str,
+        Field(description="The unique identifier of the document in the local cache."),
+    ],
+    document_anchor: Annotated[
+        str,
+        Field(
+            description=(
+                "The anchor reference that identifies the specific item within the "
+                "document."
+            ),
+            examples=["#/texts/2"],
+        ),
+    ]
+) -> UpdateDocumentOutput:
+    """Insert a new list group at a specific document anchor in an existing document in the local document cache.
+
+    This tool inserts a new list structure before and at the same level as the specified document anchor
+    within a document that has already been processed and stored in the local cache.
+    """
+    if document_key not in local_document_cache:
+        doc_keys = ", ".join(local_document_cache.keys())
+        raise ValueError(
+            f"document-key: {document_key} is not found. Existing document-keys are: {doc_keys}"
+        )
+
+    if len(local_stack_cache[document_key]) == 0:
+        raise ValueError(
+            f"Stack size is zero for document with document-key: {document_key}. Abort document generation"
+        )
+    
+    try:
+        sibling = resolve(document_key, document_anchor)
+    except ValueError as e:
+        raise ValueError(
+            f"Invalid document-anchor: {document_anchor} for document-key: {document_key}. "
+        ) from e
+
+    item = local_document_cache[document_key].insert_group(sibling=sibling, label=GroupLabel.LIST, after=False)
 
     return UpdateDocumentOutput(document_key)
 
@@ -542,6 +660,73 @@ def add_list_items_to_list_in_docling_document(
     return UpdateDocumentOutput(document_key)
 
 
+@mcp.tool(title="Insert items within a list within a Docling document")
+def insert_list_items_in_docling_document(
+    document_key: Annotated[
+        str,
+        Field(description="The unique identifier of the document in the local cache."),
+    ],
+    document_anchor: Annotated[
+        str,
+        Field(
+            description=(
+                "The anchor reference that identifies the specific item within the "
+                "document."
+            ),
+            examples=["#/texts/2"],
+        ),
+    ],
+    list_items: Annotated[
+        list[ListItem],
+        Field(description="A list of list_item_text and list_marker_text items."),
+    ],
+) -> UpdateDocumentOutput:
+    """Insert list items a specific list item document anchor in an existing document in the local document cache.
+
+    This tool inserts new list items with the specified text and marker before and at the same level as the specified list item document anchor
+    within a document that has already been processed and stored in the local cache.
+    """
+    if document_key not in local_document_cache:
+        doc_keys = ", ".join(local_document_cache.keys())
+        raise ValueError(
+            f"document-key: {document_key} is not found. Existing document-keys are: {doc_keys}"
+        )
+
+    if len(local_stack_cache[document_key]) == 0:
+        raise ValueError(
+            f"Stack size is zero for document with document-key: {document_key}. Abort document generation"
+        )
+    
+    try:
+        sibling = resolve(document_key, document_anchor)
+
+        if sibling.parent is None or sibling.parent == local_document_cache[document_key].body.get_ref():
+            parent = local_document_cache[document_key].body
+        else:
+            parent = resolve(document_key, sibling.parent)
+    except ValueError as e:
+        raise e
+        raise ValueError(
+            f"Invalid document-anchor: {document_anchor} for document-key: {document_key}. "
+        ) from e
+
+    if isinstance(parent, GroupItem):
+        if parent.label != GroupLabel.LIST and parent.label != GroupLabel.ORDERED_LIST:
+            raise ValueError(
+                "You are attempting to insert list items outside of a list, which is not allowed. Please choose a reference document_anchor that is within a list to insert the items"
+            )
+
+    for list_item in list_items[-1::-1]:
+        local_document_cache[document_key].insert_list_item(
+            text=list_item.list_item_text,
+            marker=list_item.list_marker_text,
+            sibling=sibling,
+            after=False,
+        )
+
+    return UpdateDocumentOutput(document_key)
+
+
 @mcp.tool(title="Add HTML table to Docling document")
 def add_table_in_html_format_to_docling_document(
     document_key: Annotated[
@@ -606,6 +791,111 @@ def add_table_in_html_format_to_docling_document(
 
         for _ in table_footnotes or []:
             footnote = doc.add_text(label=DocItemLabel.FOOTNOTE, text=_)
+            table.footnotes.append(footnote.get_ref())
+    else:
+        raise ValueError(
+            "Could not parse the html string of the table! Please fix the html and try again!"
+        )
+
+    return UpdateDocumentOutput(document_key)
+
+
+# Should tables be able to be inserted into lists? This doesn't seem to be protected against in the above code.
+
+@mcp.tool(title="Insert a new HTML table within a Docling document")
+def insert_table_in_html_format_to_docling_document(
+    document_key: Annotated[
+        str,
+        Field(description="The unique identifier of the document in the local cache."),
+    ],
+    document_anchor: Annotated[
+        str,
+        Field(
+            description=(
+                "The anchor reference that identifies the specific item within the "
+                "document."
+            ),
+            examples=["#/texts/2"],
+        ),
+    ],
+    html_table: Annotated[
+        str,
+        Field(
+            description="The HTML string representation of the table to add.",
+            examples=[
+                "<table><tr><th>Name</th><th>Age</th></tr><tr><td>John</td><td>30</td></tr></table>",
+                "<table><tr><th colspan='2'>Demographics</th></tr><tr><th>Name</th><th>Age</th></tr><tr><td>John</td><td rowspan='2'>30</td></tr><tr><td>Jane</td></tr></table>",
+            ],
+        ),
+    ],
+    table_captions: Annotated[
+        list[str] | None,
+        Field(description="A list of caption strings to associate with the table.."),
+    ] = None,
+    table_footnotes: Annotated[
+        list[str] | None,
+        Field(description="A list of footnote strings to associate with the table."),
+    ] = None,
+) -> UpdateDocumentOutput:
+    """Insert a new HTML-formatted table within a document in the local document cache.
+
+    This tool parses the provided HTML table string, converts it to a structured table
+    representation, and inserts it within the specified document. It also supports optional
+    captions and footnotes for the table.
+
+    This tool modifies an existing document that has already been processed
+    and stored in the local cache. It requires that the document already exists
+    in the cache before a table can be inserted.
+    """
+    if document_key not in local_document_cache:
+        doc_keys = ", ".join(local_document_cache.keys())
+        raise ValueError(
+            f"document-key: {document_key} is not found. Existing document-keys are: {doc_keys}"
+        )
+
+    if len(local_stack_cache[document_key]) == 0:
+        raise ValueError(
+            f"Stack size is zero for document with document-key: {document_key}. Abort document generation"
+        )
+    
+    try:
+        sibling = resolve(document_key, document_anchor)
+
+        if sibling.parent is None or sibling.parent == local_document_cache[document_key].body.get_ref():
+            parent = local_document_cache[document_key].body
+        else:
+            parent = resolve(document_key, sibling.parent)
+    except ValueError as e:
+        raise ValueError(
+            f"Invalid document-anchor: {document_anchor} for document-key: {document_key}. "
+        ) from e
+
+    if isinstance(parent, GroupItem):
+        if parent.label == GroupLabel.LIST or parent.label == GroupLabel.ORDERED_LIST:
+            raise ValueError(
+                "You are attempting to insert a table within a list, which is not allowed. Please choose a different location to insert the table"
+            )
+        
+    html_doc: str = f"<html><body>{html_table}</body></html>"
+
+    buff = BytesIO(html_doc.encode("utf-8"))
+    doc_stream = DocumentStream(name="tmp", stream=buff)
+
+    converter = DocumentConverter(allowed_formats=[InputFormat.HTML])
+    conv_result: ConversionResult = converter.convert(doc_stream)
+
+    if (
+        conv_result.status == ConversionStatus.SUCCESS
+        and len(conv_result.document.tables) > 0
+    ):
+        table = local_document_cache[document_key].insert_table(sibling=sibling, data=conv_result.document.tables[0].data, after=False)
+
+        for _ in table_captions or []:
+            caption = local_document_cache[document_key].insert_text(sibling=sibling, label=DocItemLabel.CAPTION, text=_, after=False)
+            table.captions.append(caption.get_ref())
+
+        for _ in table_footnotes or []:
+            footnote = local_document_cache[document_key].insert_text(sibling=sibling, label=DocItemLabel.FOOTNOTE, text=_, after=False)
             table.footnotes.append(footnote.get_ref())
     else:
         raise ValueError(
