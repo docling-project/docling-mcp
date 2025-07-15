@@ -401,11 +401,18 @@ def insert_paragraph_in_docling_document(
     
     try:
         sibling = resolve(document_key, document_anchor)
-        parent = resolve(document_key, sibling.parent)
+
+        if sibling.parent is None or sibling.parent == local_document_cache[document_key].body.get_ref():
+            parent = local_document_cache[document_key].body
+        else:
+            parent = resolve(document_key, sibling.parent)
     except ValueError as e:
+        raise e
+        """
         raise ValueError(
             f"Invalid document-anchor: {document_anchor} for document-key: {document_key}. "
         ) from None
+        """
 
     if isinstance(parent, GroupItem):
         if parent.label == GroupLabel.LIST or parent.label == GroupLabel.ORDERED_LIST:
