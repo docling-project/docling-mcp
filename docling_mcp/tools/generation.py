@@ -17,6 +17,8 @@ from docling_core.types.doc.document import (
     DoclingDocument,
     GroupItem,
     LevelNumber,
+    NodeItem,
+    RefItem,
 )
 from docling_core.types.doc.labels import (
     DocItemLabel,
@@ -30,6 +32,15 @@ from docling_mcp.shared import local_document_cache, local_stack_cache, mcp
 
 # Create a default project logger
 logger = setup_logger()
+
+
+def hash_string_md5(input_string: str) -> str:
+    """Creates an md5 hash-string from the input string."""
+    return hashlib.md5(input_string.encode()).hexdigest()
+
+def resolve(doc_key: str, anchor: str) -> NodeItem:
+    ref = RefItem(cref=anchor)
+    return ref.resolve(local_document_cache[doc_key])
 
 
 @dataclass
@@ -204,6 +215,63 @@ def add_title_to_docling_document(
     return UpdateDocumentOutput(document_key)
 
 
+
+@mcp.tool(title="Insert a new title within a Docling document")
+def insert_title_in_docling_document(
+    document_key: Annotated[
+        str,
+        Field(description="The unique identifier of the document in the local cache."),
+    ],
+    document_anchor: Annotated[
+        str,
+        Field(
+            description=(
+                "The anchor reference that identifies the specific item within the "
+                "document."
+            ),
+            examples=["#/texts/2"],
+        ),
+    ],
+    title: Annotated[
+        str, Field(description="The title text to add or update to the document.")
+    ],
+) -> UpdateDocumentOutput:
+    """Insert a new title within a document in the local document cache.
+
+    This tool modifies an existing document that has already been processed
+    and stored in the local cache. It requires that the document already exists
+    in the cache before a title can be inserted.
+    """
+    if document_key not in local_document_cache:
+        doc_keys = ", ".join(local_document_cache.keys())
+        raise ValueError(
+            f"document-key: {document_key} is not found. Existing document-keys are: {doc_keys}"
+        )
+
+    if len(local_stack_cache[document_key]) == 0:
+        raise ValueError(
+            f"Stack size is zero for document with document-key: {document_key}. Abort document generation"
+        )
+    
+    try:
+        sibling = resolve(document_key, document_anchor)
+        parent = resolve(document_key, sibling.parent)
+    except ValueError as e:
+        raise ValueError(
+            f"Invalid document-anchor: {document_anchor} for document-key: {document_key}. "
+        ) from None
+
+    if isinstance(parent, GroupItem):
+        if parent.label == GroupLabel.LIST or parent.label == GroupLabel.ORDERED_LIST:
+            raise ValueError(
+                "You are attempting to insert a title within a list, which is not allowed. Please choose a different location to insert the title"
+            )
+
+    item = local_document_cache[document_key].insert_title(sibling=sibling, text=title)
+
+    return UpdateDocumentOutput(document_key)
+
+
 @mcp.tool(title="Add section heading to Docling document")
 def add_section_heading_to_docling_document(
     document_key: Annotated[
@@ -291,6 +359,61 @@ def add_paragraph_to_docling_document(
         label=DocItemLabel.TEXT, text=paragraph
     )
     local_stack_cache[document_key][-1] = item
+
+    return UpdateDocumentOutput(document_key)
+
+
+@mcp.tool(title="Insert a new paragraph within a Docling document")
+def insert_paragraph_in_docling_document(
+    document_key: Annotated[
+        str,
+        Field(description="The unique identifier of the document in the local cache."),
+    ],
+    document_anchor: Annotated[
+        str,
+        Field(
+            description=(
+                "The anchor reference that identifies the specific item within the "
+                "document."
+            ),
+            examples=["#/texts/2"],
+        ),
+    ],
+    paragraph: Annotated[
+        str, Field(description="The text content to insert as a paragraph.")
+    ],
+) -> UpdateDocumentOutput:
+    """Insert a paragraph of text at a specific document anchor in an existing document in the local document cache.
+
+    This tool inserts a new paragraph before and at the same level as the specified document anchor
+    within a document that has already been processed and stored in the local cache.
+    """
+    if document_key not in local_document_cache:
+        doc_keys = ", ".join(local_document_cache.keys())
+        raise ValueError(
+            f"document-key: {document_key} is not found. Existing document-keys are: {doc_keys}"
+        )
+
+    if len(local_stack_cache[document_key]) == 0:
+        raise ValueError(
+            f"Stack size is zero for document with document-key: {document_key}. Abort document generation"
+        )
+    
+    try:
+        sibling = resolve(document_key, document_anchor)
+        parent = resolve(document_key, sibling.parent)
+    except ValueError as e:
+        raise ValueError(
+            f"Invalid document-anchor: {document_anchor} for document-key: {document_key}. "
+        ) from None
+
+    if isinstance(parent, GroupItem):
+        if parent.label == GroupLabel.LIST or parent.label == GroupLabel.ORDERED_LIST:
+            raise ValueError(
+                "You are attempting to insert a paragraph within a list, which is not allowed. Please choose a different location to insert the paragraph"
+            )
+
+    item = local_document_cache[document_key].insert_title(sibling=sibling, text=paragraph)
 
     return UpdateDocumentOutput(document_key)
 
