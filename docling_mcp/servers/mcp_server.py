@@ -5,7 +5,6 @@ from typing import Annotated
 
 import typer
 
-import docling_mcp.tools.disk_access
 from docling_mcp.logger import setup_logger
 from docling_mcp.shared import mcp
 

@@ -83,7 +83,7 @@ async def test_list_tools(mcp_client: AsyncGenerator[Any, Any]) -> None:
     print(tools)
     gold_tools = [
         "is_document_in_local_cache",
-        "convert_pdf_document_into_docling_document",
+        "convert_document_into_docling_document",
         # "convert_attachments_into_docling_document",
         "get_json_cache_keys",
         "add_docling_document_from_disk_to_cache",
