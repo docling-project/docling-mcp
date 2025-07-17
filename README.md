@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/docling-project-docling-mcp-badge.png)](https://mseep.ai/app/docling-project-docling-mcp)
+
 # Docling MCP: making docling agentic 
 
 [![PyPI version](https://img.shields.io/pypi/v/docling-mcp)](https://pypi.org/project/docling-mcp/)
