@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="https://github.com/docling-project/docling-mcp">
+    <img loading="lazy" alt="Docling" src="https://github.com/docling-project/docling-mcp/raw/main/docs/assets/docling_mcp.png" width="40%"/>
+  </a>
+</p>
+
 # Docling MCP: making docling agentic 
 
 [![PyPI version](https://img.shields.io/pypi/v/docling-mcp)](https://pypi.org/project/docling-mcp/)
