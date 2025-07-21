@@ -13,8 +13,8 @@ from docling_mcp.logger import setup_logger
 logger = setup_logger()
 
 
-def hash_string_md5(input_string: str) -> str:
-    """Creates an md5 hash-string from the input string."""
+def hash_string(input_string: str) -> str:
+    """Creates a hash-string from the input string."""
     return hashlib.sha256(input_string.encode(), usedforsecurity=False).hexdigest()
 
 
@@ -78,4 +78,5 @@ def get_cache_key(
         "ocr_language": ocr_language or [],
     }
     key_str = json.dumps(key_data, sort_keys=True)
-    return hashlib.md5(key_str.encode()).hexdigest()
+    hash = hash_string(key_str)
+    return hash[:32]

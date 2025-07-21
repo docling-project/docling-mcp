@@ -1,6 +1,6 @@
 """Tools for generating Docling documents."""
 
-import hashlib
+import uuid
 from dataclasses import dataclass
 from io import BytesIO
 from typing import Annotated
@@ -30,11 +30,6 @@ from docling_mcp.shared import local_document_cache, local_stack_cache, mcp
 
 # Create a default project logger
 logger = setup_logger()
-
-
-def hash_string_md5(input_string: str) -> str:
-    """Creates an md5 hash-string from the input string."""
-    return hashlib.md5(input_string.encode()).hexdigest()
 
 
 @dataclass
@@ -67,7 +62,7 @@ def create_new_docling_document(
         content_layer=ContentLayer.FURNITURE,
     )
 
-    document_key = hash_string_md5(prompt)
+    document_key = str(uuid.uuid4()).replace("-", "")
 
     local_document_cache[document_key] = doc
     local_stack_cache[document_key] = [item]
