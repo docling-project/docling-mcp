@@ -35,7 +35,7 @@ You can use the `uv sync` to create a project virtual environment (if it does no
 the project's dependencies with the environment.
 
 ```bash
-uv sync
+uv sync --all-extras
 ```
 
 #### Use a specific Python version (optional)
@@ -56,6 +56,14 @@ Simply use the `uv add` command. The `pyproject.toml` and `uv.lock` files will b
 
 ```bash
 uv add [OPTIONS] <PACKAGES|--requirements <REQUIREMENTS>>
+```
+
+### Using Docling MCP in development mode
+
+After installing the dependencies (`uv sync`), you can expose the tools of Docling by running
+
+```sh
+uv run docling-mcp-server
 ```
 
 ### Code sytle guidelines

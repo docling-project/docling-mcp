@@ -18,8 +18,6 @@
 
 A document processing service using the Docling-MCP library and MCP (Message Control Protocol) for tool integration.
 
- > [!NOTE]
-> This is an unstable draft implementation which will quickly evolve.
 
 ## Overview
 
@@ -27,35 +25,44 @@ Docling MCP is a service that provides tools for document conversion, processing
 
 ## Features
 
-- conversion tools:
+- Conversion tools:
     - PDF document conversion to structured JSON format (DoclingDocument)
-- generation tools:
+- Generation tools:
     - Document generation in DoclingDocument, which can be exported to multiple formats
 - Local document caching for improved performance
 - Support for local files and URLs as document sources
 - Memory management for handling large documents
 - Logging system for debugging and monitoring
-- Milvus upload and retrieval
+- RAG applications with Milvus upload and retrieval
 
 ## Getting started
 
-Install dependencies
+The easiest way to install Docling MCP is connect it to your client is launching it via [uvx](https://docs.astral.sh/uv/).
 
-```sh
-uv sync
-```
+Depending on the transfer protocol required, specify the argument `--transport`, for example
 
-Install the docling_mcp package
+- **`stdio`** used e.g. in Claude for Desktop and LM Studio 
 
-```sh
-uv pip install -e .
-```
+    ```sh
+    uvx --from docling-mcp docling-mcp-server --transport stdio
+    ```
 
-After installing the dependencies (`uv sync`), you can expose the tools of Docling by running
+- **`sse`** used e.g. in Llama Stack
 
-```sh
-uv run docling-mcp-server
-```
+    ```sh
+    uvx --from docling-mcp docling-mcp-server --transport sse
+    ```
+
+
+- **`streamable-http`** used e.g. in containers setup
+
+    ```sh
+    uvx --from docling-mcp docling-mcp-server --transport streamable-http
+    ```
+
+More options are available, e.g. the selection of which toolgroup to launch. Use the `--help` argument to inspect all the CLI options.
+
+For developing the MCP tools further, please refer to the [docs/development.md](docs/development.md) page for instructions.
 
 ## Integration with Claude for Desktop
 
@@ -65,15 +72,9 @@ Once installed, extend Claude for Desktop so that it can read from your computer
 To enable Claude for Desktop with Docling MCP, simply edit the config file `claude_desktop_config.json` (located at `~/Library/Application Support/Claude/claude_desktop_config.json` in MacOS) and add a new item in the `mcpServers` key with the details of a Docling MCP server. You can find an example of those details [here](docs/integrations/claude_desktop_config.json).
 
 
-## Running as streamable-http
+## Examples
 
-Start the server using the following command
-
-```sh
-uv run docling-mcp-server --transport streamable-http --http-port 8000
-```
-
-## Converting documents
+### Converting documents
 
 Example of prompt for converting PDF documents:
 
@@ -81,7 +82,7 @@ Example of prompt for converting PDF documents:
 Convert the PDF document at <provide file-path> into DoclingDocument and return its document-key.
 ```
 
-## Generating documents
+### Generating documents
 
 Example of prompt for generating new documents:
 
@@ -90,53 +91,8 @@ I want you to write a Docling document. To do this, you will create a document f
 
 During the writing process, you can check what has been written already by calling the `export_docling_document_to_markdown` tool, which will return the currently written document. At the end of the writing, you must save the document and return me the filepath of the saved document.
 
-The document should investigate the impact of tokenizers on the quality of LLM's.
+The document should investigate the impact of tokenizers on the quality of LLMs.
 ```
-
-## Applications
-
-### Milvus RAG configuration
-
-Copy the .env.example file to .env in the root of the project.
-
-```sh
-cp .env.example .env
-```
-
-If you want to use the RAG Milvus functionality edit the new .env file to set both environment variables.
-
-```text
-RAG_ENABLED=true
-OLLAMA_MODEL=granite3.2:latest
-EMBEDDING_MODEL=BAAI/bge-small-en-v1.5
-```
-
-Note:
-
-ollama can be downloaded here https://ollama.com/. Once you have ollama download the model you want to use and then add the model string to the .env file.
-
-For example we are using `granite3.2:latest` to perform the RAG search.
-
-To download this model run:
-
-```sh
-ollama pull granite3.2:latest
-```
-
-When using the docling-mcp server with RAG this would be a simple example prompt:
-
-```prompt
-Process this file /Users/name/example/mock.pdf 
-
-Upload it to the vector store. 
-
-Then summarize xyz that is contained within the document.
-```
-
-Known issues
-
-When restarting the MCP client (e.g. Claude desktop) the client sometimes errors due to the `.milvus_demo.db.lock` file. Delete this before restarting.
-
 
 ## License
 
