@@ -3,12 +3,6 @@
 import os
 
 from dotenv import load_dotenv
-from llama_index.core import Settings
-from llama_index.core.indices.vector_store.base import VectorStoreIndex
-from llama_index.embeddings.huggingface import HuggingFaceEmbedding
-from llama_index.llms.ollama import Ollama
-from llama_index.node_parser.docling import DoclingNodeParser
-from llama_index.vector_stores.milvus import MilvusVectorStore
 from mcp.server.fastmcp import FastMCP
 
 from docling_core.types.doc.document import (
@@ -35,6 +29,13 @@ if (
     and OLLAMA_MODEL is not None
     and EMBEDDING_MODEL is not None
 ):
+    from llama_index.core import Settings
+    from llama_index.core.indices.vector_store.base import VectorStoreIndex
+    from llama_index.embeddings.huggingface import HuggingFaceEmbedding
+    from llama_index.llms.ollama import Ollama
+    from llama_index.node_parser.docling import DoclingNodeParser
+    from llama_index.vector_stores.milvus import MilvusVectorStore
+
     embed_model = HuggingFaceEmbedding(model_name=EMBEDDING_MODEL)
     Settings.embed_model = embed_model
     Settings.llm = Ollama(model=OLLAMA_MODEL, request_timeout=120.0)
