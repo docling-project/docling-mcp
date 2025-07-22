@@ -240,6 +240,16 @@ def get_text_of_document_item_at_anchor(
     return DocumentItemText(text)
 
 
+@dataclass
+class UpdateDocumentOutput:
+    """Output of the Docling document content modification tools."""
+
+    document_key: Annotated[
+        str,
+        Field(description="The unique identifier of the document in the local cache."),
+    ]
+
+
 @mcp.tool(title="Update text of Docling document item at anchor")
 def update_text_of_document_item_at_anchor(
     document_key: Annotated[
@@ -260,12 +270,12 @@ def update_text_of_document_item_at_anchor(
         str,
         Field(description="The new text content to replace the existing content."),
     ],
-) -> bool:
+) -> UpdateDocumentOutput:
     """Update the text content of a specific document item identified by its anchor.
 
     This tool modifies the text of an existing document item at the specified anchor
-    location within a document that exists in the local document cache. It returns
-    True if the update was successful.
+    location within a document that exists in the local document cache. It requires
+    that the document already exists in the cache before a modification can be made.
     """
     if document_key not in local_document_cache:
         doc_keys = ", ".join(local_document_cache.keys())
@@ -287,7 +297,7 @@ def update_text_of_document_item_at_anchor(
             "textual item."
         )
 
-    return True
+    return UpdateDocumentOutput(document_key=document_key)
 
 
 @mcp.tool(title="Delete Docling document items at anchors")
@@ -306,12 +316,12 @@ def delete_document_items_at_anchors(
             examples=["#/texts/2", "#/tables/1"],
         ),
     ],
-) -> bool:
+) -> UpdateDocumentOutput:
     """Delete multiple document items identified by their anchors.
 
     This tool removes specified items from a Docling document that exists in the local
-    document cache, based on their anchor references. It returns True if the all the
-    items were successfully removed.
+    document cache, based on their anchor references. It requires that the document
+    already exists in the cache before performing the deletion.
     """
     if document_key not in local_document_cache:
         doc_keys = ", ".join(local_document_cache.keys())
@@ -328,4 +338,4 @@ def delete_document_items_at_anchors(
 
     doc.delete_items(node_items=items)
 
-    return True
+    return UpdateDocumentOutput(document_key=document_key)
