@@ -61,8 +61,8 @@ def is_document_in_local_cache(
 
 
 @dataclass
-class ConvertPdfDocumentOutput:
-    """Output of the convert_pdf_document_into_docling_document tool."""
+class ConvertDocumentOutput:
+    """Output of the convert_document_into_docling_document tool."""
 
     success: Annotated[
         bool,
@@ -79,16 +79,16 @@ class ConvertPdfDocumentOutput:
     ]
 
 
-@mcp.tool(title="Convert PDF document into Docling document")
-def convert_pdf_document_into_docling_document(
+@mcp.tool(title="Convert document into Docling document")
+def convert_document_into_docling_document(
     source: Annotated[
         str,
-        Field(description="The URL or local file path to the PDF document."),
+        Field(description="The URL or local file path to the document."),
     ],
-) -> ConvertPdfDocumentOutput:
-    """Convert a PDF document from a URL or local path and store in local cache.
+) -> ConvertDocumentOutput:
+    """Convert a document of any type from a URL or local path and store in local cache.
 
-    This tool takes a PDF document's URL or local file path, converts it using
+    This tool takes a document's URL or local file path, converts it using
     Docling's DocumentConverter and stores the resulting Docling document in a
     local cache. It returns an output with a boolean set to True along with the
     document's unique cache key. If the document was already in the local cache,
@@ -106,7 +106,7 @@ def convert_pdf_document_into_docling_document(
 
         if cache_key in local_document_cache:
             logger.info(f"{source} has previously been added.")
-            return ConvertPdfDocumentOutput(False, cache_key)
+            return ConvertDocumentOutput(False, cache_key)
 
         # Log the start of processing
         logger.info("Set up pipeline options")
@@ -165,7 +165,7 @@ def convert_pdf_document_into_docling_document(
         # Clean up memory
         cleanup_memory()
 
-        return ConvertPdfDocumentOutput(True, cache_key)
+        return ConvertDocumentOutput(True, cache_key)
 
     except Exception as e:
         logger.exception(f"Error converting document: {source}")
