@@ -34,7 +34,8 @@ _DEFAULT_TOOLS = [ToolGroups.CONVERSION, ToolGroups.GENERATION, ToolGroups.MANIP
 @app.command()
 def main(
     transport: TransportType = TransportType.STDIO,
-    http_port: int = 8000,
+    host: str = "localhost",
+    port: int = 8000,
     tools: Annotated[
         list[ToolGroups] | None,
         typer.Argument(
@@ -67,7 +68,8 @@ def main(
 
     # Initialize and run the server
     logger.info("starting up Docling MCP-server ...")
-    mcp.settings.port = http_port
+    mcp.settings.host = host
+    mcp.settings.port = port
     mcp.run(transport=transport.value)
 
 

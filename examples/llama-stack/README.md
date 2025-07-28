@@ -101,7 +101,7 @@ Then we will register the MCP server as a tool group in the Llama Stack server.
 3. Run the Docling MCP server with the SSE transport option `sse` (default)
 
    ```shell
-   uv run docling-mcp-server --transport sse --http-port 8000
+   uv run docling-mcp-server --transport sse --port 8000 --host 0.0.0.0
    ```
 
 4. In another terminal, register the Docling tools
