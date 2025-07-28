@@ -17,10 +17,10 @@ The following applications are required in this example. Refer to their document
 
 ### Run Llama Stack
 
-As a simple starting point, we will use the [Ollama distribution](https://llama-stack.readthedocs.io/en/latest/distributions/self_hosted_distro/ollama.html) which allows Llama Stack to easily run locally.
+As a simple starting point, we will use the [starter distribution](https://llama-stack.readthedocs.io/en/latest/distributions/self_hosted_distro/starter.html) which allows Llama Stack to easily run locally.
 Other distributions (or custom stack builds) will work very similarly. See a complete list in the [Llama Stack docs](https://llama-stack.readthedocs.io/en/latest/distributions/list_of_distributions.html).
 
-We will use [Meta Llama 3.2](https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct) as generative AI model. Other options supported by the stack are [IBM Granite 3.2](https://huggingface.co/ibm-granite/granite-3.2-8b-instruct) and [Qwen3](Qwen/Qwen3-32B).
+We will use [Meta Llama 3.2](https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct) as generative AI model. Other options supported by the stack are [IBM Granite 3.3](https://huggingface.co/ibm-granite/granite-3.3-8b-instruct) and [Qwen3](Qwen/Qwen3-32B).
 
 
 <table style="width: 100%;">
@@ -58,7 +58,7 @@ Before running the Llama Stack server, you will need to create a local directory
 Then start the server using a container tool like Podman or Docker.
 
   ```shell
-  export INFERENCE_MODEL="meta-llama/Llama-3.2-3B-Instruct"
+  export INFERENCE_MODEL="llama3.2:3b-instruct-fp16"
   export LLAMA_STACK_PORT=8321
   
   podman run \
@@ -66,9 +66,10 @@ Then start the server using a container tool like Podman or Docker.
     --pull always \
     -p $LLAMA_STACK_PORT:$LLAMA_STACK_PORT \
     -v ~/.llama:/root/.llama \
-    llamastack/distribution-ollama \
+    llamastack/distribution-starter \
     --port $LLAMA_STACK_PORT \
-    --env INFERENCE_MODEL=$INFERENCE_MODEL \
+    --env ENABLE_OLLAMA=ollama \
+    --env OLLAMA_INFERENCE_MODEL=$INFERENCE_MODEL \
     --env OLLAMA_URL=http://host.containers.internal:11434
   ```
 </td>
@@ -110,7 +111,7 @@ Then we will register the MCP server as a tool group in the Llama Stack server.
    to register the Docling MCP server tools:
 
    ```shell
-   uvx --from llama-stack-client llama-stack-client toolgroups register "mcp::docling" \
+   uvx --with llama-stack-client llama-stack-client toolgroups register "mcp::docling" \
      --provider-id="model-context-protocol" \
      --mcp-endpoint="http://host.containers.internal:8000/sse"
    ```
