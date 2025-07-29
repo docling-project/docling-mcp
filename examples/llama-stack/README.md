@@ -96,10 +96,10 @@ Then we will register the MCP server as a tool group in the Llama Stack server.
    uv sync
    ```
 
-3. Run the Docling MCP server with the streaming http transport option `streaming-http` (default)
+3. Run the Docling MCP server with the streamable http transport option `streamable-http` (default)
 
    ```shell
-   uv run docling-mcp-server --transport streaming-http --port 8000 --host 0.0.0.0
+   uv run docling-mcp-server --transport streamable-http --port 8000 --host 0.0.0.0
    ```
 
 4. In another terminal, register the Docling tools
