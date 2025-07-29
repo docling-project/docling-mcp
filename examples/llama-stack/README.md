@@ -58,7 +58,6 @@ Before running the Llama Stack server, you will need to create a local directory
 Then start the server using a container tool like Podman or Docker.
 
   ```shell
-  export INFERENCE_MODEL="llama3.2:3b-instruct-fp16"
   export LLAMA_STACK_PORT=8321
   
   podman run \
@@ -68,8 +67,6 @@ Then start the server using a container tool like Podman or Docker.
     -v ~/.llama:/root/.llama \
     llamastack/distribution-starter \
     --port $LLAMA_STACK_PORT \
-    --env ENABLE_OLLAMA=ollama \
-    --env OLLAMA_INFERENCE_MODEL=$INFERENCE_MODEL \
     --env OLLAMA_URL=http://host.containers.internal:11434
   ```
 </td>
@@ -99,10 +96,10 @@ Then we will register the MCP server as a tool group in the Llama Stack server.
    uv sync
    ```
 
-3. Run the Docling MCP server with the SSE transport option `sse` (default)
+3. Run the Docling MCP server with the streaming http transport option `streaming-http` (default)
 
    ```shell
-   uv run docling-mcp-server --transport sse --port 8000 --host 0.0.0.0
+   uv run docling-mcp-server --transport streaming-http --port 8000 --host 0.0.0.0
    ```
 
 4. In another terminal, register the Docling tools
@@ -113,7 +110,7 @@ Then we will register the MCP server as a tool group in the Llama Stack server.
    ```shell
    uvx --with llama-stack-client llama-stack-client toolgroups register "mcp::docling" \
      --provider-id="model-context-protocol" \
-     --mcp-endpoint="http://host.containers.internal:8000/sse"
+     --mcp-endpoint="http://host.containers.internal:8000/mcp"
    ```
 
 5. Inspect the tools
@@ -131,7 +128,7 @@ Then we will register the MCP server as a tool group in the Llama Stack server.
    │ builtin::rag           │ rag-runtime            │ None │ None                                                        │
    │ builtin::websearch     │ tavily-search          │ None │ None                                                        │
    │ builtin::wolfram_alpha │ wolfram-alpha          │ None │ None                                                        │
-   │ mcp::docling           │ model-context-protocol │ None │ McpEndpoint(uri='http://host.containers.internal:8000/see') │
+   │ mcp::docling           │ model-context-protocol │ None │ McpEndpoint(uri='http://host.containers.internal:8000/mcp') │
    └────────────────────────┴────────────────────────┴──────┴─────────────────────────────────────────────────────────────┘
    ```
 
