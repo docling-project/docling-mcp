@@ -66,7 +66,7 @@ For developing the MCP tools further, please refer to the [docs/development.md](
 
 ## Integration with MCP clients
 
-One of the easiest ways to experiment with the tools provided by Docling MCP is to leverage an AI desktop clients with MCP support.
+One of the easiest ways to experiment with the tools provided by Docling MCP is to leverage an AI desktop client with MCP support.
 Most of these clients use a common config interface. Adding Docling MCP in your favorite client is usually as simple as adding the following entry in the configuration file.
 
 ```json
