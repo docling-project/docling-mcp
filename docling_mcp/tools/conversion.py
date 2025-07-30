@@ -2,13 +2,13 @@
 
 import gc
 from dataclasses import dataclass
+from functools import lru_cache
 from typing import Annotated
 
 from mcp.shared.exceptions import McpError
 from mcp.types import INTERNAL_ERROR, ErrorData
 from pydantic import Field
 
-from docling.datamodel.accelerator_options import AcceleratorDevice
 from docling.datamodel.base_models import InputFormat
 from docling.datamodel.pipeline_options import (
     PdfPipelineOptions,
@@ -79,6 +79,20 @@ class ConvertPdfDocumentOutput:
     ]
 
 
+@lru_cache
+def _get_converter() -> DocumentConverter:
+    pipeline_options = PdfPipelineOptions()
+    # pipeline_options.do_ocr = False  # Skip OCR for faster processing (enable for scanned docs)
+
+    format_options: dict[InputFormat, FormatOption] = {
+        InputFormat.PDF: PdfFormatOption(pipeline_options=pipeline_options),
+        InputFormat.IMAGE: PdfFormatOption(pipeline_options=pipeline_options),
+    }
+
+    logger.info(f"Creating DocumentConverter with format_options: {format_options}")
+    return DocumentConverter(format_options=format_options)
+
+
 @mcp.tool(title="Convert PDF document into Docling document")
 def convert_pdf_document_into_docling_document(
     source: Annotated[
@@ -108,23 +122,8 @@ def convert_pdf_document_into_docling_document(
             logger.info(f"{source} has previously been added.")
             return ConvertPdfDocumentOutput(False, cache_key)
 
-        # Log the start of processing
-        logger.info("Set up pipeline options")
-
-        # Configure pipeline
-        # ocr_options = EasyOcrOptions(lang=ocr_language or ["en"])
-        pipeline_options = PdfPipelineOptions(
-            # do_ocr=False,
-            # ocr_options=ocr_options,
-            accelerator_device=AcceleratorDevice.MPS  # Explicitly set MPS
-        )
-        format_options: dict[InputFormat, FormatOption] = {
-            InputFormat.PDF: PdfFormatOption(pipeline_options=pipeline_options)
-        }
-
-        # Create converter with MPS acceleration
-        logger.info(f"Creating DocumentConverter with format_options: {format_options}")
-        converter = DocumentConverter(format_options=format_options)
+        # Get converter
+        converter = _get_converter()
 
         # Convert the document
         logger.info("Start conversion")
