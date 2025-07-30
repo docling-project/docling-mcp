@@ -184,6 +184,7 @@ module = [
     "tesserocr.*",
     "rapidocr_onnxruntime.*",
     "requests.*",
+    "transformers.*",
 ]
 ignore_missing_imports = true
 
