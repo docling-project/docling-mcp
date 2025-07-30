@@ -64,13 +64,32 @@ More options are available, e.g. the selection of which toolgroup to launch. Use
 
 For developing the MCP tools further, please refer to the [docs/development.md](docs/development.md) page for instructions.
 
-## Integration with Claude for Desktop
+## Integration with MCP clients
 
-One of the easiest ways to experiment with the tools provided by Docling-MCP is to leverage [Claude for Desktop](https://claude.ai/download).
-Once installed, extend Claude for Desktop so that it can read from your computer’s file system, by following the [For Claude Desktop Users](https://modelcontextprotocol.io/quickstart/user) tutorial.
+One of the easiest ways to experiment with the tools provided by Docling MCP is to leverage an AI desktop clients with MCP support.
+Most of these clients use a common config interface. Adding Docling MCP in your favorite client is usually as simple as adding the following entry in the configuration file.
 
-To enable Claude for Desktop with Docling MCP, simply edit the config file `claude_desktop_config.json` (located at `~/Library/Application Support/Claude/claude_desktop_config.json` in MacOS) and add a new item in the `mcpServers` key with the details of a Docling MCP server. You can find an example of those details [here](docs/integrations/claude_desktop_config.json).
+```json
+{
+  "mcpServers": {
+    "docling": {
+      "command": "uvx",
+      "args": [
+        "--from=docling-mcp",
+        "docling-mcp-server"
+      ]
+    }
+  }
+} 
+```
 
+When using **[Claude for Desktop](https://claude.ai/download)**, simply edit the config file `claude_desktop_config.json` with the snippet above or the example provided [here](docs/integrations/claude_desktop_config.json).
+
+In **[LM Studio](https://lmstudio.ai/)**, edit the `mcp.json` file with the appropriate section or simply clik on the button below for a direct install.
+
+[![Add MCP Server docling to LM Studio](https://files.lmstudio.ai/deeplink/mcp-install-light.svg)](https://lmstudio.ai/install-mcp?name=docling&config=eyJjb21tYW5kIjoidXZ4IiwiYXJncyI6WyItLWZyb209ZG9jbGluZy1tY3AiLCJkb2NsaW5nLW1jcC1zZXJ2ZXIiXX0%3D)
+
+Other integrations are described in [./docs/integrations/](./docs/integrations/).
 
 ## Examples
 
@@ -96,11 +115,11 @@ The document should investigate the impact of tokenizers on the quality of LLMs.
 
 ## License
 
-The Docling-MCP codebase is under MIT license. For individual model usage, please refer to the model licenses found in the original packages.
+The Docling MCP codebase is under MIT license. For individual model usage, please refer to the model licenses found in the original packages.
 
 ## LF AI & Data
 
-Docling and Docling-MCP is hosted as a project in the [LF AI & Data Foundation](https://lfaidata.foundation/projects/).
+Docling and Docling MCP is hosted as a project in the [LF AI & Data Foundation](https://lfaidata.foundation/projects/).
 
 **IBM ❤️ Open Source AI**: The project was started by the AI for knowledge team at IBM Research Zurich.
 
