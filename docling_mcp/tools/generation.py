@@ -613,7 +613,7 @@ def add_list_items_to_list_in_docling_document(
     If sibling_anchor is provided, the value of parent_anchor does not matter. Only omit sibling_anchor and specify parent_anchor
     when appending list items to the end of a list group.
 
-    List items will be added with their specified text and marker.
+    List items will be added with their specified text and marker. When inserting new list items, marker values (such as numbers) will automatically be updated
     """
     if document_key not in local_document_cache:
         doc_keys = ", ".join(local_document_cache.keys())
@@ -674,7 +674,7 @@ def add_list_items_to_list_in_docling_document(
 
         refs = []
 
-        for list_item in reversed(list_items):
+        for list_item in list_items:
             item = local_document_cache[document_key].add_list_item(
                 text=list_item.list_item_text,
                 marker=list_item.list_marker_text,
