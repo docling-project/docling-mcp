@@ -5,8 +5,8 @@ import pytest
 from docling_mcp.logger import setup_logger
 from docling_mcp.shared import local_document_cache
 from docling_mcp.tools.generation import (
+    DocumentUpdateOutput,
     NewDoclingDocumentOutput,
-    UpdateDocumentOutput,
     add_table_in_html_format_to_docling_document,
     create_new_docling_document,
 )
@@ -41,5 +41,5 @@ def test_table_in_html_format_to_docling_document(doc_key: str) -> None:
         table_captions=["Table 2: Complex demographic data with merged cells"],
     )
 
-    assert isinstance(reply, UpdateDocumentOutput)
+    assert isinstance(reply, DocumentUpdateOutput)
     assert reply.document_key == doc_key
