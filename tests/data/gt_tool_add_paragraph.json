@@ -1,7 +1,7 @@
 {
     "name": "add_paragraph_to_docling_document",
-    "title": "Add paragraph to Docling document",
-    "description": "Add a paragraph of text to an existing document in the local document cache.\n\n    This tool inserts a new paragraph under the specified section header and level\n    into a document that has already been processed and stored in the cache.\n    ",
+    "title": "Insert or append a paragraph to Docling document",
+    "description": "Insert a paragraph by specifying sibling_anchor or append a paragraph by specifying parent_anchor in a Docling Document object.\n\n    If sibling_anchor is provided, the value of parent_anchor does not matter. Only omit sibling_anchor and specify parent_anchor\n    when appending a paragraph to the end of a group. To append a paragraph to the end of the entire document, do not specify either anchor.\n    ",
     "inputSchema": {
         "properties": {
             "document_key": {
@@ -10,9 +10,41 @@
                 "type": "string"
             },
             "paragraph": {
-                "description": "The text content to add as a paragraph.",
+                "description": "The text of the new paragraph.",
                 "title": "Paragraph",
                 "type": "string"
+            },
+            "sibling_anchor": {
+                "anyOf": [
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ],
+                "default": null,
+                "description": "The anchor of the sibling item to insert the new paragraph before/after.",
+                "title": "Sibling Anchor"
+            },
+            "insert_after": {
+                "default": false,
+                "description": "Whether to insert the new paragraph after the sibling item. Defaults to inserting before.",
+                "title": "Insert After",
+                "type": "boolean"
+            },
+            "parent_anchor": {
+                "anyOf": [
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ],
+                "default": null,
+                "description": "The anchor of the parent item to insert the new paragraph under.",
+                "title": "Parent Anchor"
             }
         },
         "required": [
@@ -27,12 +59,24 @@
             "document_key": {
                 "title": "Document Key",
                 "type": "string"
+            },
+            "anchor": {
+                "anyOf": [
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ],
+                "title": "Anchor"
             }
         },
         "required": [
-            "document_key"
+            "document_key",
+            "anchor"
         ],
-        "title": "UpdateDocumentOutput",
+        "title": "DocumentUpdateOutput",
         "type": "object"
     },
     "annotations": null,
