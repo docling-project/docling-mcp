@@ -120,7 +120,7 @@ def convert_pdf_document_into_docling_document(
 
         if cache_key in local_document_cache:
             logger.info(f"{source} has previously been added.")
-            return ConvertPdfDocumentOutput(False, cache_key)
+            return ConvertPdfDocumentOutput(True, cache_key)
 
         # Get converter
         converter = _get_converter()

@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from typing import Annotated
 
-from llama_stack_client.types.vector_io_insert_params import Chunk
+from llama_stack_client.types.vector_io_insert_params import Chunk, ChunkChunkMetadata
 from pydantic import Field
 from transformers import AutoTokenizer
 
@@ -64,19 +64,30 @@ def insert_document_to_vectordb(
     chunk_iter = chunker.chunk(dl_doc=doc)
 
     ls_chunks: list[Chunk] = []
-    for chunk in chunk_iter:
+    for i, chunk in enumerate(chunk_iter):
         meta = DocMeta.model_validate(chunk.meta)
+
+        chunk_id = f"{doc_id}-{i:05d}"
 
         enriched_text = chunker.contextualize(chunk=chunk)
 
         token_count = tokenizer.count_tokens(enriched_text)
+        metadata = {
+            "document_id": doc_id,
+            "chunk_id": chunk_id,
+            "token_count": token_count,
+            # "metadata_token_count": 0,
+            "doc_items": [item.self_ref for item in meta.doc_items],
+        }
+        chunk_metadata: ChunkChunkMetadata = {
+            "document_id": doc_id,
+            "chunk_id": chunk_id,
+            "content_token_count": token_count,
+        }
         chunk_dict: Chunk = {
             "content": enriched_text,
-            "metadata": {
-                "document_id": doc_id,
-                "token_count": token_count,
-                "doc_items": [item.self_ref for item in meta.doc_items],
-            },
+            "metadata": metadata,
+            "chunk_metadata": chunk_metadata,
         }
         ls_chunks.append(chunk_dict)
 
