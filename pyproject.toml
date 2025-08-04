@@ -63,8 +63,7 @@ llama-index-rag = [
     "llama-index-vector-stores-milvus>=0.7.2",
 ]
 llama-stack = [
-    "fire>=0.7.0",
-    "llama-stack-client>=0.2.12",
+    "llama-stack-client>=0.2.14; python_version>='3.12'",
 ]
 
 [dependency-groups]

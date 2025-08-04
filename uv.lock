@@ -798,9 +798,7 @@ llama-index-rag = [
     { name = "llama-index-vector-stores-milvus" },
 ]
 llama-stack = [
-    { name = "fire" },
-    { name = "llama-stack-client", version = "0.2.12", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
-    { name = "llama-stack-client", version = "0.2.16", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+    { name = "llama-stack-client", marker = "python_full_version >= '3.12'" },
 ]
 
 [package.dev-dependencies]
@@ -823,7 +821,6 @@ examples = [
 [package.metadata]
 requires-dist = [
     { name = "docling", specifier = "~=2.25" },
-    { name = "fire", marker = "extra == 'llama-stack'", specifier = ">=0.7.0" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "llama-index", marker = "extra == 'llama-index-rag'", specifier = ">=0.12.33" },
     { name = "llama-index-core", marker = "extra == 'llama-index-rag'", specifier = ">=0.12.28" },
@@ -834,7 +831,7 @@ requires-dist = [
     { name = "llama-index-readers-docling", marker = "extra == 'llama-index-rag'", specifier = ">=0.3.2" },
     { name = "llama-index-readers-file", marker = "extra == 'llama-index-rag'", specifier = ">=0.4.7" },
     { name = "llama-index-vector-stores-milvus", marker = "extra == 'llama-index-rag'", specifier = ">=0.7.2" },
-    { name = "llama-stack-client", marker = "extra == 'llama-stack'", specifier = ">=0.2.12" },
+    { name = "llama-stack-client", marker = "python_full_version >= '3.12' and extra == 'llama-stack'", specifier = ">=0.2.14" },
     { name = "mcp", extras = ["cli"], specifier = ">=1.9.4" },
     { name = "pydantic", specifier = "~=2.10" },
     { name = "pydantic-settings", specifier = "~=2.4" },
@@ -990,7 +987,7 @@ name = "fire"
 version = "0.7.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "termcolor" },
+    { name = "termcolor", marker = "python_full_version >= '3.12'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/6b/b6/82c7e601d6d3c3278c40b7bd35e17e82aa227f050aa9f66cb7b7fce29471/fire-0.7.0.tar.gz", hash = "sha256:961550f07936eaf65ad1dc8360f2b2bf8408fad46abbfa4d2a3794f8d2a95cdf", size = 87189, upload-time = "2024-10-01T14:29:31.585Z" }
 
@@ -2104,45 +2101,8 @@ wheels = [
 
 [[package]]
 name = "llama-stack-client"
-version = "0.2.12"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version == '3.11.*' and sys_platform == 'darwin'",
-    "python_full_version == '3.11.*' and platform_machine == 'aarch64' and sys_platform == 'linux'",
-    "(python_full_version == '3.11.*' and platform_machine != 'aarch64' and sys_platform == 'linux') or (python_full_version == '3.11.*' and sys_platform != 'darwin' and sys_platform != 'linux')",
-    "python_full_version < '3.11' and sys_platform == 'darwin'",
-    "python_full_version < '3.11' and platform_machine == 'aarch64' and sys_platform == 'linux'",
-    "(python_full_version < '3.11' and platform_machine != 'aarch64' and sys_platform == 'linux') or (python_full_version < '3.11' and sys_platform != 'darwin' and sys_platform != 'linux')",
-]
-dependencies = [
-    { name = "anyio", marker = "python_full_version < '3.12'" },
-    { name = "click", marker = "python_full_version < '3.12'" },
-    { name = "distro", marker = "python_full_version < '3.12'" },
-    { name = "httpx", marker = "python_full_version < '3.12'" },
-    { name = "pandas", marker = "python_full_version < '3.12'" },
-    { name = "prompt-toolkit", marker = "python_full_version < '3.12'" },
-    { name = "pyaml", marker = "python_full_version < '3.12'" },
-    { name = "pydantic", marker = "python_full_version < '3.12'" },
-    { name = "rich", marker = "python_full_version < '3.12'" },
-    { name = "sniffio", marker = "python_full_version < '3.12'" },
-    { name = "termcolor", marker = "python_full_version < '3.12'" },
-    { name = "tqdm", marker = "python_full_version < '3.12'" },
-    { name = "typing-extensions", marker = "python_full_version < '3.12'" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/83/d5/0d3b1bfa342c1983c277d05eaf51214f9cf4b77345d416cff576e8f0172a/llama_stack_client-0.2.12.tar.gz", hash = "sha256:47260284f36ef40dbf4f04d2c2e6f4dfd407cf090930810617ccb9a690e029c3", size = 289939, upload-time = "2025-06-20T21:05:36.008Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/68/eb/23c10e3a7d7a49a316e05ddcca8cd712a5a474eb6f904d08f7d3ae10d668/llama_stack_client-0.2.12-py3-none-any.whl", hash = "sha256:807145450e5f6bea9e20ab890d8327d07b45b1bbde712e3fcca54c298c792874", size = 340187, upload-time = "2025-06-20T21:05:33.561Z" },
-]
-
-[[package]]
-name = "llama-stack-client"
 version = "0.2.16"
 source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform == 'darwin'",
-    "python_full_version >= '3.12' and platform_machine == 'aarch64' and sys_platform == 'linux'",
-    "(python_full_version >= '3.12' and platform_machine != 'aarch64' and sys_platform == 'linux') or (python_full_version >= '3.12' and sys_platform != 'darwin' and sys_platform != 'linux')",
-]
 dependencies = [
     { name = "anyio", marker = "python_full_version >= '3.12'" },
     { name = "click", marker = "python_full_version >= '3.12'" },
@@ -3498,7 +3458,7 @@ name = "pyaml"
 version = "25.7.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "pyyaml" },
+    { name = "pyyaml", marker = "python_full_version >= '3.12'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/c4/01/41f63d66a801a561c9e335523516bd5f761bc43cc61f8b75918306bf2da8/pyaml-25.7.0.tar.gz", hash = "sha256:e113a64ec16881bf2b092e2beb84b7dcf1bd98096ad17f5f14e8fb782a75d99b", size = 29814, upload-time = "2025-07-10T18:44:51.824Z" }
 wheels = [
