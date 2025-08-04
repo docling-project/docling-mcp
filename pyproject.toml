@@ -184,6 +184,7 @@ module = [
     "rapidocr_onnxruntime.*",
     "requests.*",
     "transformers.*",
+    "llama_stack_client.*",  # needed since this will be there only on python>=3.12
 ]
 ignore_missing_imports = true
 
