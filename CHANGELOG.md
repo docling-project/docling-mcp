@@ -1,3 +1,19 @@
+## [v1.0.1](https://github.com/docling-project/docling-mcp/releases/tag/v1.0.1) - 2025-07-30
+
+### Fix
+
+* Allow running from outside localhost ([#53](https://github.com/docling-project/docling-mcp/issues/53)) ([`c711720`](https://github.com/docling-project/docling-mcp/commit/c71172005c14201bf4837774c8e91ef44cc90f02))
+* Standardized tool returns in manipulation.py ([#51](https://github.com/docling-project/docling-mcp/issues/51)) ([`0530bea`](https://github.com/docling-project/docling-mcp/commit/0530beaffb9ad02695bf2d99702872bc7eef4cdd))
+
+### Documentation
+
+* Generalize integrations and add LM Studio with quick install button ([#55](https://github.com/docling-project/docling-mcp/issues/55)) ([`c0aabb3`](https://github.com/docling-project/docling-mcp/commit/c0aabb3465dbe32c4dec061dea287f20820797bd))
+* Use llama stack starter ([#54](https://github.com/docling-project/docling-mcp/issues/54)) ([`f0d7168`](https://github.com/docling-project/docling-mcp/commit/f0d7168903927127d5e7c6cb4b9215adebeec6f0))
+
+### Performance
+
+* Cache DoclingConverter instance ([#56](https://github.com/docling-project/docling-mcp/issues/56)) ([`a0f3f1e`](https://github.com/docling-project/docling-mcp/commit/a0f3f1e3147b4267aa68cc1ede616bdbf216f5ce))
+
 ## [v1.0.0](https://github.com/docling-project/docling-mcp/releases/tag/v1.0.0) - 2025-07-22
 
 ### Feature
