@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "docling-mcp"
-version = "0.3.0"  # DO NOT EDIT, updated automatically
+version = "1.0.1"  # DO NOT EDIT, updated automatically
 description = "Running Docling as an agent using tools"
 license = "MIT"
 license-files = ["LICENSE"]
@@ -32,6 +32,10 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Typing :: Typed",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Topic :: Software Development :: Build Tools",
@@ -40,6 +44,14 @@ requires-python = ">=3.10"
 dependencies = [
     "docling~=2.25",
     "httpx>=0.28.1",
+    "mcp[cli]>=1.9.4",
+    "pydantic~=2.10",
+    "pydantic-settings~=2.4",
+    "python-dotenv>=1.1.0",
+]
+
+[project.optional-dependencies]
+llama-index-rag = [
     "llama-index>=0.12.33",
     "llama-index-core>=0.12.28",
     "llama-index-embeddings-huggingface>=0.5.2",
@@ -49,23 +61,10 @@ dependencies = [
     "llama-index-readers-docling>=0.3.2",
     "llama-index-readers-file>=0.4.7",
     "llama-index-vector-stores-milvus>=0.7.2",
-    "mcp[cli]>=1.9.4",
-    "pydantic~=2.10",
-    "pydantic-settings~=2.4",
-    "python-dotenv>=1.1.0",
-]
-
-[project.optional-dependencies]
-tesserocr = [
-    "tesserocr~=2.7"
-]
-rapidocr = [
-    "rapidocr-onnxruntime~=1.4; python_version<'3.13'",
-    "onnxruntime~=1.7",
 ]
 llama-stack = [
     "fire>=0.7.0",
-    "llama-stack-client>=0.2.8",
+    "llama-stack-client>=0.2.12",
 ]
 
 [dependency-groups]
@@ -73,10 +72,16 @@ dev = [
     "mypy~=1.11",
     "pre-commit-uv~=4.1",
     "pytest~=8.3",
+    "pytest-asyncio>=1.0.0",
     "pytest-check~=2.4",
     "pytest-cov>=6.1.1",
     "python-semantic-release~=7.32",
     "ruff>=0.9.6",
+]
+examples = [
+    "ipykernel~=6.29",
+    "ipywidgets~=8.1",
+    "nbqa~=1.9",
 ]
 
 [project.scripts]
@@ -87,6 +92,9 @@ Homepage = "https://github.com/docling-project/docling-mcp"
 Repository = "https://github.com/docling-project/docling-mcp"
 Issues = "https://github.com/docling-project/docling-mcp/issues"
 Changelog = "https://github.com/docling-project/docling-mcp/blob/main/CHANGELOG.md"
+
+[tool.uv]
+default-groups = ["dev", "examples"]
 
 [tool.hatch.build.targets.sdist]
 include = ["docling_mcp"]

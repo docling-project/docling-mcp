@@ -1,5 +1,11 @@
 """Tools for manipulating Docling documents."""
 
+import re
+from dataclasses import dataclass
+from typing import Annotated
+
+from pydantic import Field
+
 from docling_core.types.doc.document import (
     DocItem,
     GroupItem,
@@ -16,31 +22,40 @@ from docling_mcp.shared import local_document_cache, mcp
 logger = setup_logger()
 
 
-@mcp.tool()
-def get_overview_of_document_anchors(document_key: str) -> str:
-    """Retrieves a structured overview of a document from the local document cache.
+# TODO: Provide a proper structure instead of a single string
+@dataclass
+class DocumentAnchorOutput:
+    """Output of the get_overview_of_document_anchors tool."""
 
-    This tool returns a text representation of the document's structure, showing
-    the hierarchy and types of elements within the document. Each line in the
+    structure: Annotated[
+        str,
+        Field(
+            description=(
+                "A string containing the hierarchical structure of the document with "
+                "indentation to show nesting levels, along with anchor references."
+            )
+        ),
+    ]
+
+
+@mcp.tool(title="Get overview of Docling document anchors")
+def get_overview_of_document_anchors(
+    document_key: Annotated[
+        str,
+        Field(description="The unique identifier of the document in the local cache."),
+    ],
+) -> DocumentAnchorOutput:
+    """Retrieve a structured overview of a document from the local document cache.
+
+    This tool returns a text representation of the Docling document's structure,
+    showing the hierarchy and types of elements within the document. Each line in the
     output includes the document anchor reference and item label.
-
-    Args:
-        document_key (str): The unique identifier for the document in the local cache.
-
-    Returns:
-        str: A string containing the hierarchical structure of the document with
-             indentation to show nesting levels, along with anchor references.
-
-    Raises:
-        ValueError: If the specified document_key does not exist in the local cache.
-
-    Example:
-        get_overview_of_document_anchors(document_key="doc123")
     """
     if document_key not in local_document_cache:
         doc_keys = ", ".join(local_document_cache.keys())
         raise ValueError(
-            f"document-key: {document_key} is not found. Existing document-keys are: {doc_keys}"
+            f"document-key: {document_key} is not found. Existing document-keys are: "
+            f"{doc_keys}"
         )
 
     doc = local_document_cache[document_key]
@@ -69,31 +84,140 @@ def get_overview_of_document_anchors(document_key: str) -> str:
             indent = "  " * (level + slevel + 1)
             lines.append(f"{indent}[anchor:{ref.cref}] {item.label}")
 
-    return "\n".join(lines)
+    return DocumentAnchorOutput("\n".join(lines))
 
 
-@mcp.tool()
-def get_text_of_document_item_at_anchor(document_key: str, document_anchor: str) -> str:
-    """Retrieves the text content of a specific document item identified by its anchor.
+@dataclass
+class TextSearchOutput:
+    """Output of the search_for_text_in_document_anchors tool."""
 
-    This tool extracts the text from a document item at the specified anchor location
-    within a document that exists in the local document cache.
+    result: Annotated[
+        str,
+        Field(
+            description=(
+                "A string listing the result of searching for text in the document's "
+                "anchors. If matches were found, the result indicates what text matched "
+                "at which anchors, along with the number of occurrences. If no matches "
+                "were found, the result indicates that no matches were found."
+            )
+        ),
+    ]
 
-    Args:
-        document_key (str): The unique identifier for the document in the local cache.
-        document_anchor (str): The anchor reference that identifies the specific item
-                               within the document.
 
-    Returns:
-        str: A formatted string containing the text content of the specified item,
-             wrapped in code block formatting.
+@mcp.tool(title="Search for text in Docling document anchors")
+def search_for_text_in_document_anchors(
+    document_key: Annotated[
+        str,
+        Field(description="The unique identifier of the document in the local cache."),
+    ],
+    text: Annotated[
+        str,
+        Field(
+            description="The string of text to search for in the document's anchors."
+        ),
+    ],
+) -> TextSearchOutput:
+    """Search for specific text and keywords within a document's anchors.
 
-    Raises:
-        ValueError: If the specified document_key does not exist in the local cache.
-        ValueError: If the item at the specified anchor is not a textual item.
+    This tool takes a string of text to search for and returns a string of all
+    document anchors that contain the exact text. The search is case-insensitive.
+    If the exact text is not found, the tool will search for individual keywords
+    within the text, splitting it on non-alphanumeric characters. If keywords
+    are found, they are listed alongside their number of occurrences in parentheses.
+    """
+    if document_key not in local_document_cache:
+        doc_keys = ", ".join(local_document_cache.keys())
+        raise ValueError(
+            f"document-key: {document_key} is not found. Existing document-keys are: {doc_keys}"
+        )
 
-    Example:
-        get_text_of_document_item_at_anchor(document_key="doc123", document_anchor="#/texts/2")
+    doc = local_document_cache[document_key]
+    exact_matches = []
+    matches = []
+    keywords_set = {word for word in set(re.findall(r"\b\w+\b", text.lower())) if word}
+
+    for item, _ in doc.iterate_items():
+        if isinstance(item, TextItem):
+            ref = item.get_ref()
+
+            if text.lower() in item.text.lower():
+                exact_matches.append(f"[anchor:{ref.cref}]")
+
+            if not exact_matches:
+                keyword_occurrences: dict[str, int] = {}
+                total_matches = 0
+
+                strings = re.findall(r"\b\w+\b", item.text.lower())
+
+                for string in strings:
+                    if string in keywords_set:
+                        total_matches += 1
+                        if string in keyword_occurrences:
+                            keyword_occurrences[string] += 1
+                        else:
+                            keyword_occurrences[string] = 1
+
+                if keyword_occurrences:
+                    matches.append(
+                        (
+                            f"[anchor:{ref.cref}] keyword matches ({total_matches} total):{','.join([f' {k} ({v} occurrences)' for k, v in sorted(keyword_occurrences.items(), key=lambda x: x[1], reverse=True)])}",
+                            total_matches,
+                        )
+                    )
+
+    if exact_matches:
+        return TextSearchOutput(
+            "Found exact text matches in the following anchors:\n"
+            + "\n".join(exact_matches)
+        )
+    if matches:
+        return TextSearchOutput(
+            "No exact text matches were found. Found individual keyword matches in the following anchors:\n"
+            + "\n".join(
+                [
+                    match[0]
+                    for match in sorted(
+                        matches, key=lambda match: match[1], reverse=True
+                    )
+                ]
+            )
+        )
+    return TextSearchOutput(
+        f"No exact text matches nor individual keyword matches found for '{text}' in document with key {document_key}."
+    )
+
+
+@dataclass
+class DocumentItemText:
+    """Text content of a Docling document item."""
+
+    text: Annotated[
+        str,
+        Field(description="The text content of an item in a Docling document."),
+    ]
+
+
+@mcp.tool(title="Get text of Docling document item at anchor")
+def get_text_of_document_item_at_anchor(
+    document_key: Annotated[
+        str,
+        Field(description="The unique identifier of the document in the local cache."),
+    ],
+    document_anchor: Annotated[
+        str,
+        Field(
+            description=(
+                "The anchor reference that identifies the specific item within the "
+                "document."
+            ),
+            examples=["#/texts/2"],
+        ),
+    ],
+) -> DocumentItemText:
+    """Retrieve the text content of a specific document item identified by its anchor.
+
+    This tool extracts the text from a Docling document item at the specified anchor
+    location within a document that exists in the local document cache.
     """
     if document_key not in local_document_cache:
         doc_keys = ", ".join(local_document_cache.keys())
@@ -113,38 +237,51 @@ def get_text_of_document_item_at_anchor(document_key: str, document_anchor: str)
             f"Item at {document_anchor} for document-key: {document_key} is not a textual item."
         )
 
-    return f"The text of {document_anchor} for document-key with {document_key} is:\n\n```{text}```\n\n"
+    return DocumentItemText(text)
 
 
-@mcp.tool()
+@dataclass
+class UpdateDocumentOutput:
+    """Output of the Docling document content modification tools."""
+
+    document_key: Annotated[
+        str,
+        Field(description="The unique identifier of the document in the local cache."),
+    ]
+
+
+@mcp.tool(title="Update text of Docling document item at anchor")
 def update_text_of_document_item_at_anchor(
-    document_key: str, document_anchor: str, updated_text: str
-) -> str:
-    """Updates the text content of a specific document item identified by its anchor.
+    document_key: Annotated[
+        str,
+        Field(description="The unique identifier of the document in the local cache."),
+    ],
+    document_anchor: Annotated[
+        str,
+        Field(
+            description=(
+                "The anchor reference that identifies the specific item within the "
+                "document."
+            ),
+            examples=["#/texts/6"],
+        ),
+    ],
+    updated_text: Annotated[
+        str,
+        Field(description="The new text content to replace the existing content."),
+    ],
+) -> UpdateDocumentOutput:
+    """Update the text content of a specific document item identified by its anchor.
 
     This tool modifies the text of an existing document item at the specified anchor
-    location within a document that exists in the local document cache.
-
-    Args:
-        document_key (str): The unique identifier for the document in the local cache.
-        document_anchor (str): The anchor reference that identifies the specific item
-                               within the document.
-        updated_text (str): The new text content to replace the existing content.
-
-    Returns:
-        str: A confirmation message indicating the text was successfully updated.
-
-    Raises:
-        ValueError: If the specified document_key does not exist in the local cache.
-        ValueError: If the item at the specified anchor is not a textual item.
-
-    Example:
-        update_text_of_document_item_at_anchor(document_key="doc123", document_anchor="#/texts/2", updated_text="This is the new content.")
+    location within a document that exists in the local document cache. It requires
+    that the document already exists in the cache before a modification can be made.
     """
     if document_key not in local_document_cache:
         doc_keys = ", ".join(local_document_cache.keys())
         raise ValueError(
-            f"document-key: {document_key} is not found. Existing document-keys are: {doc_keys}"
+            f"document-key: {document_key} is not found. Existing document-keys are: "
+            f"{doc_keys}"
         )
 
     doc = local_document_cache[document_key]
@@ -156,34 +293,35 @@ def update_text_of_document_item_at_anchor(
         item.text = updated_text
     else:
         raise ValueError(
-            f"Item at {document_anchor} for document-key: {document_key} is not a textual item."
+            f"Item at {document_anchor} for document-key: {document_key} is not a "
+            "textual item."
         )
 
-    return f"Updated the text at {document_anchor} for document with key {document_key}"
+    return UpdateDocumentOutput(document_key=document_key)
 
 
-@mcp.tool()
+@mcp.tool(title="Delete Docling document items at anchors")
 def delete_document_items_at_anchors(
-    document_key: str, document_anchors: list[str]
-) -> str:
-    """Deletes multiple document items identified by their anchors.
+    document_key: Annotated[
+        str,
+        Field(description="The unique identifier of the document in the local cache."),
+    ],
+    document_anchors: Annotated[
+        list[str],
+        Field(
+            description=(
+                "A list of anchor references identifying the items to be deleted from the "
+                "document."
+            ),
+            examples=["#/texts/2", "#/tables/1"],
+        ),
+    ],
+) -> UpdateDocumentOutput:
+    """Delete multiple document items identified by their anchors.
 
-    This tool removes specified items from a document that exists in the local
-    document cache, based on their anchor references.
-
-    Args:
-        document_key (str): The unique identifier for the document in the local cache.
-        document_anchors (list[str]): A list of anchor references identifying the items
-                                      to be deleted from the document.
-
-    Returns:
-        str: A confirmation message indicating the items were successfully deleted.
-
-    Raises:
-        ValueError: If the specified document_key does not exist in the local cache.
-
-    Example:
-        delete_document_items_at_anchors(document_key="doc123", document_anchors=["#/texts/2", "#/tables/1"])
+    This tool removes specified items from a Docling document that exists in the local
+    document cache, based on their anchor references. It requires that the document
+    already exists in the cache before performing the deletion.
     """
     if document_key not in local_document_cache:
         doc_keys = ", ".join(local_document_cache.keys())
@@ -200,4 +338,4 @@ def delete_document_items_at_anchors(
 
     doc.delete_items(node_items=items)
 
-    return f"Deleted the {document_anchors} for document with key {document_key}"
+    return UpdateDocumentOutput(document_key=document_key)
