@@ -68,9 +68,6 @@ class PlanningConfig(BaseModel):
     planning_interval: int = Field(
         default=3, description="Re-planning interval for ToolCallingAgent"
     )
-    tool_calling_grammar: Literal["json", "xml"] = Field(
-        default="json", description="Grammar for tool calling"
-    )
     system_prompt_style: Literal["default", "detailed", "minimal"] = Field(
         default="default", description="Style of system prompt"
     )
@@ -123,6 +120,43 @@ class AgentConfig(BaseModel):
                 yaml.dump(data, f, default_flow_style=False)
             else:
                 json.dump(data, f, indent=2)
+
+
+class DoclingToolCallingAgent(ToolCallingAgent):
+    def __init__(
+        self,
+        agent_type: str,
+        tools: list[Tool],
+        model: Model,
+        prompt_templates: PromptTemplates | None = None,
+        planning_interval: int | None = None,
+        stream_outputs: bool = False,
+        max_tool_threads: int | None = None,
+        **kwargs,
+    ):
+        prompt_templates = prompt_templates or yaml.safe_load(
+            "./examples/smolagents/resources/toolcalling_agent.yaml"
+        )
+        super().__init__(
+            tools=tools,
+            model=model,
+            prompt_templates=prompt_templates,
+            planning_interval=planning_interval,
+            stream_outputs=stream_outputs,
+            max_tool_threads=max_tool_threads,
+            **kwargs,
+        )
+
+    def initialize_system_prompt(self) -> str:
+        system_prompt = populate_template(
+            self.prompt_templates["system_prompt"],
+            variables={
+                "tools": self.tools,
+                "managed_agents": self.managed_agents,
+                "custom_instructions": self.instructions,
+            },
+        )
+        return system_prompt
 
 
 class SmolAgentFactory:
@@ -271,16 +305,22 @@ class SmolAgentFactory:
     def create_tool_calling_agent(self):
         """Create a ToolCallingAgent based on configuration."""
         self.logger.info("Creating ToolCallingAgent")
-        agent = ToolCallingAgent(
+        agent = DoclingToolCallingAgent(
+            agent_type="writing",
             tools=self.tools,
             model=self.model,
             max_steps=self.config.planning_config.max_steps,
             verbosity_level=self.config.planning_config.verbosity_level,
-            grammar=self.config.planning_config.tool_calling_grammar,
             planning_interval=self.config.planning_config.planning_interval,
             stream_outputs=True,
             instructions=self._get_system_prompt("tool_calling"),
         )
+
+        instructions = agent.initialize_system_prompt()
+        logger.info(f"instructions for the agent:\n\n{instructions}")
+
+        input("continue?")
+
         return agent
 
     def create_react_agent(self):
