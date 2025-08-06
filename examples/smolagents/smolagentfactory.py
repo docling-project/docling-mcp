@@ -2,6 +2,7 @@
 
 import os
 import json
+import yaml
 import logging
 import sys
 from typing import Optional, Literal, List, Dict, Any
@@ -17,6 +18,7 @@ from smolagents import (
     Tool,
 )
 from mcp import StdioServerParameters
+from packaging import version
 
 # Configure logging
 logging.basicConfig(
@@ -122,6 +124,13 @@ class AgentConfig(BaseModel):
                 json.dump(data, f, indent=2)
 
 
+from pathlib import Path
+import smolagents
+from smolagents.models import Model
+from smolagents.tools import Tool
+from smolagents.agents import PromptTemplates, populate_template
+
+
 class DoclingToolCallingAgent(ToolCallingAgent):
     def __init__(
         self,
@@ -134,12 +143,13 @@ class DoclingToolCallingAgent(ToolCallingAgent):
         max_tool_threads: int | None = None,
         **kwargs,
     ):
-        prompt_templates = prompt_templates or yaml.safe_load(
-            "./examples/smolagents/resources/toolcalling_agent.yaml"
-        )
+        logger.info("in DoclingToolCallingAgent.__init__")
+        prompt_templates = prompt_templates or self._init_prompt_templates()
+
         super().__init__(
             tools=tools,
             model=model,
+            # prompt_templates=None,
             prompt_templates=prompt_templates,
             planning_interval=planning_interval,
             stream_outputs=stream_outputs,
@@ -147,7 +157,43 @@ class DoclingToolCallingAgent(ToolCallingAgent):
             **kwargs,
         )
 
+    def _init_prompt_templates(self) -> PromptTemplates:
+        """Initialize prompt templates based on smolagents version."""
+        current_version = version.parse(smolagents.__version__)
+
+        # Define version-specific template mappings
+        version_templates = [
+            (version.parse("1.21.0"), "toolcalling_agent_latest.yaml"),
+            (version.parse("1.20.0"), "toolcalling_agent_v1.20-release.yaml"),
+        ]
+
+        # Find the appropriate template file
+        chosen_version = None
+        template_file = None
+        for ver, template in version_templates:
+            if current_version >= ver:
+                chosen_version = ver
+                template_file = template
+                break
+
+        if template_file is None:
+            # Fallback to oldest supported version
+            template_file = "toolcalling_agent_v1.20.0.yaml"
+            logger.warning(
+                f"No template found for smolagents version {smolagents.__version__}. "
+                f"Using fallback: {template_file}"
+            )
+
+        file_path = Path(__file__).parent / "resources" / template_file
+        with open(file_path, "r") as fr:
+            prompt_templates = PromptTemplates(yaml.safe_load(fr))
+
+        return prompt_templates
+
     def initialize_system_prompt(self) -> str:
+        print("in DoclingToolCallingAgent.initialize_system_prompt")
+        print("DoclingToolCallingAgent: ", self.tools.values())
+
         system_prompt = populate_template(
             self.prompt_templates["system_prompt"],
             variables={
@@ -304,7 +350,26 @@ class SmolAgentFactory:
 
     def create_tool_calling_agent(self):
         """Create a ToolCallingAgent based on configuration."""
-        self.logger.info("Creating ToolCallingAgent")
+        self.logger.info("Creating DoclingToolCallingAgent")
+
+        """
+        print("================================================================================")
+        agent = ToolCallingAgent(            
+            tools=self.tools,
+            model=self.model,
+            max_steps=self.config.planning_config.max_steps,
+            verbosity_level=self.config.planning_config.verbosity_level,
+            planning_interval=self.config.planning_config.planning_interval,
+            stream_outputs=True,
+            instructions="" #self._get_system_prompt("tool_calling"),
+        )
+
+        instructions = agent.initialize_system_prompt()
+        logger.info(f"instructions for the agent:\n\n{instructions[0:128]}")
+
+        print("================================================================================")
+        """
+
         agent = DoclingToolCallingAgent(
             agent_type="writing",
             tools=self.tools,
@@ -313,11 +378,11 @@ class SmolAgentFactory:
             verbosity_level=self.config.planning_config.verbosity_level,
             planning_interval=self.config.planning_config.planning_interval,
             stream_outputs=True,
-            instructions=self._get_system_prompt("tool_calling"),
+            instructions="",  # self._get_system_prompt("tool_calling"),
         )
 
         instructions = agent.initialize_system_prompt()
-        logger.info(f"instructions for the agent:\n\n{instructions}")
+        logger.info(f"instructions for the agent:\n\n{instructions[0:128]}")
 
         input("continue?")
 
