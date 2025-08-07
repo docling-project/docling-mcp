@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from enum import Enum
 import os
 import json
 import yaml
@@ -19,6 +20,13 @@ from smolagents import (
 )
 from mcp import StdioServerParameters
 from packaging import version
+
+from pathlib import Path
+import smolagents
+from smolagents.models import Model
+from smolagents.tools import Tool
+from smolagents.agents import PromptTemplates, populate_template
+
 
 # Configure logging
 logging.basicConfig(
@@ -124,32 +132,49 @@ class AgentConfig(BaseModel):
                 json.dump(data, f, indent=2)
 
 
-from pathlib import Path
-import smolagents
-from smolagents.models import Model
-from smolagents.tools import Tool
-from smolagents.agents import PromptTemplates, populate_template
+class DoclingAgentType(Enum):
+    """Enumeration of supported agent types."""
+
+    # Core agent types
+    DOCLING_DOCUMENT_WRITER = "writer"
+
+    def __str__(self) -> str:
+        """Return the string value of the enum."""
+        return self.value
+
+    @classmethod
+    def from_string(cls, value: str) -> "AgentType":
+        """Create AgentType from string value."""
+        for agent_type in cls:
+            if agent_type.value == value:
+                return agent_type
+        raise ValueError(
+            f"Invalid agent type: {value}. Valid types: {[t.value for t in cls]}"
+        )
+
+    @classmethod
+    def get_all_types(cls) -> list[str]:
+        """Get all available agent type strings."""
+        return [agent_type.value for agent_type in cls]
 
 
 class DoclingToolCallingAgent(ToolCallingAgent):
     def __init__(
         self,
-        agent_type: str,
         tools: list[Tool],
         model: Model,
-        prompt_templates: PromptTemplates | None = None,
+        agent_type: DoclingAgentType = DoclingAgentType.DOCLING_DOCUMENT_WRITER,
         planning_interval: int | None = None,
         stream_outputs: bool = False,
         max_tool_threads: int | None = None,
         **kwargs,
     ):
         logger.info("in DoclingToolCallingAgent.__init__")
-        prompt_templates = prompt_templates or self._init_prompt_templates()
+        prompt_templates = self._init_prompt_templates()
 
         super().__init__(
             tools=tools,
             model=model,
-            # prompt_templates=None,
             prompt_templates=prompt_templates,
             planning_interval=planning_interval,
             stream_outputs=stream_outputs,
@@ -158,7 +183,6 @@ class DoclingToolCallingAgent(ToolCallingAgent):
         )
 
     def _init_prompt_templates(self) -> PromptTemplates:
-        """Initialize prompt templates based on smolagents version."""
         current_version = version.parse(smolagents.__version__)
 
         # Define version-specific template mappings
@@ -191,9 +215,7 @@ class DoclingToolCallingAgent(ToolCallingAgent):
         return prompt_templates
 
     def initialize_system_prompt(self) -> str:
-        print("in DoclingToolCallingAgent.initialize_system_prompt")
-        print("DoclingToolCallingAgent: ", self.tools.values())
-
+        """Initialize prompt templates based on smolagents version."""
         system_prompt = populate_template(
             self.prompt_templates["system_prompt"],
             variables={
@@ -211,10 +233,8 @@ class SmolAgentFactory:
     def __init__(self, config: AgentConfig):
         """Initialize with configuration."""
         self.config = config
-        print(self.config)
 
         self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
-
         self.logger.info("Initializing LocalSmolagentsWithMCP")
 
         # Setup local model
@@ -288,92 +308,16 @@ class SmolAgentFactory:
             self.logger.error(f"Failed to connect to MCP server: {e}")
             raise
 
-    def _get_system_prompt(self, agent_type: str) -> str:
-        """Get system prompt based on configuration."""
-        prompts = {
-            "tool_calling": {
-                "default": """You are a helpful document processing assistant.
-                You have access to document processing tools via MCP.
-                Always think step by step and use the appropriate tools to help the user.
-                When processing documents, be thorough and provide detailed analysis.""",
-                "detailed": """You are an expert document analysis assistant with access to MCP tools.
-                
-                Your capabilities include:
-                - Converting documents to various formats (markdown, text, etc.)
-                - Extracting tables, figures, and structured data
-                - Generating summaries and Q&A content
-                - Creating new documents with specific formatting
-                
-                Always:
-                1. Understand the user's request completely
-                2. Choose the most appropriate tool for the task
-                3. Provide detailed, well-structured responses
-                4. Handle errors gracefully and suggest alternatives""",
-                "minimal": "You are a document processing assistant. Use tools efficiently.",
-            },
-            "react": {
-                "default": """You are a document analysis expert using ReAct reasoning.
-                
-                For each task:
-                1. THINK about what needs to be done
-                2. ACT by using the appropriate tool
-                3. OBSERVE the results
-                4. REPEAT until the task is complete
-                
-                Always explain your reasoning before taking actions.
-                Use the document processing tools to analyze and extract information.""",
-                "detailed": """You are an advanced document analysis system using ReAct methodology.
-                
-                Your approach:
-                - REASONING: Carefully analyze what the user needs and break it down into steps
-                - ACTION: Select and use the most appropriate tools from your MCP toolkit
-                - OBSERVATION: Examine results critically and determine next steps
-                - ITERATION: Continue until you've fully addressed the user's request
-                
-                Available capabilities:
-                - Document format conversion (PDF, DOCX, HTML → Markdown)
-                - Table and figure extraction with analysis
-                - Content summarization and Q&A generation
-                - Document creation and structuring
-                
-                Always provide clear reasoning for your actions and comprehensive results.""",
-                "minimal": "Think step-by-step. Use ReAct pattern: Reason, Act, Observe. Be concise.",
-            },
-        }
-
-        prompt = prompts[agent_type][self.config.planning_config.system_prompt_style]
-        self.logger.debug(
-            f"Using {self.config.planning_config.system_prompt_style} prompt for {agent_type}"
-        )
-
-        return prompt
-
-    def create_tool_calling_agent(self):
+    def create_tool_calling_agent(
+        self, agent_type: DoclingAgentType = DoclingAgentType.DOCLING_DOCUMENT_WRITER
+    ):
         """Create a ToolCallingAgent based on configuration."""
         self.logger.info("Creating DoclingToolCallingAgent")
 
-        """
-        print("================================================================================")
-        agent = ToolCallingAgent(            
-            tools=self.tools,
-            model=self.model,
-            max_steps=self.config.planning_config.max_steps,
-            verbosity_level=self.config.planning_config.verbosity_level,
-            planning_interval=self.config.planning_config.planning_interval,
-            stream_outputs=True,
-            instructions="" #self._get_system_prompt("tool_calling"),
-        )
-
-        instructions = agent.initialize_system_prompt()
-        logger.info(f"instructions for the agent:\n\n{instructions[0:128]}")
-
-        print("================================================================================")
-        """
-
         agent = DoclingToolCallingAgent(
-            agent_type="writing",
             tools=self.tools,
             model=self.model,
+            agent_type=agent_type,
             max_steps=self.config.planning_config.max_steps,
             verbosity_level=self.config.planning_config.verbosity_level,
             planning_interval=self.config.planning_config.planning_interval,
@@ -381,8 +325,8 @@ class SmolAgentFactory:
             instructions="",  # self._get_system_prompt("tool_calling"),
         )
 
-        instructions = agent.initialize_system_prompt()
-        logger.info(f"instructions for the agent:\n\n{instructions[0:128]}")
+        system_prompt = agent.initialize_system_prompt()
+        logger.info(f"instructions for the agent:\n\n{system_prompt}")
 
         input("continue?")
 
