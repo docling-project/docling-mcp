@@ -802,6 +802,13 @@ llama-stack = [
     { name = "llama-stack-client", version = "0.2.12", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
     { name = "llama-stack-client", version = "0.2.16", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
 ]
+smolagents = [
+    { name = "accelerate" },
+    { name = "ollama" },
+    { name = "smolagents", extra = ["litellm", "mcp"] },
+    { name = "torch" },
+    { name = "transformers" },
+]
 
 [package.dev-dependencies]
 dev = [
@@ -822,6 +829,7 @@ examples = [
 
 [package.metadata]
 requires-dist = [
+    { name = "accelerate", marker = "extra == 'smolagents'", specifier = ">=0.20.0" },
     { name = "docling", specifier = "~=2.25" },
     { name = "fire", marker = "extra == 'llama-stack'", specifier = ">=0.7.0" },
     { name = "httpx", specifier = ">=0.28.1" },
@@ -836,11 +844,15 @@ requires-dist = [
     { name = "llama-index-vector-stores-milvus", marker = "extra == 'llama-index-rag'", specifier = ">=0.7.2" },
     { name = "llama-stack-client", marker = "extra == 'llama-stack'", specifier = ">=0.2.12" },
     { name = "mcp", extras = ["cli"], specifier = ">=1.9.4" },
+    { name = "ollama", marker = "extra == 'smolagents'", specifier = ">=0.1.0" },
     { name = "pydantic", specifier = "~=2.10" },
     { name = "pydantic-settings", specifier = "~=2.4" },
     { name = "python-dotenv", specifier = ">=1.1.0" },
+    { name = "smolagents", extras = ["mcp", "litellm"], marker = "extra == 'smolagents'", specifier = ">=1.0.0" },
+    { name = "torch", marker = "extra == 'smolagents'", specifier = ">=2.0.0" },
+    { name = "transformers", marker = "extra == 'smolagents'", specifier = ">=4.30.0" },
 ]
-provides-extras = ["llama-index-rag", "llama-stack"]
+provides-extras = ["llama-index-rag", "llama-stack", "smolagents"]
 
 [package.metadata.requires-dev]
 dev = [
@@ -1763,6 +1775,25 @@ wheels = [
 ]
 
 [[package]]
+name = "litellm"
+version = "1.74.15.post1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "aiohttp" },
+    { name = "click" },
+    { name = "httpx" },
+    { name = "importlib-metadata" },
+    { name = "jinja2" },
+    { name = "jsonschema" },
+    { name = "openai" },
+    { name = "pydantic" },
+    { name = "python-dotenv" },
+    { name = "tiktoken" },
+    { name = "tokenizers" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/3e/fc/02bfc7dcf6276fbbd5acf0ebcb188f824cf6d4ee8013d7150458c77c7047/litellm-1.74.15.post1.tar.gz", hash = "sha256:8c0f73f89f15603afebbc912cb30ba6f18439eb12249f16a37646752fb76825e", size = 9711380, upload-time = "2025-08-02T22:05:05.361Z" }
+
+[[package]]
 name = "llama-cloud"
 version = "0.1.35"
 source = { registry = "https://pypi.org/simple" }
@@ -2376,6 +2407,21 @@ wheels = [
 cli = [
     { name = "python-dotenv" },
     { name = "typer" },
+]
+
+[[package]]
+name = "mcpadapt"
+version = "0.1.12"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "jsonref" },
+    { name = "mcp" },
+    { name = "pydantic" },
+    { name = "python-dotenv" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/f4/f6/006dd6f7d527adc0f99df6aee89c6a9ecc651b315c99052a8e51146f7c1f/mcpadapt-0.1.12.tar.gz", hash = "sha256:e0b39a73c79d310b00d70ef5a10afbdebead6b7965cf158217e9b9517db8cc2e", size = 4224935, upload-time = "2025-08-03T20:39:28.744Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/16/17/244566a37828772a33eca964401f82259a1b593566f7ac2281c5de600ff6/mcpadapt-0.1.12-py3-none-any.whl", hash = "sha256:f477a3f931a70e26d66f9cebde89f53404d8be298a5714e6c57948422402d1ed", size = 18449, upload-time = "2025-08-03T20:39:27.046Z" },
 ]
 
 [[package]]
@@ -4810,6 +4856,32 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/44/cd/a040c4b3119bbe532e5b0732286f805445375489fceaec1f48306068ee3b/smmap-5.0.2.tar.gz", hash = "sha256:26ea65a03958fa0c8a1c7e8c7a58fdc77221b8910f6be2131affade476898ad5", size = 22329, upload-time = "2025-01-02T07:14:40.909Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/04/be/d09147ad1ec7934636ad912901c5fd7667e1c858e19d355237db0d0cd5e4/smmap-5.0.2-py3-none-any.whl", hash = "sha256:b30115f0def7d7531d22a0fb6502488d879e75b260a9db4d0819cfb25403af5e", size = 24303, upload-time = "2025-01-02T07:14:38.724Z" },
+]
+
+[[package]]
+name = "smolagents"
+version = "1.20.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "huggingface-hub" },
+    { name = "jinja2" },
+    { name = "pillow" },
+    { name = "python-dotenv" },
+    { name = "requests" },
+    { name = "rich" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/35/ee/1733f20e8d181afc8acadb52ee8457e9c142735456d715ff47b25320341c/smolagents-1.20.0.tar.gz", hash = "sha256:b59950b7f6d4e51930bb651793046d9aea6856f8680651680c51a9202bec35ff", size = 196149, upload-time = "2025-07-10T16:20:42.295Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/04/f2/ea0dd074db7ef6e437e0ae8785529ce816d3b331c40d21cbe76a6f548816/smolagents-1.20.0-py3-none-any.whl", hash = "sha256:a838fcee1c06bae8f6c907992d2f08385f4a3a33938bb578e3c4f42111f9bd21", size = 145354, upload-time = "2025-07-10T16:20:40.264Z" },
+]
+
+[package.optional-dependencies]
+litellm = [
+    { name = "litellm" },
+]
+mcp = [
+    { name = "mcp" },
+    { name = "mcpadapt" },
 ]
 
 [[package]]

@@ -171,37 +171,3 @@ def convert_document_into_docling_document(
         raise McpError(
             ErrorData(code=INTERNAL_ERROR, message=f"Unexpected error: {e!s}")
         ) from e
-
-
-# @mcp.tool()
-# def convert_attachments_into_docling_document(
-#     pdf_payloads: list[Annotated[bytes, {"media_type": "application/octet-stream"}]],
-# ) -> list[dict[str, Any]]:
-#     """Process a pdf files attachment from Claude Desktop.
-
-#     Args:
-#         pdf_payloads: PDF document as binary data from the attachment
-
-#     Returns:
-#         A dictionary with processed results
-#     """
-#     results = []
-#     for pdf_payload in pdf_payloads:
-#         # Example processing - you can replace this with your actual processing logic
-#         file_size = len(pdf_payload)
-
-#         # First few bytes as hex for identification
-#         header_bytes = pdf_payload[:10].hex()
-
-#         # You can implement file type detection, parsing, or any other processing here
-#         # For example, if it's an image, you might use PIL to process it
-
-#         results.append(
-#             {
-#                 "file_size_bytes": file_size,
-#                 "header_hex": header_bytes,
-#                 "status": "processed",
-#             }
-#         )
-
-#     return results

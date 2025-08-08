@@ -66,6 +66,13 @@ llama-stack = [
     "fire>=0.7.0",
     "llama-stack-client>=0.2.12",
 ]
+smolagents = [
+    "smolagents[mcp,litellm]>=1.0.0",
+    "torch>=2.0.0",
+    "transformers>=4.30.0",
+    "accelerate>=0.20.0",
+    "ollama>=0.1.0",
+]
 
 [dependency-groups]
 dev = [
