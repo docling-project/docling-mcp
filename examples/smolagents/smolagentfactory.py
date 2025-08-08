@@ -226,16 +226,24 @@ class DoclingToolCallingAgent(ToolCallingAgent):
         )
         return system_prompt
 
+    def run(self, task: str):
+        for tool in self.tools:
+            print(tool)
+            print(f"{tool.name}: {tool.description}")
 
-class SmolAgentFactory:
+            if tool.name == "create_new_docling_document":
+                output = tool.forward(prompt=f"Write a new document for {task}")
+                print(output)
+
+        exit(-1)
+
+
+class SmolDoclingAgentFactory:
     """Main class to demonstrate local agents with MCP tools."""
 
     def __init__(self, config: AgentConfig):
         """Initialize with configuration."""
         self.config = config
-
-        self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
-        self.logger.info("Initializing LocalSmolagentsWithMCP")
 
         # Setup local model
         self.model = self._setup_local_model()
@@ -243,17 +251,17 @@ class SmolAgentFactory:
         # Setup MCP tools
         self.tools = self._setup_mcp_tools()
 
-        self.logger.info(f"Initialized with {len(self.tools)} MCP tools")
-        self.logger.info(
+        logger.info(f"Initialized with {len(self.tools)} MCP tools")
+        logger.info(
             f"Using model: {self.config.model_config.type} - {self.config.model_config.model_id}"
         )
 
     def _setup_local_model(self):
         """Setup local model based on configuration."""
-        self.logger.info(f"Setting up {self.config.model_config} model")
+        logger.info(f"Setting up {self.config.model_config} model")
 
         if self.config.model_config.type == "ollama":
-            self.logger.info(
+            logger.info(
                 f"Connecting to Ollama at {self.config.model_config.ollama_base_url}"
             )
             # return OllamaModel(
@@ -264,7 +272,7 @@ class SmolAgentFactory:
                 * 8192,  # ollama default is 2048 which will often fail horribly.
             )
         else:
-            self.logger.info(
+            logger.info(
                 f"Loading transformers model: {self.config.model_config.model_id}"
             )
             return TransformersModel(
@@ -282,7 +290,7 @@ class SmolAgentFactory:
                 "url": self.config.mcp_config.server_url,
                 "transport": "sse",
             }
-            self.logger.info(
+            logger.info(
                 f"Connecting to MCP server at {self.config.mcp_config.server_url}"
             )
         else:
@@ -291,7 +299,7 @@ class SmolAgentFactory:
                 args=self.config.mcp_config.args,
                 env=os.environ.copy(),
             )
-            self.logger.info(
+            logger.info(
                 f"Starting MCP server with command: {self.config.mcp_config.command}"
             )
 
@@ -300,19 +308,19 @@ class SmolAgentFactory:
             tools = self.mcp_client.get_tools()
 
             for i, tool in enumerate(tools):
-                self.logger.info(f"tool-{i}:\t {tool}")
+                logger.info(f"tool-{i}:\t {tool}")
 
-            self.logger.info(f"Successfully loaded {len(tools)} tools from MCP server")
+            logger.info(f"Successfully loaded {len(tools)} tools from MCP server")
             return tools
         except Exception as e:
-            self.logger.error(f"Failed to connect to MCP server: {e}")
+            logger.error(f"Failed to connect to MCP server: {e}")
             raise
 
     def create_tool_calling_agent(
         self, agent_type: DoclingAgentType = DoclingAgentType.DOCLING_DOCUMENT_WRITER
     ):
         """Create a ToolCallingAgent based on configuration."""
-        self.logger.info("Creating DoclingToolCallingAgent")
+        logger.info("Creating DoclingToolCallingAgent")
 
         agent = DoclingToolCallingAgent(
             tools=self.tools,
@@ -328,13 +336,11 @@ class SmolAgentFactory:
         system_prompt = agent.initialize_system_prompt()
         logger.info(f"instructions for the agent:\n\n{system_prompt}")
 
-        input("continue?")
-
         return agent
 
     def create_react_agent(self):
         """Create a ReAct-style agent based on configuration."""
-        self.logger.info("Creating CodeAgent (ReAct)")
+        logger.info("Creating CodeAgent (ReAct)")
         agent = CodeAgent(
             tools=self.tools,
             model=self.model,
@@ -353,18 +359,27 @@ def main():
     model_config = ModelConfig(
         type="ollama", model_id="ollama/smollm2", device="cpu", torch_dtype="auto"
     )
+    """
+    model_config = ModelConfig(
+        type="ollama", model_id="ollama/gpt-oss:20b", device="cpu", torch_dtype="auto"
+    )
+    """
 
     agent_config = (
         AgentConfig().with_model_config(model_config=model_config).do_streaming(True)
     )
 
-    factory = SmolAgentFactory(config=agent_config)
+    factory = SmolDoclingAgentFactory(config=agent_config)
 
     agent = factory.create_tool_calling_agent()
 
+    task = input("give me a task")
+    result = agent.run(task)
+    """
     result = agent.run(
         "Write a short document on the use of polymers for food-packaging."
     )
+    """
     print(result)
 
 
