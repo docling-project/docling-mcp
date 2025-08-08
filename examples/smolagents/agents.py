@@ -99,7 +99,9 @@ class DoclingWritingAgent(BaseDoclingAgent):
 2. follow-up questions:
     - ...
     - ...                
-```                
+```
+
+Make sure that the Markdown outline is always enclosed in ```markdown <markdown-content> ```!
 """
 
     system_prompt_for_outline: ClassVar[
@@ -143,6 +145,8 @@ list: <1 sentence summary of what the list enumerates>
 
 list: <1 sentence summary of what the list enumerates>
 ```
+
+Make sure that the Markdown outline is always enclosed in ```markdown <markdown-content> ```!     
 """
 
     system_prompt_expert_writer: ClassVar[
@@ -178,7 +182,9 @@ or nested list based on a summary. Really stick to the summary and be specific, 
 
         document: DoclingDocument = self._make_outline_for_writing(task=task)
 
-        self._populate_document_with_content(task=task, document=document)
+        document = self._populate_document_with_content(task=task, document=document)
+
+        print(document.export_to_markdown(text_width=72))
 
     def _analyse_task_for_topics_and_followup_questions(self, *, task: str):
         chat_messages = [
@@ -249,7 +255,6 @@ or nested list based on a summary. Really stick to the summary and be specific, 
         )
 
         document = results[0]
-
         return document
 
     def _populate_document_with_content(self, *, task: str, document: DoclingDocument):
@@ -269,6 +274,8 @@ or nested list based on a summary. Really stick to the summary and be specific, 
                 elif item.text.startswith("table:"):
                     summary = item.text.replace("table:", "").strip()
                     logger.info(f"need to write a table: {summary}")
+
+        return document
 
     def _analyse_output_into_docling_document(
         self, message: ChatMessage, language: str = "markdown"
