@@ -102,6 +102,18 @@ class BaseDoclingAgent(BaseModel):
 class DoclingWritingAgent(BaseDoclingAgent):
     task_analysis: DoclingDocument = DoclingDocument()
 
+    system_prompt_for_task_analysis = """You are an expert planner that needs to make a plan to write a document. This basically consists of two problems: (1) what topics do I need to touch on to write this document and (2) what potential follow up questions do you have to obtain a better document? Provide your answer in markdown as a nested list with the following template
+
+```markdown
+1. topics:
+    - ...
+    - ...
+2. follow-up questions:
+    - ...
+    - ...                
+```                
+"""
+
     def __init__(self, *, model: Model, tools: list[Tool]):
         super().__init__(
             agent_type=DoclingAgentType.DOCLING_DOCUMENT_WRITER,
@@ -138,18 +150,7 @@ class DoclingWritingAgent(BaseDoclingAgent):
                 content=[
                     {
                         "type": "text",
-                        "text": """You are an expert planner that needs to make a plan to write a document. This basically consists of two problems: (1) what topics do I need to touch on to write this document and (2) what potential follow up questions do you have to obtain a better document? Provide your answer in markdown as a nested list with the following template
-
-```markdown
-1. topics:
-    - ...
-    - ...
-2. follow-up questions:
-    - ...
-    - ...                
-```                
-
-                """,
+                        "text": system_prompt_for_task_analysis,
                     }
                 ],
             ),
