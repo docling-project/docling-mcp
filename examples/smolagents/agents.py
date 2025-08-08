@@ -7,6 +7,8 @@ from abc import ABC, abstractmethod
 from enum import Enum
 from pydantic import BaseModel, Field, validator
 
+from typing import ClassVar
+
 from smolagents.models import MessageRole, ChatMessage, Model
 from smolagents import (
     MCPClient,
@@ -25,6 +27,10 @@ from docling_core.types.doc.document import (
     ContentLayer,
     DoclingDocument,
     GroupItem,
+    TitleItem,
+    SectionHeaderItem,
+    TextItem,
+    ListItem,
     LevelNumber,
 )
 
@@ -65,26 +71,6 @@ class DoclingAgentType(Enum):
         return [agent_type.value for agent_type in cls]
 
 
-"""    
-class BaseDoclingAgent(BaseModel):
-
-    def __init__(self,
-                 *,
-                 agent_type: DoclingAgentType,
-                 model:Model,
-                 tools: list[Tool]):
-        self.agent_type = agent_type
-        self.model = model
-        self.tools = tools
-
-        self.chat_history: list[ChatMessages] = []
-        
-    @abstractmethod
-    def run(self, task:str, **kwargs) -> str:
-        return
-"""
-
-
 class BaseDoclingAgent(BaseModel):
     agent_type: DoclingAgentType
     model: Model
@@ -100,9 +86,11 @@ class BaseDoclingAgent(BaseModel):
 
 
 class DoclingWritingAgent(BaseDoclingAgent):
-    task_analysis: DoclingDocument = DoclingDocument()
+    task_analysis: DoclingDocument = DoclingDocument(name=f"report")
 
-    system_prompt_for_task_analysis = """You are an expert planner that needs to make a plan to write a document. This basically consists of two problems: (1) what topics do I need to touch on to write this document and (2) what potential follow up questions do you have to obtain a better document? Provide your answer in markdown as a nested list with the following template
+    system_prompt_for_task_analysis: ClassVar[
+        str
+    ] = """You are an expert planner that needs to make a plan to write a document. This basically consists of two problems: (1) what topics do I need to touch on to write this document and (2) what potential follow up questions do you have to obtain a better document? Provide your answer in markdown as a nested list with the following template
 
 ```markdown
 1. topics:
@@ -112,6 +100,55 @@ class DoclingWritingAgent(BaseDoclingAgent):
     - ...
     - ...                
 ```                
+"""
+
+    system_prompt_for_outline: ClassVar[
+        str
+    ] = """You are an expert writer that needs to make an outline for a document, i.e. the overall structure of the document in terms of section-headers, text, lists, tables and figures. This outline can be represented as a markdown document. The goal is to have structure of the document with all its items and to provide a 1 sentence summary of each item.   
+
+Below, you see a typical example,
+
+```markdown
+# <title>
+
+paragraph: <abstract>
+    
+## <first section-header>
+
+paragraph: <1 sentence summary of paragraph>
+
+picture: <1 sentence summary of picture with emphasis on the x- and y-axis>
+    
+paragraph: <1 sentence summary of paragraph>
+    
+## <second section-header>
+
+paragraph: <1 sentence summary of paragraph>
+
+### <first subsection-header>
+
+paragraph: <1 sentence summary of paragraph>
+    
+paragraph: <1 sentence summary of paragraph>
+    
+table: <1 sentence summary of table with emphasis on the row and column headers>
+
+paragraph: <1 sentence summary of paragraph>    
+
+list: <1 sentence summary of what the list enumerates>
+    
+...
+    
+## References
+
+list: <1 sentence summary of what the list enumerates>
+```
+"""
+
+    system_prompt_expert_writer: ClassVar[
+        str
+    ] = """You are an expert writer that needs to write a single paragraph, table
+or nested list based on a summary. Really stick to the summary and be specific, but do not write on adjacent topics    
 """
 
     def __init__(self, *, model: Model, tools: list[Tool]):
@@ -135,13 +172,13 @@ class DoclingWritingAgent(BaseDoclingAgent):
         return system_prompt
 
     def run(self, task: str, **kwargs):
-        self._analyse_task_for_topics_and_followup_questions(task=task)
+        # self._analyse_task_for_topics_and_followup_questions(task=task)
 
-        self._analyse_task_for_final_destination(task=task)
+        # self._analyse_task_for_final_destination(task=task)
 
-        self._make_outline_for_writing()
+        document: DoclingDocument = self._make_outline_for_writing(task=task)
 
-        self._populate_document_with_content()
+        self._populate_document_with_content(task=task, document=document)
 
     def _analyse_task_for_topics_and_followup_questions(self, *, task: str):
         chat_messages = [
@@ -150,7 +187,7 @@ class DoclingWritingAgent(BaseDoclingAgent):
                 content=[
                     {
                         "type": "text",
-                        "text": system_prompt_for_task_analysis,
+                        "text": self.system_prompt_for_task_analysis,
                     }
                 ],
             ),
@@ -161,7 +198,6 @@ class DoclingWritingAgent(BaseDoclingAgent):
         ]
 
         output = self.model.generate(messages=chat_messages)
-        print(output)
 
         self.chat_history.extend(chat_messages)
         self.chat_history.append(output)
@@ -185,11 +221,54 @@ class DoclingWritingAgent(BaseDoclingAgent):
     def _analyse_task_for_final_destination(self, *, task: str):
         return
 
-    def _make_outline_for_writing(self):
-        return
+    def _make_outline_for_writing(self, *, task: str) -> DoclingDocument:
+        chat_messages = [
+            ChatMessage(
+                role=MessageRole.SYSTEM,
+                content=[
+                    {
+                        "type": "text",
+                        "text": self.system_prompt_for_outline,
+                    }
+                ],
+            ),
+            ChatMessage(
+                role=MessageRole.USER,
+                content=[{"type": "text", "text": f"{task}"}],
+            ),
+        ]
 
-    def _populate_document_with_content(self):
-        return
+        output = self.model.generate(messages=chat_messages)
+
+        self.chat_history.extend(chat_messages)
+        self.chat_history.append(output)
+
+        results = self._analyse_output_into_docling_document(message=output)
+        assert len(results) == 1, (
+            "We only want to see a single response from the initial task analysis"
+        )
+
+        document = results[0]
+
+        return document
+
+    def _populate_document_with_content(self, *, task: str, document: DoclingDocument):
+        for item, level in document.iterate_items(with_groups=True):
+            if isinstance(item, TitleItem) or isinstance(item, SectionHeaderItem):
+                logger.info(f"starting in {item.text}")
+            elif isinstance(item, TextItem):
+                if item.text.startswith("paragraph:"):
+                    summary = item.text.replace("paragraph:", "").strip()
+                    logger.info(f"need to write a paragraph: {summary})")
+                    content = self._write_paragraph(
+                        summary=summary, item_type="paragraph"
+                    )
+
+                    item.text = content
+
+                elif item.text.startswith("table:"):
+                    summary = item.text.replace("table:", "").strip()
+                    logger.info(f"need to write a table: {summary}")
 
     def _analyse_output_into_docling_document(
         self, message: ChatMessage, language: str = "markdown"
@@ -198,6 +277,10 @@ class DoclingWritingAgent(BaseDoclingAgent):
             pattern = rf"```{language}\s*(.*?)\s*```"
             matches = re.findall(pattern, text, re.DOTALL)
             return matches
+
+        print(
+            f"content: \n\n--------------------\n{message.content}\n--------------------\n"
+        )
 
         converter = DocumentConverter(allowed_formats=[InputFormat.MD])
 
@@ -216,12 +299,46 @@ class DoclingWritingAgent(BaseDoclingAgent):
 
         return result
 
+    def _write_paragraph(
+        self, summary: str, item_type: str, task: str = "", hierarchy: list[str] = []
+    ) -> str:
+        chat_messages = [
+            ChatMessage(
+                role=MessageRole.SYSTEM,
+                content=[
+                    {
+                        "type": "text",
+                        "text": self.system_prompt_expert_writer,
+                    }
+                ],
+            ),
+            ChatMessage(
+                role=MessageRole.USER,
+                content=[
+                    {
+                        "type": "text",
+                        "text": f"write me a single {item_type} that expands the following summary: {summary}",
+                    }
+                ],
+            ),
+        ]
+
+        output = self.model.generate(messages=chat_messages)
+        return output.content
+
 
 def main():
+    """
+    model_config = ModelConfig(
+        type="ollama",
+        model_id="ollama/smollm2",  # , device="cpu", torch_dtype="auto"
+    )
+    """
     model_config = ModelConfig(
         type="ollama",
         model_id="ollama/gpt-oss:20b",  # , device="cpu", torch_dtype="auto"
     )
+
     model = setup_local_model(config=model_config)
 
     tools_config = MCPConfig()
