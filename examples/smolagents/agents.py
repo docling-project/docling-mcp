@@ -28,10 +28,12 @@ from docling_core.types.doc.document import (
     DoclingDocument,
     GroupItem,
     TitleItem,
+    TableItem,
     SectionHeaderItem,
     TextItem,
     ListItem,
     LevelNumber,
+    DocItemLabel,
 )
 
 
@@ -76,6 +78,7 @@ class BaseDoclingAgent(BaseModel):
     model: Model
     tools: list[Tool]
     chat_history: list[ChatMessage]
+    max_iteration: int = 16
 
     class Config:
         arbitrary_types_allowed = True  # Needed for complex types like Model
@@ -141,18 +144,22 @@ list: <1 sentence summary of what the list enumerates>
     
 ...
     
-## References
+## <final section header>
 
 list: <1 sentence summary of what the list enumerates>
 ```
 
-Make sure that the Markdown outline is always enclosed in ```markdown <markdown-content> ```!     
+Make sure that the Markdown outline is always enclosed in ```markdown <markdown-content>```!     
 """
 
     system_prompt_expert_writer: ClassVar[
         str
-    ] = """You are an expert writer that needs to write a single paragraph, table
-or nested list based on a summary. Really stick to the summary and be specific, but do not write on adjacent topics    
+    ] = """You are an expert writer that needs to write a single paragraph, table or nested list based on a summary. Really stick to the summary and be specific, but do not write on adjacent topics.    
+"""
+
+    system_prompt_expert_table_writer: ClassVar[
+        str
+    ] = """You are an expert writer that needs to write a single HTML table based on a summary. Really stick to the summary. Try to make interesting tables and leverage multi-column headers. If you have units in the table, make sure the units are in the column or row-headers of the table.     
 """
 
     def __init__(self, *, model: Model, tools: list[Tool]):
@@ -182,7 +189,7 @@ or nested list based on a summary. Really stick to the summary and be specific, 
 
         document: DoclingDocument = self._make_outline_for_writing(task=task)
 
-        document = self._populate_document_with_content(task=task, document=document)
+        document = self._populate_document_with_content(task=task, outline=document)
 
         print(document.export_to_markdown(text_width=72))
 
@@ -244,36 +251,139 @@ or nested list based on a summary. Really stick to the summary and be specific, 
             ),
         ]
 
-        output = self.model.generate(messages=chat_messages)
+        iteration = 0
+        while iteration < self.max_iteration:
+            iteration += 1
+            logger.info(f"_make_outline_for_writing: iteration {iteration}")
 
-        self.chat_history.extend(chat_messages)
-        self.chat_history.append(output)
+            output = self.model.generate(messages=chat_messages)
 
-        results = self._analyse_output_into_docling_document(message=output)
-        assert len(results) == 1, (
-            "We only want to see a single response from the initial task analysis"
-        )
+            results = self._analyse_output_into_docling_document(message=output)
 
-        document = results[0]
-        return document
+            if len(results) == 0:
+                chat_messages.append(
+                    ChatMessage(
+                        role=MessageRole.USER,
+                        content=[
+                            {
+                                "type": "text",
+                                "text": f"I see now markdown section. Please try again and add a markdown section in the format ```markdown <insert-content>``` for task: {task}!",
+                            }
+                        ],
+                    )
+                )
+                continue
+            elif len(results) > 1:
+                chat_messages.append(
+                    ChatMessage(
+                        role=MessageRole.USER,
+                        content=[
+                            {
+                                "type": "text",
+                                "text": f"I see multiple markdown sections. Please try again and only add a single markdown section in the format ```markdown <insert-content>``` for task: {task}!",
+                            }
+                        ],
+                    )
+                )
+                continue
+            else:
+                logger.info("We obtained a markdown for the outline!")
 
-    def _populate_document_with_content(self, *, task: str, document: DoclingDocument):
-        for item, level in document.iterate_items(with_groups=True):
-            if isinstance(item, TitleItem) or isinstance(item, SectionHeaderItem):
+            document = results[0]
+            logger.info(f"outline: {document.export_to_markdown()}")
+
+            starts = [
+                "paragraph: ",
+                "table: ",
+                "picture: ",
+                "list: ",
+            ]
+            lines = []
+            for item, level in document.iterate_items(with_groups=True):
+                if isinstance(item, TitleItem) or isinstance(item, SectionHeaderItem):
+                    continue
+                elif isinstance(item, TextItem):
+                    good: bool = False
+                    for start in starts:
+                        if item.text.startswith(start):
+                            good = True
+                            break
+
+                    if not good:
+                        lines.append(item.text)
+
+            logger.info(f"broken lines: {'\n'.join(lines)}")
+
+            if len(lines) > 0:
+                message = f"Every content line should start with one out of the following choices: {starts}. The following lines need to be updated: {'\n'.join(lines)}"
+                chat_messages.append(
+                    ChatMessage(
+                        role=MessageRole.USER,
+                        content=[{"type": "text", "text": message}],
+                    )
+                )
+            else:
+                self.chat_history.extend(chat_messages)
+                self.chat_history.append(output)
+
+                logger.info(
+                    f"Finished an outline for document: {document.export_to_markdown()}"
+                )
+                return document
+
+        raise ValueError("Could not make a correct outline!")
+
+    def _populate_document_with_content(
+        self, *, task: str, outline: DoclingDocument
+    ) -> DoclingDocument:
+        headers: dict[int, str] = {}
+
+        document = DoclingDocument(name=f"report on task: `{task}`")
+
+        for item, level in outline.iterate_items(with_groups=True):
+            if isinstance(item, TitleItem):
+                headers[0] = item.text
+                document.add_title(text=item.text)
+
+            elif isinstance(item, SectionHeaderItem):
                 logger.info(f"starting in {item.text}")
+                headers[item.level] = item.text
+
+                document.add_heading(text=item.text, level=item.level)
+
+                import copy
+
+                keys = copy.deepcopy(list(headers.keys()))
+                for key in keys:
+                    if key > item.level:
+                        del headers[key]
+
             elif isinstance(item, TextItem):
                 if item.text.startswith("paragraph:"):
-                    summary = item.text.replace("paragraph:", "").strip()
+                    summary = item.text.replace("paragraph: ", "").strip()
+
                     logger.info(f"need to write a paragraph: {summary})")
                     content = self._write_paragraph(
                         summary=summary, item_type="paragraph"
                     )
+                    document.add_text(label=DocItemLabel.TEXT, text=content)
 
-                    item.text = content
+                elif item.text.startswith("list:"):
+                    summary = item.text.replace("list:", "").strip()
+                    logger.info(f"need to write a list: {summary}")
+
+                    document.add_text(label=DocItemLabel.TEXT, text=item.text)
 
                 elif item.text.startswith("table:"):
                     summary = item.text.replace("table:", "").strip()
                     logger.info(f"need to write a table: {summary}")
+
+                    table_item = self._write_table(summary=summary)
+
+                    caption = document.add_text(
+                        label=DocItemLabel.CAPTION, text=summary
+                    )
+                    document.add_table(data=table_item.data, caption=caption)
 
         return document
 
@@ -285,24 +395,17 @@ or nested list based on a summary. Really stick to the summary and be specific, 
             matches = re.findall(pattern, text, re.DOTALL)
             return matches
 
-        print(
-            f"content: \n\n--------------------\n{message.content}\n--------------------\n"
-        )
-
         converter = DocumentConverter(allowed_formats=[InputFormat.MD])
 
         result = []
         for mtch in extract_code_blocks(message.content, language=language):
             md_doc: str = mtch
-            print("md-doc:\n\n", md_doc)
 
             buff = BytesIO(md_doc.encode("utf-8"))
             doc_stream = DocumentStream(name="tmp.md", stream=buff)
 
             conv_result: ConversionResult = converter.convert(doc_stream)
             result.append(conv_result.document)
-
-        logger.warning(f"#-results: {len(result)}")
 
         return result
 
@@ -332,6 +435,72 @@ or nested list based on a summary. Really stick to the summary and be specific, 
 
         output = self.model.generate(messages=chat_messages)
         return output.content
+
+    def _write_table(self, summary: str, hierarchy: list[str] = []) -> TableItem | None:
+        def extract_code_blocks(text):
+            pattern = rf"```html(.*?)```"
+            matches = re.findall(pattern, text, re.DOTALL)
+            if len(matches) > 0:
+                return matches[0]
+
+            pattern = rf"<html>(.*?)</html>"
+            matches = re.findall(pattern, text, re.DOTALL)
+            if len(matches) > 0:
+                return matches[0]
+
+            return None
+
+        chat_messages = [
+            ChatMessage(
+                role=MessageRole.SYSTEM,
+                content=[
+                    {
+                        "type": "text",
+                        "text": self.system_prompt_expert_table_writer,
+                    }
+                ],
+            ),
+            ChatMessage(
+                role=MessageRole.USER,
+                content=[
+                    {
+                        "type": "text",
+                        "text": f"write me a single table in HTML that expands the following summary: {summary}",
+                    }
+                ],
+            ),
+        ]
+
+        doc = None
+
+        converter = DocumentConverter(allowed_formats=[InputFormat.HTML])
+
+        iteration = 0
+        while iteration < self.max_iteration:
+            iteration += 1
+
+            output = self.model.generate(messages=chat_messages)
+            print("output:\n\n", output.content)
+
+            html_doc: str = extract_code_blocks(output.content)
+            print("html-doc:\n\n", html_doc)
+
+            try:
+                buff = BytesIO(html_doc.encode("utf-8"))
+                doc_stream = DocumentStream(name="tmp.html", stream=buff)
+
+                conv_result: ConversionResult = converter.convert(doc_stream)
+                doc = conv_result.document
+
+                if doc:
+                    for item, level in doc.iterate_items(with_groups=True):
+                        if isinstance(item, TableItem):
+                            return item
+
+            except Exception as exc:
+                logger.error(f"error with html conversion: {exc}")
+
+        return None
 
 
 def main():
