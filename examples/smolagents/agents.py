@@ -1,42 +1,42 @@
-import re
+import copy
 import logging
-
-from io import BytesIO
-from abc import ABC, abstractmethod
-
+import re
+from datetime import datetime
 from enum import Enum
-from pydantic import BaseModel, Field, validator
-
+from io import BytesIO
 from typing import ClassVar
 
-from datetime import datetime
+from pydantic import BaseModel, Field, validator
 
-from smolagents.models import MessageRole, ChatMessage, Model
-from smolagents import (
-    MCPClient,
-    ToolCollection,
-    Tool,
-)
+from smolagents import MCPClient, Tool, ToolCollection
+from smolagents.models import ChatMessage, MessageRole, Model
 
 from docling.datamodel.base_models import ConversionStatus, InputFormat
-from docling.datamodel.document import (
-    ConversionResult,
-)
-from docling_core.types.io import DocumentStream
+from docling.datamodel.document import ConversionResult
 from docling.document_converter import DocumentConverter
-
 from docling_core.types.doc.document import (
     ContentLayer,
+    DocItemLabel,
     DoclingDocument,
     GroupItem,
-    TitleItem,
-    TableItem,
-    SectionHeaderItem,
-    TextItem,
-    ListItem,
     LevelNumber,
-    DocItemLabel,
+    ListItem,
+    SectionHeaderItem,
+    TableItem,
+    TextItem,
+    TitleItem,
 )
+from docling_core.types.io import DocumentStream
+
+from examples.smolagents.agent_model import ModelConfig, setup_local_model
+from examples.smolagents.agent_tools import MCPConfig, setup_mcp_tools
+from examples.smolagents.resources.prompts import (
+    SYSTEM_PROMPT_FOR_TASK_ANALYSIS,
+    SYSTEM_PROMPT_FOR_OUTLINE,
+    SYSTEM_PROMPT_EXPERT_WRITER,
+    SYSTEM_PROMPT_EXPERT_TABLE_WRITER,
+)
+from abc import abstractmethod
 
 
 # Configure logging
@@ -44,9 +44,6 @@ logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
-
-from examples.smolagents.agent_model import ModelConfig, setup_local_model
-from examples.smolagents.agent_tools import MCPConfig, setup_mcp_tools
 
 
 class DoclingAgentType(Enum):
@@ -93,76 +90,13 @@ class BaseDoclingAgent(BaseModel):
 class DoclingWritingAgent(BaseDoclingAgent):
     task_analysis: DoclingDocument = DoclingDocument(name=f"report")
 
-    system_prompt_for_task_analysis: ClassVar[
-        str
-    ] = """You are an expert planner that needs to make a plan to write a document. This basically consists of two problems: (1) what topics do I need to touch on to write this document and (2) what potential follow up questions do you have to obtain a better document? Provide your answer in markdown as a nested list with the following template
+    system_prompt_for_task_analysis: ClassVar[str] = SYSTEM_PROMPT_FOR_TASK_ANALYSIS
 
-```markdown
-1. topics:
-    - ...
-    - ...
-2. follow-up questions:
-    - ...
-    - ...                
-```
+    system_prompt_for_outline: ClassVar[str] = SYSTEM_PROMPT_FOR_OUTLINE
 
-Make sure that the Markdown outline is always enclosed in ```markdown <markdown-content> ```!
-"""
+    system_prompt_expert_writer: ClassVar[str] = SYSTEM_PROMPT_EXPERT_WRITER
 
-    system_prompt_for_outline: ClassVar[
-        str
-    ] = """You are an expert writer that needs to make an outline for a document, i.e. the overall structure of the document in terms of section-headers, text, lists, tables and figures. This outline can be represented as a markdown document. The goal is to have structure of the document with all its items and to provide a 1 sentence summary of each item.   
-
-Below, you see a typical example,
-
-```markdown
-# <title>
-
-paragraph: <abstract>
-    
-## <first section-header>
-
-paragraph: <1 sentence summary of paragraph>
-
-picture: <1 sentence summary of picture with emphasis on the x- and y-axis>
-    
-paragraph: <1 sentence summary of paragraph>
-    
-## <second section-header>
-
-paragraph: <1 sentence summary of paragraph>
-
-### <first subsection-header>
-
-paragraph: <1 sentence summary of paragraph>
-    
-paragraph: <1 sentence summary of paragraph>
-    
-table: <1 sentence summary of table with emphasis on the row and column headers>
-
-paragraph: <1 sentence summary of paragraph>    
-
-list: <1 sentence summary of what the list enumerates>
-    
-...
-    
-## <final section header>
-
-list: <1 sentence summary of what the list enumerates>
-```
-
-Make sure that the Markdown outline is always enclosed in ```markdown <markdown-content>```!     
-"""
-
-    system_prompt_expert_writer: ClassVar[
-        str
-    ] = """You are an expert writer that needs to write a single paragraph, table or nested list based on a summary. Really stick to the summary and be specific, but do not write on adjacent topics.    
-"""
-
-    system_prompt_expert_table_writer: ClassVar[
-        str
-    ] = """You are an expert writer that needs to write a single HTML table based on a summary. Really stick to the summary. Try to make interesting tables and leverage multi-column headers. If you have units in the table, make sure the units are in the column or row-headers of the table.     
-"""
+    system_prompt_expert_table_writer: ClassVar[str] = SYSTEM_PROMPT_EXPERT_TABLE_WRITER
 
     def __init__(self, *, model: Model, tools: list[Tool]):
         super().__init__(
@@ -171,6 +105,20 @@ Make sure that the Markdown outline is always enclosed in ```markdown <markdown-
             tools=tools,
             chat_history=[],
         )
+
+    def _init_chat_messages(
+        self, *, system_prompt: str, user_prompt: str
+    ) -> list[ChatMessage]:
+        return [
+            ChatMessage(
+                role=MessageRole.SYSTEM,
+                content=[{"type": "text", "text": system_prompt}],
+            ),
+            ChatMessage(
+                role=MessageRole.USER,
+                content=[{"type": "text", "text": user_prompt}],
+            ),
+        ]
 
     def run(self, task: str, **kwargs):
         # self._analyse_task_for_topics_and_followup_questions(task=task)
@@ -190,21 +138,10 @@ Make sure that the Markdown outline is always enclosed in ```markdown <markdown-
         logger.info(f"report written to `./scratch/{fname}.json`")
 
     def _analyse_task_for_topics_and_followup_questions(self, *, task: str):
-        chat_messages = [
-            ChatMessage(
-                role=MessageRole.SYSTEM,
-                content=[
-                    {
-                        "type": "text",
-                        "text": self.system_prompt_for_task_analysis,
-                    }
-                ],
-            ),
-            ChatMessage(
-                role=MessageRole.USER,
-                content=[{"type": "text", "text": f"{task}"}],
-            ),
-        ]
+        chat_messages = self._init_chat_messages(
+            system_prompt=self.system_prompt_for_task_analysis,
+            user_prompt=f"{task}",
+        )
 
         output = self.model.generate(messages=chat_messages)
 
@@ -231,21 +168,10 @@ Make sure that the Markdown outline is always enclosed in ```markdown <markdown-
         return
 
     def _make_outline_for_writing(self, *, task: str) -> DoclingDocument:
-        chat_messages = [
-            ChatMessage(
-                role=MessageRole.SYSTEM,
-                content=[
-                    {
-                        "type": "text",
-                        "text": self.system_prompt_for_outline,
-                    }
-                ],
-            ),
-            ChatMessage(
-                role=MessageRole.USER,
-                content=[{"type": "text", "text": f"{task}"}],
-            ),
-        ]
+        chat_messages = self._init_chat_messages(
+            system_prompt=self.system_prompt_for_outline,
+            user_prompt=f"{task}",
+        )
 
         iteration = 0
         while iteration < self.max_iteration:
@@ -329,9 +255,93 @@ Make sure that the Markdown outline is always enclosed in ```markdown <markdown-
 
         raise ValueError("Could not make a correct outline!")
 
+    def _update_document_with_content(
+        self, *, document: DoclingDocument, content: DoclingDocument
+    ) -> DoclingDocument:
+        to_item: dict[str, NodeItem] = {}
+
+        """
+        for item, level in content.iterate_items(with_groups=True):
+            print(
+                "\t" * level,
+                item.self_ref,
+                f"({item.label}): ",
+                item.parent,
+            )
+        """
+
+        for item, level in content.iterate_items(with_groups=True):
+            # print("\t"*level, item)
+            # print("\t"*level, item.self_ref, f"({item.label}): ", item.parent)
+
+            if isinstance(item, GroupItem) and item.self_ref == "#/body":
+                to_item[item.self_ref] = document.body
+            elif isinstance(item, GroupItem):
+                if item.parent and item.parent.cref in to_item:
+                    g = document.add_group(
+                        name=item.name,
+                        label=item.label,
+                        parent=to_item[item.parent.cref],
+                    )
+                    to_item[item.self_ref] = g
+                else:
+                    print("adding: ", item)
+                    g = document.add_group(
+                        name=item.name, label=item.label, parent=None
+                    )
+                    to_item[item.self_ref] = g
+
+            elif isinstance(item, ListItem):
+                if item.parent and item.parent.cref in to_item:
+                    li = document.add_list_item(
+                        text=item.text,
+                        formatting=item.formatting,
+                        parent=to_item[item.parent.cref],
+                    )
+                    to_item[item.self_ref] = li
+                else:
+                    print("skipping: ", item)
+
+            elif isinstance(item, TextItem):
+                if item.parent and item.parent.cref in to_item:
+                    te = document.add_text(
+                        text=item.text,
+                        label=item.label,
+                        formatting=item.formatting,
+                        parent=to_item[item.parent.cref],
+                    )
+                    to_item[item.self_ref] = te
+                else:
+                    print("skipping: ", item)
+            else:
+                print("skipping: ", item)
+
+        """
+        for item, level in document.iterate_items(with_groups=True):
+            print(
+                "\t" * level,
+                item.self_ref,
+                f"({item.label}): ",
+                item.parent,
+            )
+        """
+
+        return document
+
     def _populate_document_with_content(
         self, *, task: str, outline: DoclingDocument
     ) -> DoclingDocument:
+        def update_headers(
+            *, item: SectionHeaderItem, headers: dict[int, str]
+        ) -> dict[int, str]:
+            keys = copy.deepcopy(list(headers.keys()))
+            for key in keys:
+                if key > item.level:
+                    del headers[key]
+
+            headers[item.level] = item.text
+            return headers
+
         headers: dict[int, str] = {}
 
         document = DoclingDocument(name=f"report on task: `{task}`")
@@ -343,125 +353,38 @@ Make sure that the Markdown outline is always enclosed in ```markdown <markdown-
 
             elif isinstance(item, SectionHeaderItem):
                 logger.info(f"starting in {item.text}")
-                headers[item.level] = item.text
-
+                headers = update_headers(item=item, headers=headers)
                 document.add_heading(text=item.text, level=item.level)
-
-                import copy
-
-                keys = copy.deepcopy(list(headers.keys()))
-                for key in keys:
-                    if key > item.level:
-                        del headers[key]
 
             elif isinstance(item, TextItem):
                 if item.text.startswith("paragraph:"):
                     summary = item.text.replace("paragraph: ", "").strip()
 
-                    """
                     logger.info(f"need to write a paragraph: {summary})")
                     content = self._write_paragraph(
                         summary=summary, item_type="paragraph"
                     )
                     document.add_text(label=DocItemLabel.TEXT, text=content)
-                    """
 
                 elif item.text.startswith("list:"):
                     summary = item.text.replace("list:", "").strip()
                     logger.info(f"need to write a list: {summary}")
 
-                    # document.add_text(label=DocItemLabel.TEXT, text=item.text)
-
-                    doc_ = self._write_list(summary=summary)
-
-                    to_item: dict[str, NodeItem] = {}
-
-                    for item, level in doc_.iterate_items(with_groups=True):
-                        print(
-                            "\t" * level,
-                            item.self_ref,
-                            f"({item.label}): ",
-                            item.parent,
-                        )
-
-                    for item, level in doc_.iterate_items(with_groups=True):
-                        # print("\t"*level, item)
-                        # print("\t"*level, item.self_ref, f"({item.label}): ", item.parent)
-
-                        if isinstance(item, GroupItem):
-                            if item.parent:
-                                g = document.add_group(
-                                    name=item.name,
-                                    label=item.label,
-                                    parent=to_item[item.parent.cref],
-                                )
-                                to_item[item.self_ref] = g
-                            else:
-                                g = document.add_group(
-                                    name=item.name, label=item.label, parent=None
-                                )
-                                to_item[item.self_ref] = g
-
-                        elif isinstance(item, ListItem):
-                            if item.parent:
-                                li = document.add_list_item(
-                                    text=item.text,
-                                    formatting=item.formatting,
-                                    parent=to_item[item.parent.cref],
-                                )
-                                to_item[item.self_ref] = li
-                            else:
-                                print("skipping: ", item)
-                            """
-                            else:
-                                li = document.add_list_item(text=item.text,
-                                                            formatting=item.formatting,
-                                                            parent=None)
-                                to_item[item.self_ref] = li
-                            """
-
-                        elif isinstance(item, TextItem):
-                            if item.parent:
-                                te = document.add_text(
-                                    text=item.text,
-                                    label=item.label,
-                                    formatting=item.formatting,
-                                    parent=to_item[item.parent.cref],
-                                )
-                                to_item[item.self_ref] = li
-                            else:
-                                print("skipping: ", item)
-                            """
-                            else:
-                                te = document.add_text(text=item.text,
-                                                       label=item.label,
-                                                       formatting=item.formatting,
-                                                       parent=None)
-                                to_item[item.self_ref] = te
-                            """
-                        else:
-                            print("skipping: ", item)
-
-                    for item, level in document.iterate_items(with_groups=True):
-                        print(
-                            "\t" * level,
-                            item.self_ref,
-                            f"({item.label}): ",
-                            item.parent,
-                        )
+                    new_content = self._write_list(summary=summary)
+                    document = self._update_document_with_content(
+                        document=document, content=new_content
+                    )
 
                 elif item.text.startswith("table:"):
                     summary = item.text.replace("table:", "").strip()
                     logger.info(f"need to write a table: {summary}")
 
-                    """
                     table_item = self._write_table(summary=summary)
 
                     caption = document.add_text(
                         label=DocItemLabel.CAPTION, text=summary
                     )
                     document.add_table(data=table_item.data, caption=caption)
-                    """
 
         return document
 
@@ -490,27 +413,12 @@ Make sure that the Markdown outline is always enclosed in ```markdown <markdown-
     def _write_paragraph(
         self, summary: str, item_type: str, task: str = "", hierarchy: list[str] = []
     ) -> str:
-        chat_messages = [
-            ChatMessage(
-                role=MessageRole.SYSTEM,
-                content=[
-                    {
-                        "type": "text",
-                        "text": self.system_prompt_expert_writer,
-                    }
-                ],
+        chat_messages = self._init_chat_messages(
+            system_prompt=self.system_prompt_expert_writer,
+            user_prompt=(
+                f"write me a single {item_type} that expands the following summary: {summary}"
             ),
-            ChatMessage(
-                role=MessageRole.USER,
-                content=[
-                    {
-                        "type": "text",
-                        "text": f"write me a single {item_type} that expands the following summary: {summary}",
-                    }
-                ],
-            ),
-        ]
-
+        )
         output = self.model.generate(messages=chat_messages)
         return output.content
 
@@ -519,32 +427,18 @@ Make sure that the Markdown outline is always enclosed in ```markdown <markdown-
     ) -> DoclingDocument | None:
         converter = DocumentConverter(allowed_formats=[InputFormat.MD])
 
-        chat_messages = [
-            ChatMessage(
-                role=MessageRole.SYSTEM,
-                content=[
-                    {
-                        "type": "text",
-                        "text": self.system_prompt_expert_writer,
-                    }
-                ],
+        chat_messages = self._init_chat_messages(
+            system_prompt=self.system_prompt_expert_writer,
+            user_prompt=(
+                f"write me a list (it can be nested) in markdown that expands the following summary: {summary}"
             ),
-            ChatMessage(
-                role=MessageRole.USER,
-                content=[
-                    {
-                        "type": "text",
-                        "text": f"write me a list (it can be nested) in markdown that expands the following summary: {summary}",
-                    }
-                ],
-            ),
-        ]
+        )
 
         output = self.model.generate(messages=chat_messages)
-        print(output.content)
+        # print(output.content)
 
         md_doc: str = output.content  # extract_code_blocks(output.content)
-        print("md-doc:\n\n", md_doc)
+        # print("md-doc:\n\n", md_doc)
 
         try:
             buff = BytesIO(md_doc.encode("utf-8"))
@@ -575,26 +469,12 @@ Make sure that the Markdown outline is always enclosed in ```markdown <markdown-
 
             return None
 
-        chat_messages = [
-            ChatMessage(
-                role=MessageRole.SYSTEM,
-                content=[
-                    {
-                        "type": "text",
-                        "text": self.system_prompt_expert_table_writer,
-                    }
-                ],
+        chat_messages = self._init_chat_messages(
+            system_prompt=self.system_prompt_expert_table_writer,
+            user_prompt=(
+                f"write me a single table in HTML that expands the following summary: {summary}"
             ),
-            ChatMessage(
-                role=MessageRole.USER,
-                content=[
-                    {
-                        "type": "text",
-                        "text": f"write me a single table in HTML that expands the following summary: {summary}",
-                    }
-                ],
-            ),
-        ]
+        )
 
         doc = None
 
