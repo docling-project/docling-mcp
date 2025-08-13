@@ -9,6 +9,8 @@ from pydantic import BaseModel, Field, validator
 
 from typing import ClassVar
 
+from datetime import datetime
+
 from smolagents.models import MessageRole, ChatMessage, Model
 from smolagents import (
     MCPClient,
@@ -170,18 +172,6 @@ Make sure that the Markdown outline is always enclosed in ```markdown <markdown-
             chat_history=[],
         )
 
-    def _get_system_prompt(self) -> ChatMessage:
-        system_prompt = ChatMessage(
-            role=MessageRole.SYSTEM,
-            content=[
-                {
-                    "type": "text",
-                    "text": "You are an expert writer. You will be asked to write on a variety on topics and I expect you to continuously write in strict MarkDown format.",
-                }
-            ],
-        )
-        return system_prompt
-
     def run(self, task: str, **kwargs):
         # self._analyse_task_for_topics_and_followup_questions(task=task)
 
@@ -191,7 +181,13 @@ Make sure that the Markdown outline is always enclosed in ```markdown <markdown-
 
         document = self._populate_document_with_content(task=task, outline=document)
 
-        print(document.export_to_markdown(text_width=72))
+        fname = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+        document.save_as_markdown(filename=f"./scratch/{fname}.md", text_width=72)
+        document.save_as_html(filename=f"./scratch/{fname}.html")
+        document.save_as_json(filename=f"./scratch/{fname}.json")
+
+        logger.info(f"report written to `./scratch/{fname}.json`")
 
     def _analyse_task_for_topics_and_followup_questions(self, *, task: str):
         chat_messages = [
@@ -362,28 +358,110 @@ Make sure that the Markdown outline is always enclosed in ```markdown <markdown-
                 if item.text.startswith("paragraph:"):
                     summary = item.text.replace("paragraph: ", "").strip()
 
+                    """
                     logger.info(f"need to write a paragraph: {summary})")
                     content = self._write_paragraph(
                         summary=summary, item_type="paragraph"
                     )
                     document.add_text(label=DocItemLabel.TEXT, text=content)
+                    """
 
                 elif item.text.startswith("list:"):
                     summary = item.text.replace("list:", "").strip()
                     logger.info(f"need to write a list: {summary}")
 
-                    document.add_text(label=DocItemLabel.TEXT, text=item.text)
+                    # document.add_text(label=DocItemLabel.TEXT, text=item.text)
+
+                    doc_ = self._write_list(summary=summary)
+
+                    to_item: dict[str, NodeItem] = {}
+
+                    for item, level in doc_.iterate_items(with_groups=True):
+                        print(
+                            "\t" * level,
+                            item.self_ref,
+                            f"({item.label}): ",
+                            item.parent,
+                        )
+
+                    for item, level in doc_.iterate_items(with_groups=True):
+                        # print("\t"*level, item)
+                        # print("\t"*level, item.self_ref, f"({item.label}): ", item.parent)
+
+                        if isinstance(item, GroupItem):
+                            if item.parent:
+                                g = document.add_group(
+                                    name=item.name,
+                                    label=item.label,
+                                    parent=to_item[item.parent.cref],
+                                )
+                                to_item[item.self_ref] = g
+                            else:
+                                g = document.add_group(
+                                    name=item.name, label=item.label, parent=None
+                                )
+                                to_item[item.self_ref] = g
+
+                        elif isinstance(item, ListItem):
+                            if item.parent:
+                                li = document.add_list_item(
+                                    text=item.text,
+                                    formatting=item.formatting,
+                                    parent=to_item[item.parent.cref],
+                                )
+                                to_item[item.self_ref] = li
+                            else:
+                                print("skipping: ", item)
+                            """
+                            else:
+                                li = document.add_list_item(text=item.text,
+                                                            formatting=item.formatting,
+                                                            parent=None)
+                                to_item[item.self_ref] = li
+                            """
+
+                        elif isinstance(item, TextItem):
+                            if item.parent:
+                                te = document.add_text(
+                                    text=item.text,
+                                    label=item.label,
+                                    formatting=item.formatting,
+                                    parent=to_item[item.parent.cref],
+                                )
+                                to_item[item.self_ref] = li
+                            else:
+                                print("skipping: ", item)
+                            """
+                            else:
+                                te = document.add_text(text=item.text,
+                                                       label=item.label,
+                                                       formatting=item.formatting,
+                                                       parent=None)
+                                to_item[item.self_ref] = te
+                            """
+                        else:
+                            print("skipping: ", item)
+
+                    for item, level in document.iterate_items(with_groups=True):
+                        print(
+                            "\t" * level,
+                            item.self_ref,
+                            f"({item.label}): ",
+                            item.parent,
+                        )
 
                 elif item.text.startswith("table:"):
                     summary = item.text.replace("table:", "").strip()
                     logger.info(f"need to write a table: {summary}")
 
+                    """
                     table_item = self._write_table(summary=summary)
 
                     caption = document.add_text(
                         label=DocItemLabel.CAPTION, text=summary
                     )
                     document.add_table(data=table_item.data, caption=caption)
+                    """
 
         return document
 
@@ -436,6 +514,53 @@ Make sure that the Markdown outline is always enclosed in ```markdown <markdown-
         output = self.model.generate(messages=chat_messages)
         return output.content
 
+    def _write_list(
+        self, summary: str, task: str = "", hierarchy: list[str] = []
+    ) -> DoclingDocument | None:
+        converter = DocumentConverter(allowed_formats=[InputFormat.MD])
+
+        chat_messages = [
+            ChatMessage(
+                role=MessageRole.SYSTEM,
+                content=[
+                    {
+                        "type": "text",
+                        "text": self.system_prompt_expert_writer,
+                    }
+                ],
+            ),
+            ChatMessage(
+                role=MessageRole.USER,
+                content=[
+                    {
+                        "type": "text",
+                        "text": f"write me a list (it can be nested) in markdown that expands the following summary: {summary}",
+                    }
+                ],
+            ),
+        ]
+
+        output = self.model.generate(messages=chat_messages)
+        print(output.content)
+
+        md_doc: str = output.content  # extract_code_blocks(output.content)
+        print("md-doc:\n\n", md_doc)
+
+        try:
+            buff = BytesIO(md_doc.encode("utf-8"))
+            doc_stream = DocumentStream(name="tmp.md", stream=buff)
+
+            conv_result: ConversionResult = converter.convert(doc_stream)
+            doc = conv_result.document
+
+            if doc:
+                return doc
+
+        except Exception as exc:
+            logger.error(f"error with html conversion: {exc}")
+
+        return None
+
     def _write_table(self, summary: str, hierarchy: list[str] = []) -> TableItem | None:
         def extract_code_blocks(text):
             pattern = rf"```html(.*?)```"
@@ -480,10 +605,10 @@ Make sure that the Markdown outline is always enclosed in ```markdown <markdown-
             iteration += 1
 
             output = self.model.generate(messages=chat_messages)
-            print("output:\n\n", output.content)
+            # print("output:\n\n", output.content)
 
             html_doc: str = extract_code_blocks(output.content)
-            print("html-doc:\n\n", html_doc)
+            # print("html-doc:\n\n", html_doc)
 
             try:
                 buff = BytesIO(html_doc.encode("utf-8"))
