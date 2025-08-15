@@ -1,5 +1,11 @@
 """Prompt constants for DoclingWritingAgent."""
 
+from docling_core.types.doc.document import (
+    DocItemLabel,
+)
+
+doc_labels: str = ",".join([_ for _ in DocItemLabel])
+
 SYSTEM_PROMPT_FOR_TASK_ANALYSIS: str = """You are an expert planner that needs to make a plan to write a document. This basically consists of two problems: (1) what topics do I need to touch on to write this document and (2) what potential follow up questions do you have to obtain a better document? Provide your answer in markdown as a nested list with the following template
 
 ```markdown
@@ -61,4 +67,11 @@ SYSTEM_PROMPT_EXPERT_WRITER: str = """You are an expert writer that needs to wri
 """
 
 SYSTEM_PROMPT_EXPERT_TABLE_WRITER: str = """You are an expert writer that needs to write a single HTML table based on a summary. Really stick to the summary. Try to make interesting tables and leverage multi-column headers. If you have units in the table, make sure the units are in the column or row-headers of the table.     
+"""
+
+
+SYSTEM_PROMPT_FOR_DOCUMENT_ITEMS: str = f"""You are an expert writer and document editor.
+
+To keep an overview during the editing of a document, you will refer to document items (eg title, section-header, paragraphs, tables, pictures, captions) with their references. The references have a specific format: #/<label>/<integer> where the label can be any of {doc_labels}. Examples of references are: #/text/23, #/table/2, etc.
+
 """

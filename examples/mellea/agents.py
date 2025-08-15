@@ -30,6 +30,8 @@ from docling_core.types.doc.document import (
     TableItem,
     TextItem,
     TitleItem,
+    RefItem,
+    PictureItem,
 )
 from docling_core.types.io import DocumentStream
 
@@ -39,6 +41,7 @@ from examples.mellea.agent_models import setup_local_session
 from examples.mellea.resources.prompts import (
     SYSTEM_PROMPT_FOR_TASK_ANALYSIS,
     SYSTEM_PROMPT_FOR_OUTLINE,
+    SYSTEM_PROMPT_FOR_DOCUMENT_ITEMS,
     SYSTEM_PROMPT_EXPERT_WRITER,
     SYSTEM_PROMPT_EXPERT_TABLE_WRITER,
 )
@@ -56,6 +59,7 @@ class DoclingAgentType(Enum):
 
     # Core agent types
     DOCLING_DOCUMENT_WRITER = "writer"
+    DOCLING_DOCUMENT_EDITOR = "editor"
 
     def __str__(self) -> str:
         """Return the string value of the enum."""
@@ -240,7 +244,7 @@ class DoclingWritingAgent(BaseDoclingAgent):
             tools=tools,
         )
 
-    def run(self, task: str, **kwargs):
+    def run(self, task: str, **kwargs) -> DoclingDocument:
         # self._analyse_task_for_topics_and_followup_questions(task=task)
 
         # self._analyse_task_for_final_destination(task=task)
@@ -253,14 +257,7 @@ class DoclingWritingAgent(BaseDoclingAgent):
             task=task, outline=outline
         )
 
-        # Save the document
-        fname = datetime.now().strftime("%Y%m%d_%H%M%S")
-
-        document.save_as_markdown(filename=f"./scratch/{fname}.md", text_width=72)
-        document.save_as_html(filename=f"./scratch/{fname}.html")
-        document.save_as_json(filename=f"./scratch/{fname}.json")
-
-        logger.info(f"report written to `./scratch/{fname}.json`")
+        return document
 
     def _analyse_task_for_topics_and_followup_questions(self, *, task: str):
         chat_messages = self._init_chat_messages(
@@ -431,7 +428,9 @@ class DoclingWritingAgent(BaseDoclingAgent):
                     summary = item.text.replace("paragraph: ", "").strip()
 
                     logger.info(f"need to write a paragraph: {summary})")
-                    new_content = self._write_paragraph(summary=summary)
+                    new_content = self._write_paragraph(
+                        summary=summary, hierarchy=headers
+                    )
                     document = self._update_document_with_content(
                         document=document, content=new_content
                     )
@@ -440,18 +439,16 @@ class DoclingWritingAgent(BaseDoclingAgent):
                     summary = item.text.replace("list:", "").strip()
                     logger.info(f"need to write a list: {summary}")
 
-                    """
-                    new_content = self._write_list(summary=summary)
+                    new_content = self._write_list(summary=summary, hierarchy=headers)
                     document = self._update_document_with_content(
                         document=document, content=new_content
                     )
-                    """
 
                 elif item.text.startswith("table:"):
                     summary = item.text.replace("table:", "").strip()
                     logger.info(f"need to write a table: {summary}")
 
-                    new_content = self._write_table(summary=summary)
+                    new_content = self._write_table(summary=summary, hierarchy=headers)
 
                     document = self._update_document_with_content(
                         document=document, content=new_content
@@ -504,12 +501,15 @@ class DoclingWritingAgent(BaseDoclingAgent):
         for level, header in hierarchy.items():
             context += "#" * (level + 1) + header + "\n"
 
+        if len(context) > 0:
+            context = rf"Given the current context in the document:\n\n```markdown\n{context}```\n\n"
+
         m = setup_local_session(
             model_id=self.model_id,
             system_prompt=self.system_prompt_expert_writer,
         )
 
-        prompt = f"Given the current context in the document:\n\n```{context}```\n\nwrite me a single paragraph that expands the following summary: {summary}"
+        prompt = f"{context}Write me a single paragraph that expands the following summary: {summary}"
         logger.info(f"prompt: {prompt}")
 
         answer = m.instruct(
@@ -528,42 +528,46 @@ class DoclingWritingAgent(BaseDoclingAgent):
         result = DoclingWritingAgent.convert_markdown_to_docling_document(
             text=answer.value
         )
-        print(result.export_to_markdown())
 
         return result
 
     def _write_list(
-        self, summary: str, task: str = "", hierarchy: list[str] = []
+        self,
+        summary: str,
+        task: str = "",
+        hierarchy: dict[int, str] = {},
+        loop_budget: int = 5,
     ) -> DoclingDocument | None:
-        converter = DocumentConverter(allowed_formats=[InputFormat.MD])
+        context = ""
+        for level, header in hierarchy.items():
+            context += "#" * (level + 1) + header + "\n"
 
-        chat_messages = self._init_chat_messages(
+        m = setup_local_session(
+            model_id=self.model_id,
             system_prompt=self.system_prompt_expert_writer,
-            user_prompt=(
-                f"write me a list (it can be nested) in markdown that expands the following summary: {summary}"
-            ),
         )
 
-        output = self.model.generate(messages=chat_messages)
-        # print(output.content)
+        prompt = f"Given the current context in the document:\n\n```{context}```\n\nwrite me a list (can be nested) in markdown that expands the following summary: {summary}"
+        logger.info(f"prompt: {prompt}")
 
-        md_doc: str = output.content  # extract_code_blocks(output.content)
-        # print("md-doc:\n\n", md_doc)
+        answer = m.instruct(
+            prompt,
+            requirements=[
+                Requirement(
+                    description="The resulting markdown list should use latex notation for superscript, subscript or inline equations. This means that every superscript, subscript and inline equation in must start and end with a $ sign.",
+                    validation_fn=simple_validate(
+                        DoclingWritingAgent.validate_markdown_to_docling_document
+                    ),
+                ),
+            ],
+            strategy=RejectionSamplingStrategy(loop_budget=loop_budget),
+        )
 
-        try:
-            buff = BytesIO(md_doc.encode("utf-8"))
-            doc_stream = DocumentStream(name="tmp.md", stream=buff)
+        result = DoclingWritingAgent.convert_markdown_to_docling_document(
+            text=answer.value
+        )
 
-            conv_result: ConversionResult = converter.convert(doc_stream)
-            doc = conv_result.document
-
-            if doc:
-                return doc
-
-        except Exception as exc:
-            logger.error(f"error with html conversion: {exc}")
-
-        return None
+        return result
 
     def _write_table(
         self,
@@ -602,91 +606,103 @@ class DoclingWritingAgent(BaseDoclingAgent):
             ],
             strategy=RejectionSamplingStrategy(loop_budget=loop_budget),
         )
-        print(answer.value)
+        # print(answer.value)
 
         result = DoclingWritingAgent.convert_html_to_docling_document(text=answer.value)
-        # print(result.export_to_html())
 
         return result
 
-    """
-    def _write_table(self, summary: str, hierarchy: list[str] = []) -> TableItem | None:
-        def extract_code_blocks(text):
-            pattern = rf"```html(.*?)```"
-            matches = re.findall(pattern, text, re.DOTALL)
-            if len(matches) > 0:
-                return matches[0]
 
-            pattern = rf"<html>(.*?)</html>"
-            matches = re.findall(pattern, text, re.DOTALL)
-            if len(matches) > 0:
-                return matches[0]
+class DoclingEditingAgent(BaseDoclingAgent):
+    system_prompt_for_document_items: ClassVar[str] = SYSTEM_PROMPT_FOR_DOCUMENT_ITEMS
 
-            return None
-
-        chat_messages = self._init_chat_messages(
-            system_prompt=self.system_prompt_expert_table_writer,
-            user_prompt=(
-                f"write me a single table in HTML that expands the following summary: {summary}"
-            ),
+    def __init__(self, *, model_id: ModelIdentifier, tools: list[Tool]):
+        super().__init__(
+            agent_type=DoclingAgentType.DOCLING_DOCUMENT_EDITOR,
+            model_id=model_id,
+            tools=tools,
         )
 
-        doc = None
+    def run(self, task: str, document: DoclingDocument, **kwargs) -> DoclingDocument:
+        refs = self._identify_document_items(task=task, document=document)
 
-        converter = DocumentConverter(allowed_formats=[InputFormat.HTML])
+    def _identify_document_items(
+        self,
+        task: str,
+        document: DoclingDocument,
+        loop_budget: int = 5,
+    ) -> list[RefItem]:
+        label_counter: dict[DocItemLabel, int] = {
+            DocItemLabel.TABLE: 0,
+            DocItemLabel.PICTURE: 0,
+            DocItemLabel.TEXT: 0,
+        }
 
-        iteration = 0
-        while iteration < self.max_iteration:
-            iteration += 1
+        lines = []
+        for item, level in document.iterate_items(with_groups=True):
+            if isinstance(item, TitleItem):
+                lines.append(f"title (reference={item.self_ref}): {item.text}")
 
-            output = self.model.generate(messages=chat_messages)
-            # print("output:\n\n", output.content)
+            elif isinstance(item, SectionHeaderItem):
+                lines.append(
+                    f"section-header (level={item.level}, reference={item.self_ref}): {item.text}"
+                )
 
-            html_doc: str = extract_code_blocks(output.content)
-            # print("html-doc:\n\n", html_doc)
+            elif isinstance(item, ListItem):
+                continue
 
-            try:
-                buff = BytesIO(html_doc.encode("utf-8"))
-                doc_stream = DocumentStream(name="tmp.html", stream=buff)
+            elif isinstance(item, TextItem):
+                lines.append(f"{item.label} (reference={item.self_ref})")
 
-                conv_result: ConversionResult = converter.convert(doc_stream)
-                doc = conv_result.document
+            elif isinstance(item, TableItem):
+                lines.append(
+                    f"{item.label} {label_counter[item.label]} (reference={item.self_ref})"
+                )
+                label_counter[item.label] += 1
 
-                if doc:
-                    for item, level in doc.iterate_items(with_groups=True):
-                        if isinstance(item, TableItem):
-                            return item
+            elif isinstance(item, PictureItem):
+                lines.append(
+                    f"{item.label} {label_counter[item.label]} (reference={item.self_ref})"
+                )
+                label_counter[item.label] += 1
 
-            except Exception as exc:
-                logger.error(f"error with html conversion: {exc}")
+        outline = "\n\n".join(lines)
 
-        return None
-    """
+        context = (
+            rf"Given the current outline of the document:\n\n```\n{outline}```\n\n"
+        )
 
+        prompt = f"{context}Return all references (in a comma seperated list) that are needed to accomplish this task: {task}. Do NOT return references that are not relevant!"
+        logger.info(f"prompt:\n\n{prompt}")
 
-def main():
-    """
-    model_config = ModelConfig(
-        type="ollama",
-        model_id="ollama/smollm2",  # , device="cpu", torch_dtype="auto"
-    )
-    """
-    """
-    model_config = ModelConfig(
-        type="ollama",
-        model_id="ollama/gpt-oss:20b",  # , device="cpu", torch_dtype="auto"
-    )
-    """
+        m = setup_local_session(
+            model_id=self.model_id,
+            system_prompt=self.system_prompt_for_document_items,
+        )
 
-    model_id = model_ids.OPENAI_GPT_OSS_20B
+        answer = m.instruct(
+            prompt,
+            requirements=[
+                Requirement(
+                    description="The result should be a plain list of references with the format `#/<label>/<int>`.",
+                    # validation_fn=simple_validate(
+                    #     DoclingWritingAgent.validate_list_of_crefs
+                    # ),
+                ),
+            ],
+            strategy=RejectionSamplingStrategy(loop_budget=loop_budget),
+        )
+        print(f"""
+        ======================
+        answer: `{answer.value}`
+        ======================
+        """)
 
-    # tools_config = MCPConfig()
-    # tools = setup_mcp_tools(config=tools_config)
-    tools = []
+        """
+        result = DoclingWritingAgent.convert_to_docling_document_refs(
+            text=answer.value
+        )
 
-    agent = DoclingWritingAgent(model_id=model_id, tools=tools)
-    agent.run("Write me a document on polymers in food-packaging.")
-
-
-if __name__ == "__main__":
-    main()
+        return result        
+        """
+        return []
