@@ -50,6 +50,11 @@ dependencies = [
     "python-dotenv>=1.1.0",
 ]
 
+# Hack for mellea at this point
+[tool.hatch.metadata]
+allow-direct-references = true
+
+
 [project.optional-dependencies]
 llama-index-rag = [
     "llama-index>=0.12.33",
@@ -72,6 +77,10 @@ smolagents = [
     "transformers>=4.30.0",
     "accelerate>=0.20.0",
     "ollama>=0.1.0",
+]
+mellea = [
+    # "mellea>=0.0.1",
+    "mellea @ https://github.com/generative-computing/mellea.git",
 ]
 
 [dependency-groups]
