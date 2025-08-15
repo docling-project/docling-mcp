@@ -121,6 +121,23 @@ class DoclingWritingAgent(BaseDoclingAgent):
         return DoclingWritingAgent.find_markdown_code_block(text) is not None
 
     @staticmethod
+    def find_html_code_block(text: str) -> str | None:
+        """
+        Check if a string matches the pattern ```html(.*)?```
+        """
+        pattern = r"```html(.*?)```"
+        match = re.search(pattern, text, re.DOTALL)
+        return match.group(1) if match else None
+
+    @staticmethod
+    def has_html_code_block(text: str) -> bool:
+        """
+        Check if a string contains a html code block pattern anywhere in the text
+        """
+        logger.info(f"testing has_html_code_block for {text[0:64]}")
+        return DoclingWritingAgent.find_html_code_block(text) is not None
+
+    @staticmethod
     def find_outline(text: str) -> DoclingDocument | None:
         """
         Check if a string matches the pattern ```markdown(.*)?```
@@ -183,11 +200,38 @@ class DoclingWritingAgent(BaseDoclingAgent):
         return None
 
     @staticmethod
-    def validate_docling_document_format(text: str) -> bool:
-        logger.info(f"testing validate_docling_document_format for {text[0:64]}")
+    def convert_html_to_docling_document(text: str) -> DoclingDocument | None:
+        text_ = DoclingWritingAgent.find_html_code_block(text)
+        if text_ is None:
+            text_ = text  # assume the entire text is html
+
+        try:
+            converter = DocumentConverter(allowed_formats=[InputFormat.HTML])
+
+            buff = BytesIO(text.encode("utf-8"))
+            doc_stream = DocumentStream(name="tmp.html", stream=buff)
+
+            conv: ConversionResult = converter.convert(doc_stream)
+
+            if conv.status == ConversionStatus.SUCCESS:
+                return conv.document
+        except Exception as exc:
+            print(exc)
+            return None
+
+        return None
+
+    @staticmethod
+    def validate_markdown_to_docling_document(text: str) -> bool:
+        logger.info(f"testing validate_markdown_docling_document for {text[0:64]}")
         return (
             DoclingWritingAgent.convert_markdown_to_docling_document(text) is not None
         )
+
+    @staticmethod
+    def validate_html_to_docling_document(text: str) -> bool:
+        logger.info(f"testing validate_html_docling_document for {text[0:64]}")
+        return DoclingWritingAgent.convert_html_to_docling_document(text) is not None
 
     def __init__(self, *, model_id: ModelIdentifier, tools: list[Tool]):
         super().__init__(
@@ -328,6 +372,27 @@ class DoclingWritingAgent(BaseDoclingAgent):
                     to_item[item.self_ref] = te
                 else:
                     print("skipping: ", item)
+
+            elif isinstance(item, TableItem):
+                if item.parent and item.parent.cref in to_item:
+                    if len(item.captions) > 0:
+                        caption = document.add_text(
+                            label=DocItemLabel.CAPTION, text=item.captions[0].text
+                        )
+                        te = document.add_table(
+                            data=item.data,
+                            caption=caption,
+                        )
+                        to_item[item.self_ref] = te
+                    else:
+                        te = document.add_table(
+                            data=item.data,
+                            # caption=caption,
+                        )
+                        to_item[item.self_ref] = te
+                else:
+                    print("skipping: ", item)
+
             else:
                 print("skipping: ", item)
 
@@ -386,14 +451,11 @@ class DoclingWritingAgent(BaseDoclingAgent):
                     summary = item.text.replace("table:", "").strip()
                     logger.info(f"need to write a table: {summary}")
 
-                    """
-                    table_item = self._write_table(summary=summary)
+                    new_content = self._write_table(summary=summary)
 
-                    caption = document.add_text(
-                        label=DocItemLabel.CAPTION, text=summary
+                    document = self._update_document_with_content(
+                        document=document, content=new_content
                     )
-                    document.add_table(data=table_item.data, caption=caption)
-                    """
 
                 elif item.text.startswith("picture:") or item.text.startswith(
                     "figure:"
@@ -447,14 +509,16 @@ class DoclingWritingAgent(BaseDoclingAgent):
             system_prompt=self.system_prompt_expert_writer,
         )
 
+        prompt = f"Given the current context in the document:\n\n```{context}```\n\nwrite me a single paragraph that expands the following summary: {summary}"
+        logger.info(f"prompt: {prompt}")
+
         answer = m.instruct(
-            f"Given the current context in the document:\n\n```{context}```\n\nwrite me a single paragraph that expands the following summary: {summary}",
+            prompt,
             requirements=[
-                #
                 Requirement(
-                    description="The resulting markdown paragraph should use latex notation for superscript, subscript or inline equations.",
+                    description="The resulting markdown paragraph should use latex notation for superscript, subscript or inline equations. This means that every superscript, subscript and inline equation in must start and end with a $ sign.",
                     validation_fn=simple_validate(
-                        DoclingWritingAgent.validate_docling_document_format
+                        DoclingWritingAgent.validate_markdown_to_docling_document
                     ),
                 ),
             ],
@@ -501,6 +565,51 @@ class DoclingWritingAgent(BaseDoclingAgent):
 
         return None
 
+    def _write_table(
+        self,
+        summary: str,
+        task: str = "",
+        hierarchy: dict[int, str] = {},
+        loop_budget: int = 5,
+    ) -> str:
+        context = ""
+        for level, header in hierarchy.items():
+            context += "#" * (level + 1) + header + "\n"
+
+        m = setup_local_session(
+            model_id=self.model_id,
+            system_prompt=self.system_prompt_expert_writer,
+        )
+
+        prompt = f"Given the current context in the document:\n\n```{context}```\n\nwrite me a single HTML table that expands the following summary: {summary}"
+        logger.info(f"prompt: {prompt}")
+
+        answer = m.instruct(
+            prompt,
+            requirements=[
+                Requirement(
+                    description="Put the resulting HTML table in the format ```html <insert-content>```",
+                    validation_fn=simple_validate(
+                        DoclingWritingAgent.has_html_code_block
+                    ),
+                ),
+                Requirement(
+                    description="The HTML table should have a valid formatting.",
+                    validation_fn=simple_validate(
+                        DoclingWritingAgent.validate_html_to_docling_document
+                    ),
+                ),
+            ],
+            strategy=RejectionSamplingStrategy(loop_budget=loop_budget),
+        )
+        print(answer.value)
+
+        result = DoclingWritingAgent.convert_html_to_docling_document(text=answer.value)
+        # print(result.export_to_html())
+
+        return result
+
+    """
     def _write_table(self, summary: str, hierarchy: list[str] = []) -> TableItem | None:
         def extract_code_blocks(text):
             pattern = rf"```html(.*?)```"
@@ -552,6 +661,7 @@ class DoclingWritingAgent(BaseDoclingAgent):
                 logger.error(f"error with html conversion: {exc}")
 
         return None
+    """
 
 
 def main():
