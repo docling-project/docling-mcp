@@ -4,7 +4,6 @@ from docling_core.types.doc.document import (
     DocItemLabel,
 )
 
-doc_labels: str = ",".join([_ for _ in DocItemLabel])
 
 SYSTEM_PROMPT_FOR_TASK_ANALYSIS: str = """You are an expert planner that needs to make a plan to write a document. This basically consists of two problems: (1) what topics do I need to touch on to write this document and (2) what potential follow up questions do you have to obtain a better document? Provide your answer in markdown as a nested list with the following template
 
@@ -70,8 +69,17 @@ SYSTEM_PROMPT_EXPERT_TABLE_WRITER: str = """You are an expert writer that needs 
 """
 
 
+DOCUMENT_LABELS: str = ",".join([_ for _ in DocItemLabel])
+
 SYSTEM_PROMPT_FOR_DOCUMENT_ITEMS: str = f"""You are an expert writer and document editor.
 
-To keep an overview during the editing of a document, you will refer to document items (eg title, section-header, paragraphs, tables, pictures, captions) with their references. The references have a specific format: #/<label>/<integer> where the label can be any of {doc_labels}. Examples of references are: #/text/23, #/table/2, etc.
+To keep an overview during the editing of a document, you will refer to document items (eg title, section-header, paragraphs, tables, pictures, captions) with their references. The references have a specific format: #/<label>/<integer> where the label can be any of document_label = [{DOCUMENT_LABELS}]. Examples of references are: #/text/23, #/table/2, etc.
 
+The editor can chose from 3 operations on a document in order to edit it, namely
+
+1. update_content(refs: list[references]): update the content of the document items with references `refs`. Here, we can update the text of a paragraph, the content or structure of a table, etc
+2. append_content(ref: reference, label: document_label): make a new document item of type label and append it after the document item of the reference
+3. delete_content(refs: list[references]): remove the document items linked to the references in `refs`
+
+For each task, one or more operations are needed to edit the document.
 """

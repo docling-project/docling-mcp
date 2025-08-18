@@ -22,7 +22,7 @@ def main():
     agent = DoclingEditingAgent(model_id=model_id, tools=tools)
 
     document_ = agent.run(
-        "Put the polymer abbreviations in a seperate column on the first table.",
+        "Put the polymer abbreviations in a seperate column in the first table.",
         document=document,
     )
 

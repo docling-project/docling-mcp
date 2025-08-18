@@ -616,6 +616,26 @@ class DoclingWritingAgent(BaseDoclingAgent):
 class DoclingEditingAgent(BaseDoclingAgent):
     system_prompt_for_document_items: ClassVar[str] = SYSTEM_PROMPT_FOR_DOCUMENT_ITEMS
 
+    @staticmethod
+    def find_crefs(text: str) -> list[RefItem]:
+        """
+        Check if a string matches the pattern ```markdown(.*)?```
+        """
+        labels: str = "|".join([_ for _ in DocItemLabel])
+        pattern = rf"#/({labels})/\d+"
+
+        match = re.search(pattern, text, re.DOTALL)
+
+        refs = []
+        for i, _ in enumerate(match):
+            refs.append(RefItem(cref=_.group(0)))
+
+        return refs
+
+    @staticmethod
+    def has_crefs(text: str) -> bool:
+        return len(find_crefs) > 0
+
     def __init__(self, *, model_id: ModelIdentifier, tools: list[Tool]):
         super().__init__(
             agent_type=DoclingAgentType.DOCLING_DOCUMENT_EDITOR,
@@ -625,6 +645,10 @@ class DoclingEditingAgent(BaseDoclingAgent):
 
     def run(self, task: str, document: DoclingDocument, **kwargs) -> DoclingDocument:
         refs = self._identify_document_items(task=task, document=document)
+
+        # self.transform_document_items(task=task, document=document, refs=refs)
+
+        self._update_content_of_document_items(task=task, document=document, refs=refs)
 
     def _identify_document_items(
         self,
@@ -655,24 +679,37 @@ class DoclingEditingAgent(BaseDoclingAgent):
                 lines.append(f"{item.label} (reference={item.self_ref})")
 
             elif isinstance(item, TableItem):
+                label_counter[item.label] += 1
                 lines.append(
                     f"{item.label} {label_counter[item.label]} (reference={item.self_ref})"
                 )
-                label_counter[item.label] += 1
 
             elif isinstance(item, PictureItem):
+                label_counter[item.label] += 1
                 lines.append(
                     f"{item.label} {label_counter[item.label]} (reference={item.self_ref})"
                 )
-                label_counter[item.label] += 1
 
         outline = "\n\n".join(lines)
 
-        context = (
-            rf"Given the current outline of the document:\n\n```\n{outline}```\n\n"
-        )
+        context = rf"""Given the current outline of the document:
+```
+{outline}
+```"""
 
-        prompt = f"{context}Return all references (in a comma seperated list) that are needed to accomplish this task: {task}. Do NOT return references that are not relevant!"
+        identification = rf"""To accomplish the following task:
+
+{task}
+
+We first need to:
+    - identify from the outline all the document items that are relevant
+    - plan the operations needed to update the document
+
+Now, provide me the operations and their references to execute the task!"""
+
+        # prompt = f"{context}Return all references (in a comma seperated list) that are needed to accomplish this task: {task}. Do NOT return references that are not relevant!"
+
+        prompt = f"{context}{identification}"
         logger.info(f"prompt:\n\n{prompt}")
 
         m = setup_local_session(
@@ -680,16 +717,22 @@ class DoclingEditingAgent(BaseDoclingAgent):
             system_prompt=self.system_prompt_for_document_items,
         )
 
+        """
         answer = m.instruct(
             prompt,
             requirements=[
                 Requirement(
                     description="The result should be a plain list of references with the format `#/<label>/<int>`.",
-                    # validation_fn=simple_validate(
-                    #     DoclingWritingAgent.validate_list_of_crefs
-                    # ),
+                    validation_fn=simple_validate(
+                        DoclingWritingAgent.has_crefs
+                    ),
                 ),
             ],
+            strategy=RejectionSamplingStrategy(loop_budget=loop_budget),
+        )
+        """
+        answer = m.instruct(
+            prompt,
             strategy=RejectionSamplingStrategy(loop_budget=loop_budget),
         )
         print(f"""
@@ -698,11 +741,23 @@ class DoclingEditingAgent(BaseDoclingAgent):
         ======================
         """)
 
-        """
-        result = DoclingWritingAgent.convert_to_docling_document_refs(
-            text=answer.value
-        )
+        result = DoclingWritingAgent.find_crefs(text=answer.value)
 
-        return result        
-        """
-        return []
+        return result
+
+    def _update_content_of_document_items(
+        self, task: str, document: DoclingDocument, refs: list[RefItem]
+    ):
+        for ref in refs:
+            item = ref.resolve(document)
+
+            if isinstance(item, TableItem):
+                self._update_content_of_table(task=task, document=document, table=item)
+
+            elif isinstance(item, TitleItem):
+                self._update_content_of_title(task=task, document=document, table=item)
+
+    def _update_content_of_table(
+        self, task: str, document: DoclingDocument, table: TableItem
+    ):
+        print("_update_content_of_table")
