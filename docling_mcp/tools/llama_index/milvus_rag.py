@@ -29,7 +29,7 @@ from docling_mcp.tools.llama_index._shared import (
 logger = setup_logger()
 
 
-@mcp.tool()
+@mcp.tool(title="Export Docling document to vector database")
 def export_docling_document_to_vector_db(
     document_key: Annotated[
         str,
@@ -87,7 +87,7 @@ class SearchDocumentOutput:
     # TODO: future updates could provide the grounding elements metadata
 
 
-@mcp.tool()
+@mcp.tool(title="Search query in documents")
 def search_documents(
     query: Annotated[
         str,

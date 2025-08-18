@@ -29,7 +29,7 @@ class InsertDocumentOutput:
     ]
 
 
-@mcp.tool()
+@mcp.tool(title="Insert Docling document into a vector database")
 def insert_document_to_vectordb(
     document_key: Annotated[
         str,
@@ -37,7 +37,7 @@ def insert_document_to_vectordb(
     ],
     vector_db_id: Annotated[str, Field(description="The target vectordb identifier.")],
 ) -> InsertDocumentOutput:
-    """Insert the document in the vecrtordb.
+    """Insert the document in the vectordb.
 
     This tool chunks and ingests a Docling document that exists in the local cache into
     a vectordb. The vectordb can then be used for knowledge searches.
