@@ -11,7 +11,9 @@ class Settings(BaseSettings):
         env_file=".env",
         # extra="allow",
     )
-    ollama_model: str = "granite3.2:latest"
+    api_base: str = "http://127.0.0.1:1234/v1"
+    api_key: str = "none"
+    model_id: str = "ibm/granite-3.2-8b"
     embedding_model: str = "BAAI/bge-base-en-v1.5"
 
 

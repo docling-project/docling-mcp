@@ -1,7 +1,8 @@
 """This module defines the RAG with milvus tools."""
 
 import json
-from typing import Any
+from dataclasses import dataclass
+from typing import Annotated, Any
 
 from llama_index.core import Document, StorageContext, VectorStoreIndex
 from llama_index.core.base.response.schema import (
@@ -10,6 +11,7 @@ from llama_index.core.base.response.schema import (
 )
 from mcp.shared.exceptions import McpError
 from mcp.types import INTERNAL_ERROR, ErrorData
+from pydantic import Field
 
 from docling_core.types.doc.document import DoclingDocument
 
@@ -28,24 +30,20 @@ logger = setup_logger()
 
 
 @mcp.tool()
-def export_docling_document_to_vector_db(document_key: str) -> str:
+def export_docling_document_to_vector_db(
+    document_key: Annotated[
+        str,
+        Field(description="The unique identifier of the document in the local cache."),
+    ],
+) -> str:
     """Exports a document from the local document cache to a vector database for search capabilities.
 
     This tool converts a Docling document that exists in the local cache into markdown format,
     then loads it into a vector database index. This allows the document to be searched using
     semantic search techniques.
 
-    Args:
-        document_key (str): The unique identifier for the document in the local cache.
-
-    Returns:
-        str: A confirmation message indicating the document was successfully indexed.
-
     Raises:
         ValueError: If the specified document_key does not exist in the local cache.
-
-    Example:
-        export_docling_document_to_vector_db("doc123")
     """
     if document_key not in local_document_cache:
         doc_keys = ", ".join(local_document_cache.keys())
@@ -75,23 +73,34 @@ def export_docling_document_to_vector_db(document_key: str) -> str:
     return f"Successful initialisation for document with id {document_key}"
 
 
+@dataclass
+class SearchDocumentOutput:
+    """Output of the search documents tool."""
+
+    answer: Annotated[
+        str,
+        Field(
+            description="A string containing the relevant contextual information retrieved from the documents that best matches the query."
+        ),
+    ]
+
+    # TODO: future updates could provide the grounding elements metadata
+
+
 @mcp.tool()
-def search_documents(query: str) -> str:
+def search_documents(
+    query: Annotated[
+        str,
+        Field(
+            description="The search query text used to find relevant information in the indexed documents."
+        ),
+    ],
+) -> SearchDocumentOutput:
     """Searches through previously uploaded and indexed documents using semantic search.
 
     This function retrieves relevant information from documents that have been processed
     and added to the vector database. It uses semantic similarity to find content that
     best matches the query, rather than simple keyword matching.
-
-    Args:
-        query (str): The search query text used to find relevant information in the indexed documents.
-
-    Returns:
-        str: A string containing the relevant contextual information retrieved from the documents
-                that best matches the query.
-
-    Example:
-        search_documents("What are the main findings about climate change?")
     """
     index = local_index_cache["milvus_index"]
 
@@ -100,7 +109,7 @@ def search_documents(query: str) -> str:
 
     if isinstance(response, Response):
         if response.response is not None:
-            return response.response
+            return SearchDocumentOutput(answer=response.response)
         else:
             raise McpError(
                 ErrorData(

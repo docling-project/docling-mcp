@@ -17,8 +17,8 @@ class ToolGroups(str, enum.Enum):
     CONVERSION = "conversion"
     GENERATION = "generation"
     MANIPULATION = "manipulation"
-    LLAMA_INDEX_RAG = "li-rag"
-    LLAMA_STACK_RAG = "lls-rag"
+    LLAMA_INDEX_RAG = "llama-index-rag"
+    LLAMA_STACK_RAG = "llama-stack-rag"
 
 
 class TransportType(str, enum.Enum):
