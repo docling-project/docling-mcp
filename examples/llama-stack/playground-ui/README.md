@@ -1,6 +1,6 @@
 # Llama Stack Playground
 
-In this directory we create a container image of the [Llama Stack Playground](https://github.com/meta-llama/llama-stack/tree/main/llama_stack/distribution/ui).
+In this directory we create a container image of the [Llama Stack Playground](https://github.com/llamastack/llama-stack/tree/main/llama_stack/distribution/ui).
 
 ## Build the image
 

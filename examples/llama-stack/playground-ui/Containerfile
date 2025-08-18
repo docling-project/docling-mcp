@@ -3,7 +3,7 @@
 
 FROM registry.access.redhat.com/ubi9/python-312:latest
 WORKDIR /app
-RUN git clone --depth 1 https://github.com/meta-llama/llama-stack
+RUN git clone --depth 1 https://github.com/llamastack/llama-stack
 RUN pip install --upgrade pip && \
     pip install /app/llama-stack && \
     pip install -r /app/llama-stack/llama_stack/distribution/ui/requirements.txt
