@@ -19,6 +19,7 @@ The following applications are required in this example. Refer to their document
 
 As a simple starting point, we will use the [starter distribution](https://llama-stack.readthedocs.io/en/latest/distributions/self_hosted_distro/starter.html) which allows Llama Stack to easily run locally.
 Other distributions (or custom stack builds) will work very similarly. See a complete list in the [Llama Stack docs](https://llama-stack.readthedocs.io/en/latest/distributions/list_of_distributions.html).
+Other options for starting Llama Stack are documented in the [START_LLS](./START_LLS.md) docs.
 
 We will use [Meta Llama 3.2](https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct) as generative AI model. Other options supported by the stack are [IBM Granite 3.3](https://huggingface.co/ibm-granite/granite-3.3-8b-instruct) and [Qwen3](Qwen/Qwen3-32B).
 
