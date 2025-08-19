@@ -5,6 +5,7 @@ from datetime import datetime
 from enum import Enum
 from io import BytesIO
 from typing import ClassVar
+import json
 
 from pydantic import BaseModel, Field, validator
 
@@ -617,6 +618,24 @@ class DoclingEditingAgent(BaseDoclingAgent):
     system_prompt_for_document_items: ClassVar[str] = SYSTEM_PROMPT_FOR_DOCUMENT_ITEMS
 
     @staticmethod
+    def find_json_dicts(text: str) -> list[dict]:
+        """
+        Extract JSON dictionaries from ```json code blocks
+        """
+        pattern = r"```json\s*(.*?)\s*```"
+        matches = re.findall(pattern, text, re.DOTALL)
+
+        calls = []
+        for i, json_content in enumerate(matches):
+            try:
+                print(f"call {i}: {json_content}")
+                calls.append(json.loads(json_content))
+            except json.JSONDecodeError as e:
+                print(f"Failed to parse JSON in match {i}: {e}")
+
+        return calls
+
+    @staticmethod
     def find_crefs(text: str) -> list[RefItem]:
         """
         Check if a string matches the pattern ```markdown(.*)?```
@@ -636,26 +655,8 @@ class DoclingEditingAgent(BaseDoclingAgent):
     def has_crefs(text: str) -> bool:
         return len(find_crefs) > 0
 
-    def __init__(self, *, model_id: ModelIdentifier, tools: list[Tool]):
-        super().__init__(
-            agent_type=DoclingAgentType.DOCLING_DOCUMENT_EDITOR,
-            model_id=model_id,
-            tools=tools,
-        )
-
-    def run(self, task: str, document: DoclingDocument, **kwargs) -> DoclingDocument:
-        refs = self._identify_document_items(task=task, document=document)
-
-        # self.transform_document_items(task=task, document=document, refs=refs)
-
-        self._update_content_of_document_items(task=task, document=document, refs=refs)
-
-    def _identify_document_items(
-        self,
-        task: str,
-        document: DoclingDocument,
-        loop_budget: int = 5,
-    ) -> list[RefItem]:
+    @staticmethod
+    def create_document_outline(doc: DoclingDocument) -> str:
         label_counter: dict[DocItemLabel, int] = {
             DocItemLabel.TABLE: 0,
             DocItemLabel.PICTURE: 0,
@@ -692,10 +693,62 @@ class DoclingEditingAgent(BaseDoclingAgent):
 
         outline = "\n\n".join(lines)
 
+        return outline
+
+    @staticmethod
+    def serialize_table_to_html(table: TableItem, doc: DoclingDocument) -> str:
+        from docling_core.transforms.serializer.html import (
+            HTMLTableSerializer,
+            HTMLDocSerializer,
+        )
+
+        # Create the table serializer
+        table_serializer = HTMLTableSerializer()
+
+        # Create a document serializer (needed as dependency)
+        doc_serializer = HTMLDocSerializer(doc=doc)
+
+        # Serialize the table
+        result = table_serializer.serialize(
+            item=table_item, doc_serializer=doc_serializer, doc=doc
+        )
+
+        return result.text
+
+    def __init__(self, *, model_id: ModelIdentifier, tools: list[Tool]):
+        super().__init__(
+            agent_type=DoclingAgentType.DOCLING_DOCUMENT_EDITOR,
+            model_id=model_id,
+            tools=tools,
+        )
+
+    def run(self, task: str, document: DoclingDocument, **kwargs) -> DoclingDocument:
+        ops = self._identify_document_items(task=task, document=document)
+
+        # self.transform_document_items(task=task, document=document, refs=refs)
+
+        for op in ops:
+            if op["operation"] == "update_content":
+                self._update_content_of_document_items(
+                    task=task, document=document, refs=refs
+                )
+
+    def _identify_document_items(
+        self,
+        task: str,
+        document: DoclingDocument,
+        loop_budget: int = 5,
+    ) -> list[RefItem]:
+        logger.info(f"task: {task}")
+
+        outline = DoclingEditingAgent.create_document_outline(doc=document)
+
         context = rf"""Given the current outline of the document:
 ```
 {outline}
-```"""
+```
+
+"""
 
         identification = rf"""To accomplish the following task:
 
@@ -705,12 +758,12 @@ We first need to:
     - identify from the outline all the document items that are relevant
     - plan the operations needed to update the document
 
-Now, provide me the operations and their references to execute the task!"""
+Now, provide me the operations (encapsulated in on ore more ```json...```) and their references to execute the task!"""
 
         # prompt = f"{context}Return all references (in a comma seperated list) that are needed to accomplish this task: {task}. Do NOT return references that are not relevant!"
 
         prompt = f"{context}{identification}"
-        logger.info(f"prompt:\n\n{prompt}")
+        # logger.info(f"prompt:\n\n{prompt}")
 
         m = setup_local_session(
             model_id=self.model_id,
@@ -737,17 +790,29 @@ Now, provide me the operations and their references to execute the task!"""
         )
         print(f"""
         ======================
-        answer: `{answer.value}`
+        answer:
+        {answer.value}
         ======================
         """)
 
-        result = DoclingWritingAgent.find_crefs(text=answer.value)
+        result = DoclingEditingAgent.find_json_dicts(text=answer.value)
+
+        for i, _ in enumerate(result):
+            print(i, "\t", _)
 
         return result
 
     def _update_content_of_document_items(
         self, task: str, document: DoclingDocument, refs: list[RefItem]
     ):
+        """
+        lines = []
+        for ref in refs:
+            item = ref.resolve(document)
+
+            if isinstance(item, TableItem):
+        """
+
         for ref in refs:
             item = ref.resolve(document)
 

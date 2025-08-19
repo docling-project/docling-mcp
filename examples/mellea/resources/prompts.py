@@ -78,8 +78,17 @@ To keep an overview during the editing of a document, you will refer to document
 The editor can chose from 3 operations on a document in order to edit it, namely
 
 1. update_content(refs: list[references]): update the content of the document items with references `refs`. Here, we can update the text of a paragraph, the content or structure of a table, etc
-2. append_content(ref: reference, label: document_label): make a new document item of type label and append it after the document item of the reference
+2. append_content(ref: reference, labels: list[document_label]): make a new document items of type label and append it consecutively after the document item of the reference `ref`
 3. delete_content(refs: list[references]): remove the document items linked to the references in `refs`
 
-For each task, one or more operations are needed to edit the document.
+For each task, one or more operations are needed to edit the document. The operations should be encapsulated in ```json ... ``` where the json content is a list with objects containing the operation and its arguments. Examples are,
+
+```json
+[
+    {{
+        "operation": "update_content",
+        "refs": ["#/table/2"]
+    }}
+]
+```
 """
