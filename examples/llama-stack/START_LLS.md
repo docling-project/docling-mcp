@@ -9,7 +9,7 @@ As a simple starting point, we will use the [starter distribution](https://llama
 Since [LM Studio](https://lmstudio.ai/) is exposing an openai-compatible api, we can use it as a local inference server.
 Since Llama Stack does not have a native provider for it, we connect it as a vllm server.
 
-1. Install and run [LM Studio](https://lmstudio.ai/).
+1. Install and run [LM Studio](https://lmstudio.ai/). Ensure that the server is started on port 1234.
 
 2. Run Llama Stack.
 
@@ -25,13 +25,13 @@ Since Llama Stack does not have a native provider for it, we connect it as a vll
         --port $LLAMA_STACK_PORT \
         --env ENABLE_MILVUS=milvus \
         --env ENABLE_OLLAMA=ollama \
-        --env OLLAMA_INFERENCE_MODEL=$INFERENCE_MODEL \
+        --env OLLAMA_INFERENCE_MODEL=$OLLAMA_INFERENCE_MODEL \
         --env OLLAMA_URL=http://host.containers.internal:11434 \
         --env ENABLE_vllm=lms \
         --env VLLM_URL=http://host.containers.internal:1234/v1
     ```
 
-    _Note: Ollama is also enabled, because the current release does not yet to run without. It will be fixed soon._
+    _Note: Ollama is also enabled, because the current release does not yet run without it. It will be fixed soon._
 
 3. Register models (should have been downloaded in LM Studio already)
 
@@ -48,7 +48,7 @@ Since Llama Stack does not have a native provider for it, we connect it as a vll
     ```sh
     uvx --from llama-stack-client llama-stack-client --endpoint http://localhost:8321 \
         inference chat-completion \
-        --model-id vllm/llama-3.2-3b-instruct \
+        --model-id lms/llama-3.2-3b-instruct \
         --message "Write a short story about a robot."
     ```
 
@@ -115,15 +115,15 @@ For connecting the Llama Stack starter distribution to the watsonx.ai inference 
         --port $LLAMA_STACK_PORT \
         --env ENABLE_MILVUS=milvus \
         --env ENABLE_OLLAMA=ollama \
-        --env OLLAMA_INFERENCE_MODEL=$INFERENCE_MODEL \
+        --env OLLAMA_INFERENCE_MODEL=$OLLAMA_INFERENCE_MODEL \
         --env OLLAMA_URL=http://host.containers.internal:11434 \
         --env ENABLE_vllm=wx \
         --env VLLM_URL=http://host.containers.internal:4000
     ```
 
-    _Note: Ollama is also enabled, because the current release does not yet to run without. It will be fixed soon._
+    _Note: Ollama is also enabled, because the current release does not yet run without it. It will be fixed soon._
 
-3. Register models (should have been downloaded in LM Studio already)
+3. Register models.
 
     ```sh
     uvx --from llama-stack-client llama-stack-client models register wx/llama-3-3-70b --provider-id vllm --provider-model-id llama-3-3-70b
