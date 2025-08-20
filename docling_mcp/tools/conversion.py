@@ -64,12 +64,11 @@ def is_document_in_local_cache(
 class ConvertDocumentOutput:
     """Output of the convert_document_into_docling_document tool."""
 
-    success: Annotated[
+    from_cache: Annotated[
         bool,
         Field(
             description=(
-                "Whether the document has been successfully converted or it was already "
-                "converted and in the local cache."
+                "Whether the document was already converted in the local cache."
             )
         ),
     ]
@@ -164,7 +163,7 @@ def convert_document_into_docling_document(
         # Clean up memory
         cleanup_memory()
 
-        return ConvertDocumentOutput(True, cache_key)
+        return ConvertDocumentOutput(False, cache_key)
 
     except Exception as e:
         logger.exception(f"Error converting document: {source}")
