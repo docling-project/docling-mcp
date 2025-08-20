@@ -2,7 +2,7 @@
 
 Depending on the choice of the inference server, the vector database, and other configurations, there are multiple ways to start the Llama Stack backend server. This documentation page explains a few alternatives.
 
-As a simple starting point, we will use the [starter distribution](https://llama-stack.readthedocs.io/en/latest/distributions/self_hosted_distro/starter.html) which allows Llama Stack to easily run locally.
+As a simple starting point, we will use the [starter distribution](https://llama-stack.readthedocs.io/en/latest/distributions/self_hosted_distro/starter.html) (release [v0.2.18](https://github.com/llamastack/llama-stack/releases/tag/v0.2.18)), which allows Llama Stack to easily run locally.
 
 ## Using LM Studio for inference
 
@@ -21,19 +21,12 @@ Since Llama Stack does not have a native provider for it, we connect it as a vll
         --pull always \
         -p $LLAMA_STACK_PORT:$LLAMA_STACK_PORT \
         -v ~/.llama:/root/.llama \
-        llamastack/distribution-starter:0.2.16 \
+        llamastack/distribution-starter:0.2.18 \
         --port $LLAMA_STACK_PORT \
-        --env ENABLE_MILVUS=milvus \
-        --env ENABLE_OLLAMA=ollama \
-        --env OLLAMA_INFERENCE_MODEL=$OLLAMA_INFERENCE_MODEL \
-        --env OLLAMA_URL=http://host.containers.internal:11434 \
-        --env ENABLE_vllm=lms \
         --env VLLM_URL=http://host.containers.internal:1234/v1
     ```
 
-    _Note: Ollama is also enabled, because the current release does not yet run without it. It will be fixed soon._
-
-3. Register models (should have been downloaded in LM Studio already)
+3. Register models (should have been downloaded in LM Studio already).
 
     ```sh
     uvx --from llama-stack-client llama-stack-client models register lms/llama-3.2-3b-instruct --provider-id vllm --provider-model-id llama-3.2-3b-instruct
@@ -65,7 +58,7 @@ For connecting the Llama Stack starter distribution to the watsonx.ai inference 
     WATSONX_PROJECT_ID=proj
     ```
 
-2. Create a `litellm_config.yaml` file with the models to proxy
+2. Create a `litellm_config.yaml` file with the models to proxy.
 
     ```yaml
     model_list:
@@ -111,17 +104,10 @@ For connecting the Llama Stack starter distribution to the watsonx.ai inference 
         --pull always \
         -p $LLAMA_STACK_PORT:$LLAMA_STACK_PORT \
         -v ~/.llama:/root/.llama \
-        llamastack/distribution-starter:0.2.16 \
+        llamastack/distribution-starter:0.2.18 \
         --port $LLAMA_STACK_PORT \
-        --env ENABLE_MILVUS=milvus \
-        --env ENABLE_OLLAMA=ollama \
-        --env OLLAMA_INFERENCE_MODEL=$OLLAMA_INFERENCE_MODEL \
-        --env OLLAMA_URL=http://host.containers.internal:11434 \
-        --env ENABLE_vllm=wx \
         --env VLLM_URL=http://host.containers.internal:4000
     ```
-
-    _Note: Ollama is also enabled, because the current release does not yet run without it. It will be fixed soon._
 
 3. Register models.
 
