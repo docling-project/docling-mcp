@@ -1,5 +1,5 @@
 from mellea.backends import model_ids
-from examples.mellea.agents import DoclingWritingAgent
+from examples.mellea.agents import DoclingWritingAgent, logger
 
 
 def main():

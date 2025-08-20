@@ -71,7 +71,7 @@ SYSTEM_PROMPT_EXPERT_TABLE_WRITER: str = """You are an expert writer that needs 
 
 DOCUMENT_LABELS: str = ",".join([_ for _ in DocItemLabel])
 
-SYSTEM_PROMPT_FOR_DOCUMENT_ITEMS: str = f"""You are an expert writer and document editor.
+SYSTEM_PROMPT_FOR_EDITING_DOCUMENT: str = f"""You are an expert writer and document editor.
 
 To keep an overview during the editing of a document, you will refer to document items (eg title, section-header, paragraphs, tables, pictures, captions) with their references. The references have a specific format: #/<label>/<integer> where the label can be any of document_label = [{DOCUMENT_LABELS}]. Examples of references are: #/text/23, #/table/2, etc.
 
@@ -83,7 +83,7 @@ The editor can chose from 3 operations on a document in order to edit it, namely
 
 For each task, one or more operations are needed to edit the document. The operations should be encapsulated in ```json ... ``` where the json content is a list with objects containing the operation and its arguments. Examples are,
 
-```json
+```json # update the content of table with reference "#/table/2"
 [
     {{
         "operation": "update_content",
@@ -91,4 +91,18 @@ For each task, one or more operations are needed to edit the document. The opera
     }}
 ]
 ```
+
+```json # Add new content after text item with reference "#/text/4". As indicated by the labels, the 4 new document items are of type text, table, text, text.
+[
+    {{
+        "operation": "append_content",
+        "refs": ["#/text/4"],
+        "labels": ["TEXT", "TABLE", "TEXT", "TEXT"]
+    }}
+]
+```
+
+"""
+
+SYSTEM_PROMPT_FOR_EDITING_TABLE: str = f"""You are an expert writer and table editor. You will receive HTML tables as an input and need to do a transformation task into one or more new HTML tables. Each table needs to the encapsulated in ```html <table>```.
 """

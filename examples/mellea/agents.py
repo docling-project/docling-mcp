@@ -42,7 +42,8 @@ from examples.mellea.agent_models import setup_local_session
 from examples.mellea.resources.prompts import (
     SYSTEM_PROMPT_FOR_TASK_ANALYSIS,
     SYSTEM_PROMPT_FOR_OUTLINE,
-    SYSTEM_PROMPT_FOR_DOCUMENT_ITEMS,
+    SYSTEM_PROMPT_FOR_EDITING_DOCUMENT,
+    SYSTEM_PROMPT_FOR_EDITING_TABLE,
     SYSTEM_PROMPT_EXPERT_WRITER,
     SYSTEM_PROMPT_EXPERT_TABLE_WRITER,
 )
@@ -321,7 +322,7 @@ class DoclingWritingAgent(BaseDoclingAgent):
         )
 
         outline = DoclingWritingAgent.find_outline(text=answer.value)
-        print(outline.export_to_markdown())
+        # print(outline.export_to_markdown())
 
         return outline
 
@@ -342,7 +343,7 @@ class DoclingWritingAgent(BaseDoclingAgent):
                     )
                     to_item[item.self_ref] = g
                 else:
-                    print("adding: ", item)
+                    # print("adding: ", item)
                     g = document.add_group(
                         name=item.name, label=item.label, parent=None
                     )
@@ -615,7 +616,10 @@ class DoclingWritingAgent(BaseDoclingAgent):
 
 
 class DoclingEditingAgent(BaseDoclingAgent):
-    system_prompt_for_document_items: ClassVar[str] = SYSTEM_PROMPT_FOR_DOCUMENT_ITEMS
+    system_prompt_for_editing_document: ClassVar[str] = (
+        SYSTEM_PROMPT_FOR_EDITING_DOCUMENT
+    )
+    system_prompt_for_editing_table: ClassVar[str] = SYSTEM_PROMPT_FOR_EDITING_TABLE
 
     @staticmethod
     def find_json_dicts(text: str) -> list[dict]:
@@ -629,9 +633,11 @@ class DoclingEditingAgent(BaseDoclingAgent):
         for i, json_content in enumerate(matches):
             try:
                 print(f"call {i}: {json_content}")
-                calls.append(json.loads(json_content))
+                calls.extend(json.loads(json_content))
             except json.JSONDecodeError as e:
                 print(f"Failed to parse JSON in match {i}: {e}")
+
+        print(calls)
 
         return calls
 
@@ -664,7 +670,7 @@ class DoclingEditingAgent(BaseDoclingAgent):
         }
 
         lines = []
-        for item, level in document.iterate_items(with_groups=True):
+        for item, level in doc.iterate_items(with_groups=True):
             if isinstance(item, TitleItem):
                 lines.append(f"title (reference={item.self_ref}): {item.text}")
 
@@ -710,10 +716,57 @@ class DoclingEditingAgent(BaseDoclingAgent):
 
         # Serialize the table
         result = table_serializer.serialize(
-            item=table_item, doc_serializer=doc_serializer, doc=doc
+            item=table, doc_serializer=doc_serializer, doc=doc
         )
 
         return result.text
+
+    @staticmethod
+    def find_html_code_block(text: str) -> str | None:
+        """
+        Check if a string matches the pattern ```html(.*)?```
+        """
+        pattern = r"```html(.*?)```"
+        match = re.search(pattern, text, re.DOTALL)
+        return match.group(1) if match else None
+
+    @staticmethod
+    def has_html_code_block(text: str) -> bool:
+        """
+        Check if a string contains a html code block pattern anywhere in the text
+        """
+        logger.info(f"testing has_html_code_block for {text[0:64]}")
+        return DoclingEditingAgent.find_html_code_block(text) is not None
+
+    @staticmethod
+    def convert_html_to_docling_table(text: str) -> list[TableItem] | None:
+        print("try converting to to TableItem: ", text)
+
+        text_ = DoclingEditingAgent.find_html_code_block(text)
+        if text_ is None:
+            text_ = text  # assume the entire text is html
+
+        try:
+            converter = DocumentConverter(allowed_formats=[InputFormat.HTML])
+
+            buff = BytesIO(text.encode("utf-8"))
+            doc_stream = DocumentStream(name="tmp.html", stream=buff)
+
+            conv: ConversionResult = converter.convert(doc_stream)
+
+            if conv.status == ConversionStatus.SUCCESS:
+                return conv.document.tables
+
+        except Exception as exc:
+            print(exc)
+            return None
+
+        return None
+
+    @staticmethod
+    def validate_html_to_docling_table(text: str) -> bool:
+        logger.info(f"validate_html_to_docling_table for {text[0:64]}")
+        return DoclingEditingAgent.convert_html_to_docling_table is not None
 
     def __init__(self, *, model_id: ModelIdentifier, tools: list[Tool]):
         super().__init__(
@@ -728,10 +781,23 @@ class DoclingEditingAgent(BaseDoclingAgent):
         # self.transform_document_items(task=task, document=document, refs=refs)
 
         for op in ops:
-            if op["operation"] == "update_content":
+            if ("operation" in op) and (op["operation"] == "update_content"):
                 self._update_content_of_document_items(
-                    task=task, document=document, refs=refs
+                    task=task, document=document, refs=op["args"]["refs"]
                 )
+            elif ("operation" in op) and (op["operation"] == "append_content"):
+                self._append_content_of_document_items(
+                    task=task,
+                    document=document,
+                    ref=op["args"]["ref"],
+                    labels=op["args"]["labels"],
+                )
+            elif ("operation" in op) and (op["operation"] == "delete_content"):
+                self._delete_content_of_document_items(
+                    task=task, document=document, refs=op["args"]["refs"]
+                )
+            else:
+                logger.info(f"Could not execute operate op: {op}")
 
     def _identify_document_items(
         self,
@@ -767,7 +833,7 @@ Now, provide me the operations (encapsulated in on ore more ```json...```) and t
 
         m = setup_local_session(
             model_id=self.model_id,
-            system_prompt=self.system_prompt_for_document_items,
+            system_prompt=self.system_prompt_for_editing_document,
         )
 
         """
@@ -795,16 +861,41 @@ Now, provide me the operations (encapsulated in on ore more ```json...```) and t
         ======================
         """)
 
-        result = DoclingEditingAgent.find_json_dicts(text=answer.value)
+        parsed_result = DoclingEditingAgent.find_json_dicts(text=answer.value)
 
-        for i, _ in enumerate(result):
-            print(i, "\t", _)
+        result = []
+        for i, op in enumerate(parsed_result):
+            if "operation" not in op:
+                logger.error(f"`operation` not in op: {op}")
+                continue
+
+            if ("refs" in op) and (
+                op["operation"] in ["update_content", "delete_content"]
+            ):
+                args = {"refs": [RefItem(cref=_) for _ in op["refs"]]}
+                op["args"] = args
+                result.append(op)
+
+            elif (
+                ("ref" in op)
+                and ("labels" in op)
+                and (op["operation"] in ["append_content"])
+            ):
+                args = {
+                    "ref": RefItem(cref=op["refs"]),
+                    "labels": [DocItemLabel(_) for _ in op["labels"]],
+                }
+                op["args"] = args
+                result.append(op)
+            else:
+                logger.error(f"could not parse op: {op}")
 
         return result
 
     def _update_content_of_document_items(
         self, task: str, document: DoclingDocument, refs: list[RefItem]
     ):
+        logger.info("_update_content_of_document_items")
         """
         lines = []
         for ref in refs:
@@ -816,6 +907,8 @@ Now, provide me the operations (encapsulated in on ore more ```json...```) and t
         for ref in refs:
             item = ref.resolve(document)
 
+            print(item)
+
             if isinstance(item, TableItem):
                 self._update_content_of_table(task=task, document=document, table=item)
 
@@ -823,6 +916,69 @@ Now, provide me the operations (encapsulated in on ore more ```json...```) and t
                 self._update_content_of_title(task=task, document=document, table=item)
 
     def _update_content_of_table(
-        self, task: str, document: DoclingDocument, table: TableItem
+        self,
+        task: str,
+        document: DoclingDocument,
+        table: TableItem,
+        loop_budget: int = 5,
     ):
-        print("_update_content_of_table")
+        logger.info("_update_content_of_table")
+
+        html_table = DoclingEditingAgent.serialize_table_to_html(
+            table=table, doc=document
+        )
+
+        prompt = f"""Given the following HTML table,
+
+```html
+{html_table}
+```
+
+Execute the following task: {task}
+"""
+        logger.info(f"prompt: {prompt}")
+
+        m = setup_local_session(
+            model_id=self.model_id,
+            system_prompt=self.system_prompt_for_editing_table,
+        )
+
+        answer = m.instruct(
+            prompt,
+            strategy=RejectionSamplingStrategy(loop_budget=loop_budget),
+            requirements=[
+                Requirement(
+                    description="Put the resulting HTML table in the format ```html <insert-content>```",
+                    validation_fn=simple_validate(
+                        DoclingEditingAgent.has_html_code_block
+                    ),
+                ),
+                Requirement(
+                    description="The HTML table should have a valid formatting.",
+                    validation_fn=simple_validate(
+                        DoclingEditingAgent.validate_html_to_docling_table
+                    ),
+                ),
+            ],
+        )
+
+        logger.info(f"response: {answer.value}")
+
+        result = DoclingEditingAgent.convert_html_to_docling_table(text=answer.value)
+
+        if result and len(result) > 0:
+            table.data = result[0].data
+
+    def _delete_content_of_document_items(
+        self, task: str, document: DoclingDocument, refs: list[RefItem]
+    ):
+        logger.info("_delete_content_of_document_items")
+
+    def _append_content_of_document_items(
+        self,
+        task: str,
+        document: DoclingDocument,
+        ref: RefItem,
+        labels: list[DocItemLabel],
+    ):
+        logger.info("_append_content_of_document_items")

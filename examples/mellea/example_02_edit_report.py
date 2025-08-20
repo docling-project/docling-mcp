@@ -1,5 +1,6 @@
 import os
 
+
 from pathlib import Path
 
 from docling_core.types.doc.document import (
@@ -7,7 +8,7 @@ from docling_core.types.doc.document import (
 )
 
 from mellea.backends import model_ids
-from examples.mellea.agents import DoclingEditingAgent
+from examples.mellea.agents import DoclingEditingAgent, logger
 
 
 def main():
@@ -17,7 +18,9 @@ def main():
     # tools = setup_mcp_tools(config=tools_config)
     tools = []
 
-    document = DoclingDocument.load_from_json(Path("./scratch/20250815_125216.json"))
+    fpath = Path("./scratch/20250815_125216.json")
+
+    document = DoclingDocument.load_from_json(fpath)
 
     agent = DoclingEditingAgent(model_id=model_id, tools=tools)
 
@@ -26,6 +29,7 @@ def main():
         document=document,
     )
 
+    """
     document_ = agent.run(
         "Expand the Introduction to three paragraphs.", document=document
     )
@@ -35,12 +39,17 @@ def main():
     document_ = agent.run(
         "Ensure that the section-headers have the correct level!", document=document
     )
+    """
 
     # Save the document
-    """
+
     os.makedirs("./scratch", exist_ok=True)
-    fname = datetime.now().strftime("%Y%m%d_%H%M%S")
-    
+    # fname = datetime.now().strftime("%Y%m%d_%H%M%S")
+    fpath = Path("./scratch/20250815_125216_updated.html")
+    document.save_as_html(filename=fpath)
+    logger.info(f"report written to `{fpath}`")
+
+    """
     document.save_as_markdown(filename=f"./scratch/{fname}.md", text_width=72)
     document.save_as_html(filename=f"./scratch/{fname}.html")
     document.save_as_json(filename=f"./scratch/{fname}.json")
