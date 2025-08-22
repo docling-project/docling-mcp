@@ -102,7 +102,7 @@ def convert_document_into_docling_document(
     """Convert a document of any type from a URL or local path and store in local cache.
 
     This tool takes a document's URL or local file path, converts it using
-    Docling's DocumentConverter and stores the resulting Docling document in a
+    Docling's DocumentConverter, and stores the resulting Docling document in a
     local cache. It returns an output with a boolean set to True along with the
     document's unique cache key. If the document was already in the local cache,
     the conversion is skipped and the output boolean is set to False.
