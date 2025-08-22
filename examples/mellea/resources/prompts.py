@@ -77,29 +77,36 @@ To keep an overview during the editing of a document, you will refer to document
 
 The editor can chose from 3 operations on a document in order to edit it, namely
 
-1. update_content(refs: list[references]): update the content of the document items with references `refs`. Here, we can update the text of a paragraph, the content or structure of a table, etc
-2. append_content(ref: reference, labels: list[document_label]): make a new document items of type label and append it consecutively after the document item of the reference `ref`
+1. update_content(ref: reference): update the content of a single document item with reference `ref`. Here, we can update the text of a paragraph, the content or structure of a table, etc.
+2. rewrite_content(refs: reference): rewrite the content of a list of consecutive document-items (with references denoted by `refs`) in the outline. Examples could be to shorten or expand certain sections. 
 3. delete_content(refs: list[references]): remove the document items linked to the references in `refs`
+4. update_section_heading_level(to_level: dict[ref, int]): this call will change the level of the section-headings with references in `refs` to the new level. Here level=1 is equivalent to `h2` in HTML, level=2 is equivalent to `h3` in HTML, etc
 
-For each task, one or more operations are needed to edit the document. The operations should be encapsulated in ```json ... ``` where the json content is a list with objects containing the operation and its arguments. Examples are,
+For each task, only one operation is needed to edit the document. This operation should be encapsulated in ```json ... ``` where the json content is an object containing the operation and its arguments. Examples are,
 
-```json # update the content of table with reference "#/table/2"
-[
-    {{
-        "operation": "update_content",
-        "refs": ["#/table/2"]
-    }}
-]
+example 1: Update the content of table with reference "#/table/2" 
+```json
+{{
+    "operation": "update_content",
+    "ref": "#/table/2"
+}}
 ```
 
-```json # Add new content after text item with reference "#/text/4". As indicated by the labels, the 4 new document items are of type text, table, text, text.
-[
-    {{
-        "operation": "append_content",
-        "refs": ["#/text/4"],
-        "labels": ["TEXT", "TABLE", "TEXT", "TEXT"]
-    }}
-]
+example 2: Shorten the Introduction section to two paragraphs.
+# Assuming that the introduction currently exists of a paragraph, a table and another paragraph with references ["#/text/4", "#/table/2", "#/text/5"]
+```json 
+{{
+    "operation": "rewrite_content",
+    "refs": ["#/text/4", "#/table/2", "#/text/5"]
+}}
+```
+
+example 3: Update section heading levels.
+```
+{{
+    "operation": "update_section_heading_level",
+    "to_level": {{"#/text/4": 2, "#/text/5":3, "#/text/6": 2}}
+}}
 ```
 
 """

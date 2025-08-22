@@ -24,7 +24,10 @@ from docling_core.types.doc.document import (
     ContentLayer,
     DocItemLabel,
     DoclingDocument,
+    NodeItem,
     GroupItem,
+    GroupLabel,
+    DocItem,
     LevelNumber,
     ListItem,
     SectionHeaderItem,
@@ -189,10 +192,14 @@ class DoclingWritingAgent(BaseDoclingAgent):
 
     @staticmethod
     def convert_markdown_to_docling_document(text: str) -> DoclingDocument | None:
+        text_ = DoclingWritingAgent.find_markdown_code_block(text)
+        if text_ is None:
+            text_ = text  # assume the entire text is html
+
         try:
             converter = DocumentConverter(allowed_formats=[InputFormat.MD])
 
-            buff = BytesIO(text.encode("utf-8"))
+            buff = BytesIO(text_.encode("utf-8"))
             doc_stream = DocumentStream(name="tmp.md", stream=buff)
 
             conv: ConversionResult = converter.convert(doc_stream)
@@ -633,7 +640,7 @@ class DoclingEditingAgent(BaseDoclingAgent):
         for i, json_content in enumerate(matches):
             try:
                 print(f"call {i}: {json_content}")
-                calls.extend(json.loads(json_content))
+                calls.append(json.loads(json_content))
             except json.JSONDecodeError as e:
                 print(f"Failed to parse JSON in match {i}: {e}")
 
@@ -702,6 +709,19 @@ class DoclingEditingAgent(BaseDoclingAgent):
         return outline
 
     @staticmethod
+    def serialize_item_to_markdown(item: TextItem, doc: DoclingDocument) -> str:
+        """Serialize a text item to markdown format using existing serializer."""
+        from docling_core.transforms.serializer.markdown import (
+            MarkdownDocSerializer,
+            MarkdownParams,
+        )
+
+        serializer = MarkdownDocSerializer(doc=doc, params=MarkdownParams())
+
+        result = serializer.serialize(item=item)
+        return result.text
+
+    @staticmethod
     def serialize_table_to_html(table: TableItem, doc: DoclingDocument) -> str:
         from docling_core.transforms.serializer.html import (
             HTMLTableSerializer,
@@ -739,6 +759,23 @@ class DoclingEditingAgent(BaseDoclingAgent):
         return DoclingEditingAgent.find_html_code_block(text) is not None
 
     @staticmethod
+    def find_markdown_code_block(text: str) -> str | None:
+        """
+        Check if a string matches the pattern ```(md|markdown)(.*)?```
+        """
+        pattern = r"```(md|markdown)(.*?)```"
+        match = re.search(pattern, text, re.DOTALL)
+        return match.group(2) if match else None
+
+    @staticmethod
+    def has_markdown_code_block(text: str) -> bool:
+        """
+        Check if a string contains a markdown code block pattern anywhere in the text
+        """
+        logger.info(f"testing has_markdown_code_block for {text[0:64]}")
+        return DoclingEditingAgent.find_markdown_code_block(text) is not None
+
+    @staticmethod
     def convert_html_to_docling_table(text: str) -> list[TableItem] | None:
         print("try converting to to TableItem: ", text)
 
@@ -768,6 +805,109 @@ class DoclingEditingAgent(BaseDoclingAgent):
         logger.info(f"validate_html_to_docling_table for {text[0:64]}")
         return DoclingEditingAgent.convert_html_to_docling_table is not None
 
+    @staticmethod
+    def convert_markdown_to_docling_document(text: str) -> DoclingDocument | None:
+        text_ = DoclingEditingAgent.find_markdown_code_block(text)
+        if text_ is None:
+            text_ = text  # assume the entire text is html
+
+        print(f"{text} -> {text_}")
+
+        try:
+            converter = DocumentConverter(allowed_formats=[InputFormat.MD])
+
+            buff = BytesIO(text_.encode("utf-8"))
+            doc_stream = DocumentStream(name="tmp.md", stream=buff)
+
+            conv: ConversionResult = converter.convert(doc_stream)
+
+            if conv.status == ConversionStatus.SUCCESS:
+                return conv.document
+        except Exception as exc:
+            # logger.error(exc)
+            return None
+
+        return None
+
+    @staticmethod
+    def validate_markdown_to_docling_document(text: str) -> bool:
+        logger.info(f"testing validate_markdown_docling_document for {text[0:64]}")
+        return (
+            DoclingEditingAgent.convert_markdown_to_docling_document(text) is not None
+        )
+
+    @staticmethod
+    def insert_document(
+        item: NodeItem, doc: DoclingDocument, updated_doc: DoclingDocument
+    ) -> DoclingDocument:
+        group_item = GroupItem(
+            label=GroupLabel.UNSPECIFIED,
+            name="inserted-group",
+            self_ref="#",  # temporary placeholder
+        )
+
+        if isinstance(item, ListItem):
+            # we should delete all the children of the list-item and put the text to ""
+            raise ValueError("ListItem insertion is not yet supported!")
+
+        doc.replace_item(old_item=item, new_item=group_item)
+
+        to_item: dict[str, NodeItem] = {}
+
+        for item, level in updated_doc.iterate_items(with_groups=True):
+            if isinstance(item, GroupItem) and item.self_ref == "#/body":
+                to_item[item.self_ref] = group_item
+
+            elif item.parent is None:
+                logger.error(f"Item with null parent: {item}")
+
+            elif item.parent.cref not in to_item:
+                logger.error(f"Item with unknown parent: {item}")
+
+            elif isinstance(item, GroupItem):
+                g = doc.add_group(
+                    name=item.name,
+                    label=item.label,
+                    parent=to_item[item.parent.cref],
+                )
+
+            elif isinstance(item, ListItem):
+                li = doc.add_list_item(
+                    text=item.text,
+                    formatting=item.formatting,
+                    parent=to_item[item.parent.cref],
+                )
+                to_item[item.self_ref] = li
+
+            elif isinstance(item, TextItem):
+                te = doc.add_text(
+                    text=item.text,
+                    label=item.label,
+                    formatting=item.formatting,
+                    parent=to_item[item.parent.cref],
+                )
+                to_item[item.self_ref] = te
+
+            elif isinstance(item, TableItem):
+                if len(item.captions) > 0:
+                    caption = doc.add_text(
+                        label=DocItemLabel.CAPTION, text=item.captions[0].text
+                    )
+                    te = doc.add_table(
+                        data=item.data,
+                        caption=caption,
+                    )
+                    to_item[item.self_ref] = te
+                else:
+                    te = doc.add_table(
+                        data=item.data,
+                        # caption=caption,
+                    )
+                    to_item[item.self_ref] = te
+
+            else:
+                logger.warning(f"No support to insert items of label: {item.label}")
+
     def __init__(self, *, model_id: ModelIdentifier, tools: list[Tool]):
         super().__init__(
             agent_type=DoclingAgentType.DOCLING_DOCUMENT_EDITOR,
@@ -776,28 +916,25 @@ class DoclingEditingAgent(BaseDoclingAgent):
         )
 
     def run(self, task: str, document: DoclingDocument, **kwargs) -> DoclingDocument:
-        ops = self._identify_document_items(task=task, document=document)
+        op = self._identify_document_items(task=task, document=document)
 
-        # self.transform_document_items(task=task, document=document, refs=refs)
-
-        for op in ops:
-            if ("operation" in op) and (op["operation"] == "update_content"):
-                self._update_content_of_document_items(
-                    task=task, document=document, refs=op["args"]["refs"]
-                )
-            elif ("operation" in op) and (op["operation"] == "append_content"):
-                self._append_content_of_document_items(
-                    task=task,
-                    document=document,
-                    ref=op["args"]["ref"],
-                    labels=op["args"]["labels"],
-                )
-            elif ("operation" in op) and (op["operation"] == "delete_content"):
-                self._delete_content_of_document_items(
-                    task=task, document=document, refs=op["args"]["refs"]
-                )
-            else:
-                logger.info(f"Could not execute operate op: {op}")
+        if op["operation"] == "update_content":
+            self._update_content(task=task, document=document, sref=op["ref"])
+        elif op["operation"] == "rewrite_content":
+            self._rewrite_content(
+                task=task,
+                document=document,
+                refs=op["refs"],
+            )
+        elif op["operation"] == "delete_content":
+            self._delete_content(task=task, document=document, refs=op["refs"])
+        elif op["operation"] == "update_section_heading_level":
+            self._update_section_heading_level(
+                task=task, document=document, refs=op["to_level"]
+            )
+        else:
+            raise ValueError(f"")
+            logger.info(f"Could not execute operate op: {op}")
 
     def _identify_document_items(
         self,
@@ -836,84 +973,47 @@ Now, provide me the operations (encapsulated in on ore more ```json...```) and t
             system_prompt=self.system_prompt_for_editing_document,
         )
 
-        """
-        answer = m.instruct(
-            prompt,
-            requirements=[
-                Requirement(
-                    description="The result should be a plain list of references with the format `#/<label>/<int>`.",
-                    validation_fn=simple_validate(
-                        DoclingWritingAgent.has_crefs
-                    ),
-                ),
-            ],
-            strategy=RejectionSamplingStrategy(loop_budget=loop_budget),
-        )
-        """
         answer = m.instruct(
             prompt,
             strategy=RejectionSamplingStrategy(loop_budget=loop_budget),
         )
+
         print(f"""
         ======================
+        task: {task}
         answer:
         {answer.value}
         ======================
         """)
 
-        parsed_result = DoclingEditingAgent.find_json_dicts(text=answer.value)
+        ops = DoclingEditingAgent.find_json_dicts(text=answer.value)
 
-        result = []
-        for i, op in enumerate(parsed_result):
-            if "operation" not in op:
-                logger.error(f"`operation` not in op: {op}")
-                continue
+        print("ops: ", ops)
 
-            if ("refs" in op) and (
-                op["operation"] in ["update_content", "delete_content"]
-            ):
-                args = {"refs": [RefItem(cref=_) for _ in op["refs"]]}
-                op["args"] = args
-                result.append(op)
+        if len(ops) == 0:
+            raise ValueError(f"No operation is detected")
 
-            elif (
-                ("ref" in op)
-                and ("labels" in op)
-                and (op["operation"] in ["append_content"])
-            ):
-                args = {
-                    "ref": RefItem(cref=op["refs"]),
-                    "labels": [DocItemLabel(_) for _ in op["labels"]],
-                }
-                op["args"] = args
-                result.append(op)
-            else:
-                logger.error(f"could not parse op: {op}")
+        if "operation" not in ops[0]:
+            raise ValueError(f"`operation` not in op: {ops[0]}")
 
-        return result
+        return ops[0]
 
-    def _update_content_of_document_items(
-        self, task: str, document: DoclingDocument, refs: list[RefItem]
-    ):
+    def _update_content(self, task: str, document: DoclingDocument, sref: str):
         logger.info("_update_content_of_document_items")
-        """
-        lines = []
-        for ref in refs:
-            item = ref.resolve(document)
 
-            if isinstance(item, TableItem):
-        """
+        ref = RefItem(cref=sref)
+        item = ref.resolve(document)
 
-        for ref in refs:
-            item = ref.resolve(document)
+        if isinstance(item, TableItem):
+            self._update_content_of_table(task=task, document=document, table=item)
 
-            print(item)
+        elif isinstance(item, TextItem):
+            self._update_content_of_textitem(task=task, document=document, item=item)
 
-            if isinstance(item, TableItem):
-                self._update_content_of_table(task=task, document=document, table=item)
-
-            elif isinstance(item, TitleItem):
-                self._update_content_of_title(task=task, document=document, table=item)
+        else:
+            logger.warning(
+                f"Dont know how to update the item (of label={item.label}) for task: {task}"
+            )
 
     def _update_content_of_table(
         self,
@@ -936,7 +1036,7 @@ Now, provide me the operations (encapsulated in on ore more ```json...```) and t
 
 Execute the following task: {task}
 """
-        logger.info(f"prompt: {prompt}")
+        # logger.info(f"prompt: {prompt}")
 
         m = setup_local_session(
             model_id=self.model_id,
@@ -964,10 +1064,55 @@ Execute the following task: {task}
 
         logger.info(f"response: {answer.value}")
 
-        result = DoclingEditingAgent.convert_html_to_docling_table(text=answer.value)
+        new_tables = DoclingEditingAgent.convert_html_to_docling_table(
+            text=answer.value
+        )
 
-        if result and len(result) > 0:
-            table.data = result[0].data
+        if new_tables and len(new_tables) == 1:
+            table.data = new_tables[0].data
+        elif new_tables and len(new_tables) > 1:
+            logger.error("too many tables returned ...")
+            table.data = new_tables[0].data
+
+    def _update_content_of_textitem(
+        self,
+        task: str,
+        document: DoclingDocument,
+        item: TextItem,
+        loop_budget: int = 5,
+    ):
+        logger.info("_update_content_of_text")
+
+        text = DoclingEditingAgent.serialize_item_to_markdown(item=item, doc=document)
+
+        prompt = f"""Given the following {item.label},
+
+```md
+{text}
+```
+
+Execute the following task: {task}
+"""
+        logger.info(f"prompt: {prompt}")
+
+        m = setup_local_session(
+            model_id=self.model_id,
+            system_prompt=self.system_prompt_for_editing_table,
+        )
+
+        answer = m.instruct(
+            prompt,
+            strategy=RejectionSamplingStrategy(loop_budget=loop_budget),
+        )
+        logger.info(f"response: {answer.value}")
+
+        updated_doc = DoclingEditingAgent.convert_markdown_to_docling_document(
+            text=answer.value
+        )
+
+        document = DoclingEditingAgent.insert_document(
+            item=item, doc=document, updated_doc=updated_doc
+        )
 
     def _delete_content_of_document_items(
         self, task: str, document: DoclingDocument, refs: list[RefItem]
@@ -982,3 +1127,13 @@ Execute the following task: {task}
         labels: list[DocItemLabel],
     ):
         logger.info("_append_content_of_document_items")
+
+    def _update_section_heading_level(
+        self, task: str, document: DoclingDocument, to_level: dict[str, int]
+    ):
+        for sref, level in to_level.items():
+            ref = RefItem(cref=sref)
+            item = ref.resolve(document)
+
+            if isinstance(item, SectionHeaderItem):
+                item.level = level
