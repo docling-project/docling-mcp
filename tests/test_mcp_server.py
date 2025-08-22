@@ -1,8 +1,10 @@
 """Test the Docling MCP server tools with a dummy client."""
 
 import json
+import shutil
 from collections.abc import AsyncGenerator
 from contextlib import AsyncExitStack
+from pathlib import Path
 from typing import Any
 
 import anyio
@@ -10,6 +12,7 @@ import pytest
 import pytest_asyncio
 from mcp import ClientSession, StdioServerParameters, Tool
 from mcp.client.stdio import stdio_client
+from mcp.types import TextContent
 
 
 class MCPClient:
@@ -40,7 +43,6 @@ class MCPClient:
         )
 
         await self.session.initialize()
-        print("\nServer initialized")
 
     async def list_tools(self) -> list[str]:
         assert self.session
@@ -80,10 +82,10 @@ async def mcp_client() -> AsyncGenerator[Any, Any]:
 async def test_list_tools(mcp_client: AsyncGenerator[Any, Any]) -> None:
     tools = await mcp_client.list_tools()  # type: ignore[attr-defined]
     assert isinstance(tools, list)
-    print(tools)
     gold_tools = [
         "is_document_in_local_cache",
         "convert_document_into_docling_document",
+        "convert_directory_files_into_docling_document",
         # "convert_attachments_into_docling_document",
         "create_new_docling_document",
         "export_docling_document_to_markdown",
@@ -117,7 +119,6 @@ async def test_get_tools(mcp_client: AsyncGenerator[Any, Any]) -> None:
     ) as input_file:
         contents = await input_file.read()
         gold_tool = json.loads(contents)
-        print(sample_tool.model_dump_json(indent=4))
         assert gold_tool == sample_tool.model_dump()
 
 
@@ -147,3 +148,41 @@ async def test_call_tool(mcp_client: AsyncGenerator[Any, Any]) -> None:
     assert len(res.content) == 1
     assert "validation error" in res.content[0].text
     assert res.structuredContent is None
+
+
+@pytest.mark.asyncio
+async def test_convert_directory_files_into_docling_document(
+    mcp_client: AsyncGenerator[Any, Any], tmp_path: Path
+) -> None:
+    test_dir = Path(__file__).parent
+    test_files = [
+        test_dir / "data" / "lorem_ipsum.docx.json",
+        test_dir / "data" / "amt_handbook_sample.json",
+        test_dir / "data" / "2203.01017v2.json",
+    ]
+    for item in test_files:
+        shutil.copy(item, tmp_path)
+
+    res = await mcp_client.call_tool(  # type: ignore[attr-defined]
+        "convert_directory_files_into_docling_document", {"source": str(tmp_path)}
+    )
+
+    # returned content block text content
+    assert isinstance(res.content, list)
+    assert len(res.content) == 3
+    assert isinstance(res.content[0], TextContent)
+    assert res.content[0].type == "text"
+    assert res.content[0].text.startswith(
+        '{\n  "from_cache": false,\n  "document_key":'
+    )
+
+    # returned structured content
+    assert isinstance(res.structuredContent, dict)
+    assert "result" in res.structuredContent
+    assert isinstance(res.structuredContent["result"], list)
+    assert len(res.structuredContent["result"]) == 3
+    for item in res.structuredContent["result"]:
+        assert isinstance(item, dict)
+        assert "from_cache" in item
+        assert not item.get("from_cache")
+        assert item.get("document_key", None)
