@@ -45,10 +45,14 @@ def main():
     os.makedirs("./scratch", exist_ok=True)
     ipath = Path("./scratch/20250815_125216.json")
 
-    for _ in [  # ("Put the polymer abbreviations in a seperate column in the first table.", new_path(ipath, "_updated_table.html")),
-        ("Make the title longer!", new_path(ipath, "_updated_title.html")),
+    for _ in [
+        # ("Put the polymer abbreviations in a seperate column in the first table.", new_path(ipath, "_updated_table.html")),
+        # ("Make the title longer!", new_path(ipath, "_updated_title.html")),
         # ("Ensure that the section-headers have the correct level!", new_path(ipath, "_updated_headings.html")),
-        # ("Expand the Introduction to three paragraphs.", new_path(ipath, "_updated_introduction.html")),
+        (
+            "Expand the Introduction to three paragraphs.",
+            new_path(ipath, "_updated_introduction.html"),
+        ),
     ]:
         run_task(ipath=ipath, opath=_[1], task=_[0], model_id=model_id)
 

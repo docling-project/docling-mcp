@@ -930,7 +930,7 @@ class DoclingEditingAgent(BaseDoclingAgent):
             self._delete_content(task=task, document=document, refs=op["refs"])
         elif op["operation"] == "update_section_heading_level":
             self._update_section_heading_level(
-                task=task, document=document, refs=op["to_level"]
+                task=task, document=document, to_level=op["to_level"]
             )
         else:
             raise ValueError(f"")
@@ -1137,3 +1137,51 @@ Execute the following task: {task}
 
             if isinstance(item, SectionHeaderItem):
                 item.level = level
+            else:
+                logger.warning(f"{sref} is not SectionHeaderItem {item.label}")
+
+    def _rewrite_content(self, task: str, document: DoclingDocument, refs: list[str]):
+        logger.info("_update_content_of_text")
+
+        texts = []
+        for sref in refs:
+            ref = RefItem(cref=sref)
+            item = ref.resolve(document)
+
+            texts.append(
+                DoclingEditingAgent.serialize_item_to_markdown(item=item, doc=document)
+            )
+
+        text = "\n\n".join(texts)
+
+        prompt = f"""Given the following text-section in markdown,
+
+```md
+{text}
+```
+
+Execute the following task: {task}
+"""
+        logger.info(f"prompt: {prompt}")
+
+        m = setup_local_session(
+            model_id=self.model_id,
+            system_prompt=self.system_prompt_for_expert_writer,
+        )
+
+        answer = m.instruct(
+            prompt,
+            strategy=RejectionSamplingStrategy(loop_budget=loop_budget),
+        )
+        logger.info(f"response: {answer.value}")
+
+        updated_doc = DoclingEditingAgent.convert_markdown_to_docling_document(
+            text=answer.value
+        )
+
+        ref = RefItem(cref=refs[0])
+        item = ref.resolve(document)
+
+        document = DoclingEditingAgent.insert_document(
+            item=item, doc=document, updated_doc=updated_doc
+        )
