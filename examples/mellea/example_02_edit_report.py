@@ -1,6 +1,5 @@
 import os
 
-
 from pathlib import Path
 
 from docling_core.types.doc.document import (
@@ -46,9 +45,15 @@ def main():
     ipath = Path("./scratch/20250815_125216.json")
 
     for _ in [
-        # ("Put the polymer abbreviations in a seperate column in the first table.", new_path(ipath, "_updated_table.html")),
-        # ("Make the title longer!", new_path(ipath, "_updated_title.html")),
-        # ("Ensure that the section-headers have the correct level!", new_path(ipath, "_updated_headings.html")),
+        (
+            "Put the polymer abbreviations in a seperate column in the first table.",
+            new_path(ipath, "_updated_table.html"),
+        ),
+        ("Make the title longer!", new_path(ipath, "_updated_title.html")),
+        (
+            "Ensure that the section-headers have the correct level!",
+            new_path(ipath, "_updated_headings.html"),
+        ),
         (
             "Expand the Introduction to three paragraphs.",
             new_path(ipath, "_updated_introduction.html"),
