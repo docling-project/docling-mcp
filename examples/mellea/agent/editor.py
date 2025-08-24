@@ -54,6 +54,24 @@ from abc import abstractmethod
 
 from examples.mellea.agent.base import DoclingAgentType, BaseDoclingAgent
 
+from examples.mellea.agent.base import (
+    find_json_dicts,
+    find_crefs,
+    has_crefs,
+    create_document_outline,
+    serialize_item_to_markdown,
+    serialize_table_to_html,
+    find_html_code_block,
+    has_html_code_block,
+    find_markdown_code_block,
+    has_markdown_code_block,
+    convert_html_to_docling_table,
+    validate_html_to_docling_table,
+    convert_markdown_to_docling_document,
+    validate_markdown_to_docling_document,
+    insert_document,
+)
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -69,11 +87,9 @@ class DoclingEditingAgent(BaseDoclingAgent):
 
     system_prompt_expert_writer: ClassVar[str] = SYSTEM_PROMPT_EXPERT_WRITER
 
+    """
     @staticmethod
     def find_json_dicts(text: str) -> list[dict]:
-        """
-        Extract JSON dictionaries from ```json code blocks
-        """
         pattern = r"```json\s*(.*?)\s*```"
         matches = re.findall(pattern, text, re.DOTALL)
 
@@ -89,9 +105,6 @@ class DoclingEditingAgent(BaseDoclingAgent):
 
     @staticmethod
     def find_crefs(text: str) -> list[RefItem]:
-        """
-        Check if a string matches the pattern ```markdown(.*)?```
-        """
         labels: str = "|".join([_ for _ in DocItemLabel])
         pattern = rf"#/({labels})/\d+"
 
@@ -149,7 +162,6 @@ class DoclingEditingAgent(BaseDoclingAgent):
 
     @staticmethod
     def serialize_item_to_markdown(item: TextItem, doc: DoclingDocument) -> str:
-        """Serialize a text item to markdown format using existing serializer."""
         from docling_core.transforms.serializer.markdown import (
             MarkdownDocSerializer,
             MarkdownParams,
@@ -182,35 +194,23 @@ class DoclingEditingAgent(BaseDoclingAgent):
 
     @staticmethod
     def find_html_code_block(text: str) -> str | None:
-        """
-        Check if a string matches the pattern ```html(.*)?```
-        """
         pattern = r"```html(.*?)```"
         match = re.search(pattern, text, re.DOTALL)
         return match.group(1) if match else None
 
     @staticmethod
     def has_html_code_block(text: str) -> bool:
-        """
-        Check if a string contains a html code block pattern anywhere in the text
-        """
         logger.info(f"testing has_html_code_block for {text[0:64]}")
         return DoclingEditingAgent.find_html_code_block(text) is not None
 
     @staticmethod
     def find_markdown_code_block(text: str) -> str | None:
-        """
-        Check if a string matches the pattern ```(md|markdown)(.*)?```
-        """
         pattern = r"```(md|markdown)(.*?)```"
         match = re.search(pattern, text, re.DOTALL)
         return match.group(2) if match else None
 
     @staticmethod
     def has_markdown_code_block(text: str) -> bool:
-        """
-        Check if a string contains a markdown code block pattern anywhere in the text
-        """
         logger.info(f"testing has_markdown_code_block for {text[0:64]}")
         return DoclingEditingAgent.find_markdown_code_block(text) is not None
 
@@ -340,6 +340,7 @@ class DoclingEditingAgent(BaseDoclingAgent):
 
             else:
                 logger.warning(f"No support to insert items of label: {item.label}")
+    """
 
     def __init__(self, *, model_id: ModelIdentifier, tools: list[Tool]):
         super().__init__(
@@ -378,7 +379,7 @@ class DoclingEditingAgent(BaseDoclingAgent):
     ) -> list[RefItem]:
         logger.info(f"task: {task}")
 
-        outline = DoclingEditingAgent.create_document_outline(doc=document)
+        outline = create_document_outline(doc=document)
 
         context = rf"""Given the current outline of the document:
 ```
@@ -409,7 +410,7 @@ Now, provide me the operations (encapsulated in on ore more ```json...```) and t
             strategy=RejectionSamplingStrategy(loop_budget=loop_budget),
         )
 
-        ops = DoclingEditingAgent.find_json_dicts(text=answer.value)
+        ops = find_json_dicts(text=answer.value)
 
         if len(ops) == 0:
             raise ValueError(f"No operation is detected")
@@ -445,9 +446,7 @@ Now, provide me the operations (encapsulated in on ore more ```json...```) and t
     ):
         logger.info("_update_content_of_table")
 
-        html_table = DoclingEditingAgent.serialize_table_to_html(
-            table=table, doc=document
-        )
+        html_table = serialize_table_to_html(table=table, doc=document)
 
         prompt = f"""Given the following HTML table,
 
@@ -470,24 +469,18 @@ Execute the following task: {task}
             requirements=[
                 Requirement(
                     description="Put the resulting HTML table in the format ```html <insert-content>```",
-                    validation_fn=simple_validate(
-                        DoclingEditingAgent.has_html_code_block
-                    ),
+                    validation_fn=simple_validate(has_html_code_block),
                 ),
                 Requirement(
                     description="The HTML table should have a valid formatting.",
-                    validation_fn=simple_validate(
-                        DoclingEditingAgent.validate_html_to_docling_table
-                    ),
+                    validation_fn=simple_validate(validate_html_to_docling_table),
                 ),
             ],
         )
 
         logger.info(f"response: {answer.value}")
 
-        new_tables = DoclingEditingAgent.convert_html_to_docling_table(
-            text=answer.value
-        )
+        new_tables = convert_html_to_docling_table(text=answer.value)
 
         if new_tables and len(new_tables) == 1:
             table.data = new_tables[0].data
@@ -504,7 +497,7 @@ Execute the following task: {task}
     ):
         logger.info("_update_content_of_text")
 
-        text = DoclingEditingAgent.serialize_item_to_markdown(item=item, doc=document)
+        text = serialize_item_to_markdown(item=item, doc=document)
 
         prompt = f"""Given the following {item.label},
 
@@ -527,13 +520,9 @@ Execute the following task: {task}
         )
         # logger.info(f"response: {answer.value}")
 
-        updated_doc = DoclingEditingAgent.convert_markdown_to_docling_document(
-            text=answer.value
-        )
+        updated_doc = convert_markdown_to_docling_document(text=answer.value)
 
-        document = DoclingEditingAgent.insert_document(
-            item=item, doc=document, updated_doc=updated_doc
-        )
+        document = insert_document(item=item, doc=document, updated_doc=updated_doc)
 
     def _delete_content_of_document_items(
         self, task: str, document: DoclingDocument, refs: list[RefItem]
@@ -569,9 +558,7 @@ Execute the following task: {task}
             ref = RefItem(cref=sref)
             item = ref.resolve(document)
 
-            texts.append(
-                DoclingEditingAgent.serialize_item_to_markdown(item=item, doc=document)
-            )
+            texts.append(serialize_item_to_markdown(item=item, doc=document))
 
         text = "\n\n".join(texts)
 
@@ -596,13 +583,9 @@ Execute the following task: {task}
         )
         logger.info(f"response: {answer.value}")
 
-        updated_doc = DoclingEditingAgent.convert_markdown_to_docling_document(
-            text=answer.value
-        )
+        updated_doc = convert_markdown_to_docling_document(text=answer.value)
 
         ref = RefItem(cref=refs[0])
         item = ref.resolve(document)
 
-        document = DoclingEditingAgent.insert_document(
-            item=item, doc=document, updated_doc=updated_doc
-        )
+        document = insert_document(item=item, doc=document, updated_doc=updated_doc)
