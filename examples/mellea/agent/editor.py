@@ -54,7 +54,7 @@ from abc import abstractmethod
 
 from examples.mellea.agent.base import DoclingAgentType, BaseDoclingAgent
 
-from examples.mellea.agent.base import (
+from examples.mellea.agent.base_functions import (
     find_json_dicts,
     find_crefs,
     has_crefs,

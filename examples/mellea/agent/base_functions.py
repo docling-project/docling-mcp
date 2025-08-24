@@ -186,7 +186,7 @@ def has_html_code_block(text: str) -> bool:
     Check if a string contains a html code block pattern anywhere in the text
     """
     logger.info(f"testing has_html_code_block for {text[0:64]}")
-    return DoclingEditingAgent.find_html_code_block(text) is not None
+    return find_html_code_block(text) is not None
 
 
 def find_markdown_code_block(text: str) -> str | None:
@@ -203,11 +203,11 @@ def has_markdown_code_block(text: str) -> bool:
     Check if a string contains a markdown code block pattern anywhere in the text
     """
     logger.info(f"testing has_markdown_code_block for {text[0:64]}")
-    return DoclingEditingAgent.find_markdown_code_block(text) is not None
+    return find_markdown_code_block(text) is not None
 
 
 def convert_html_to_docling_table(text: str) -> list[TableItem] | None:
-    text_ = DoclingEditingAgent.find_html_code_block(text)
+    text_ = find_html_code_block(text)
     if text_ is None:
         text_ = text  # assume the entire text is html
 
@@ -231,11 +231,11 @@ def convert_html_to_docling_table(text: str) -> list[TableItem] | None:
 
 def validate_html_to_docling_table(text: str) -> bool:
     logger.info(f"validate_html_to_docling_table for {text[0:64]}")
-    return DoclingEditingAgent.convert_html_to_docling_table is not None
+    return convert_html_to_docling_table is not None
 
 
 def convert_markdown_to_docling_document(text: str) -> DoclingDocument | None:
-    text_ = DoclingEditingAgent.find_markdown_code_block(text)
+    text_ = find_markdown_code_block(text)
     if text_ is None:
         text_ = text  # assume the entire text is html
 
@@ -257,7 +257,7 @@ def convert_markdown_to_docling_document(text: str) -> DoclingDocument | None:
 
 def validate_markdown_to_docling_document(text: str) -> bool:
     logger.info(f"testing validate_markdown_docling_document for {text[0:64]}")
-    return DoclingEditingAgent.convert_markdown_to_docling_document(text) is not None
+    return convert_markdown_to_docling_document(text) is not None
 
 
 def insert_document(
