@@ -43,6 +43,7 @@ classifiers = [
 requires-python = ">=3.10"
 dependencies = [
     "docling~=2.25",
+    "fastmcp>=2.11.3",
     "httpx>=0.28.1",
     "mcp[cli]>=1.9.4",
     "pydantic~=2.10",
