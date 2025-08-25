@@ -139,6 +139,47 @@ def create_document_outline(doc: DoclingDocument) -> str:
     return outline
 
 
+def find_outline(text: str) -> DoclingDocument | None:
+    starts = ["paragraph", "list", "table", "figure", "picture"]
+
+    md = find_markdown_code_block(text)
+
+    if md:
+        converter = DocumentConverter(allowed_formats=[InputFormat.MD])
+
+        buff = BytesIO(md.encode("utf-8"))
+        doc_stream = DocumentStream(name="tmp.md", stream=buff)
+
+        conv: ConversionResult = converter.convert(doc_stream)
+
+        lines = []
+        for item, level in conv.document.iterate_items(with_groups=True):
+            if isinstance(item, TitleItem) or isinstance(item, SectionHeaderItem):
+                continue
+            elif isinstance(item, TextItem):
+                pattern = rf"^({'|'.join(starts)}):\s(.*)\.$"
+                match = bool(re.match(pattern, text, re.DOTALL))
+                if match is None:
+                    lines.append(item.text)
+            else:
+                continue
+
+        if len(lines) > 0:
+            message = f"Every content line should start with one out of the following choices: {starts}. The following lines need to be updated: {'\n'.join(lines)}"
+            logger.error(message)
+
+            return None
+        else:
+            return conv.document
+    else:
+        return None
+
+
+def validate_outline_format(text: str) -> bool:
+    logger.info(f"testing validate_outline_format for {text[0:64]}")
+    return find_outline(text) is not None
+
+
 def serialize_item_to_markdown(item: TextItem, doc: DoclingDocument) -> str:
     """Serialize a text item to markdown format using existing serializer."""
     from docling_core.transforms.serializer.markdown import (
@@ -258,6 +299,33 @@ def convert_markdown_to_docling_document(text: str) -> DoclingDocument | None:
 def validate_markdown_to_docling_document(text: str) -> bool:
     logger.info(f"testing validate_markdown_docling_document for {text[0:64]}")
     return convert_markdown_to_docling_document(text) is not None
+
+
+def convert_html_to_docling_document(text: str) -> DoclingDocument | None:
+    text_ = find_html_code_block(text)
+    if text_ is None:
+        text_ = text  # assume the entire text is html
+
+    try:
+        converter = DocumentConverter(allowed_formats=[InputFormat.HTML])
+
+        buff = BytesIO(text.encode("utf-8"))
+        doc_stream = DocumentStream(name="tmp.html", stream=buff)
+
+        conv: ConversionResult = converter.convert(doc_stream)
+
+        if conv.status == ConversionStatus.SUCCESS:
+            return conv.document
+    except Exception as exc:
+        logger.error(f"error: {exc}")
+        return None
+
+    return None
+
+
+def validate_html_to_docling_document(text: str) -> bool:
+    logger.info(f"testing validate_html_docling_document for {text[0:64]}")
+    return convert_html_to_docling_document(text) is not None
 
 
 def insert_document(

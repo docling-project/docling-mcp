@@ -60,6 +60,29 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+from examples.mellea.agent.base_functions import (
+    find_json_dicts,
+    find_crefs,
+    has_crefs,
+    create_document_outline,
+    serialize_item_to_markdown,
+    serialize_table_to_html,
+    find_html_code_block,
+    has_html_code_block,
+    find_markdown_code_block,
+    has_markdown_code_block,
+    convert_html_to_docling_table,
+    validate_html_to_docling_table,
+    convert_markdown_to_docling_document,
+    validate_markdown_to_docling_document,
+    insert_document,
+    create_document_outline,
+    find_outline,
+    validate_outline_format,
+    validate_html_to_docling_document,
+    convert_html_to_docling_document,
+)
+
 
 class DoclingWritingAgent(BaseDoclingAgent):
     task_analysis: DoclingDocument = DoclingDocument(name=f"report")
@@ -71,140 +94,6 @@ class DoclingWritingAgent(BaseDoclingAgent):
     system_prompt_expert_writer: ClassVar[str] = SYSTEM_PROMPT_EXPERT_WRITER
 
     system_prompt_expert_table_writer: ClassVar[str] = SYSTEM_PROMPT_EXPERT_TABLE_WRITER
-
-    @staticmethod
-    def find_markdown_code_block(text: str) -> str | None:
-        """
-        Check if a string matches the pattern ```markdown(.*)?```
-        """
-        pattern = r"```markdown(.*?)```"
-        match = re.search(pattern, text, re.DOTALL)
-        return match.group(1) if match else None
-
-    @staticmethod
-    def has_markdown_code_block(text: str) -> bool:
-        """
-        Check if a string contains a markdown code block pattern anywhere in the text
-        """
-        logger.info(f"testing has_markdown_code_block for {text[0:64]}")
-        return DoclingWritingAgent.find_markdown_code_block(text) is not None
-
-    @staticmethod
-    def find_html_code_block(text: str) -> str | None:
-        """
-        Check if a string matches the pattern ```html(.*)?```
-        """
-        pattern = r"```html(.*?)```"
-        match = re.search(pattern, text, re.DOTALL)
-        return match.group(1) if match else None
-
-    @staticmethod
-    def has_html_code_block(text: str) -> bool:
-        """
-        Check if a string contains a html code block pattern anywhere in the text
-        """
-        logger.info(f"testing has_html_code_block for {text[0:64]}")
-        return DoclingWritingAgent.find_html_code_block(text) is not None
-
-    @staticmethod
-    def find_outline(text: str) -> DoclingDocument | None:
-        """
-        Check if a string matches the pattern ```markdown(.*)?```
-        """
-        starts = ["paragraph", "list", "table", "figure", "picture"]
-
-        md = DoclingWritingAgent.find_markdown_code_block(text)
-
-        if md:
-            converter = DocumentConverter(allowed_formats=[InputFormat.MD])
-
-            buff = BytesIO(md.encode("utf-8"))
-            doc_stream = DocumentStream(name="tmp.md", stream=buff)
-
-            conv: ConversionResult = converter.convert(doc_stream)
-
-            lines = []
-            for item, level in conv.document.iterate_items(with_groups=True):
-                if isinstance(item, TitleItem) or isinstance(item, SectionHeaderItem):
-                    continue
-                elif isinstance(item, TextItem):
-                    pattern = rf"^({'|'.join(starts)}):\s(.*)\.$"
-                    match = bool(re.match(pattern, text, re.DOTALL))
-                    if match is None:
-                        lines.append(item.text)
-                else:
-                    # print(f"unsupported item: {item}")
-                    continue
-
-            if len(lines) > 0:
-                message = f"Every content line should start with one out of the following choices: {starts}. The following lines need to be updated: {'\n'.join(lines)}"
-                print(message)
-                return None
-            else:
-                return conv.document
-        else:
-            return None
-
-    @staticmethod
-    def validate_outline_format(text: str) -> bool:
-        logger.info(f"testing validate_outline_format for {text[0:64]}")
-        return DoclingWritingAgent.find_outline(text) is not None
-
-    @staticmethod
-    def convert_markdown_to_docling_document(text: str) -> DoclingDocument | None:
-        text_ = DoclingWritingAgent.find_markdown_code_block(text)
-        if text_ is None:
-            text_ = text  # assume the entire text is html
-
-        try:
-            converter = DocumentConverter(allowed_formats=[InputFormat.MD])
-
-            buff = BytesIO(text_.encode("utf-8"))
-            doc_stream = DocumentStream(name="tmp.md", stream=buff)
-
-            conv: ConversionResult = converter.convert(doc_stream)
-
-            if conv.status == ConversionStatus.SUCCESS:
-                return conv.document
-        except Exception as exc:
-            # logger.error(exc)
-            return None
-
-        return None
-
-    @staticmethod
-    def convert_html_to_docling_document(text: str) -> DoclingDocument | None:
-        text_ = DoclingWritingAgent.find_html_code_block(text)
-        if text_ is None:
-            text_ = text  # assume the entire text is html
-
-        try:
-            converter = DocumentConverter(allowed_formats=[InputFormat.HTML])
-
-            buff = BytesIO(text.encode("utf-8"))
-            doc_stream = DocumentStream(name="tmp.html", stream=buff)
-
-            conv: ConversionResult = converter.convert(doc_stream)
-
-            if conv.status == ConversionStatus.SUCCESS:
-                return conv.document
-        except Exception as exc:
-            print(exc)
-            return None
-
-        return None
-
-    @staticmethod
-    def validate_markdown_to_docling_document(text: str) -> bool:
-        logger.info(f"testing validate_markdown_docling_document for {text[0:64]}")
-        return (
-            DoclingWritingAgent.convert_markdown_to_docling_document(text) is not None
-        )
-
-    @staticmethod
-    def validate_html_to_docling_document(text: str) -> bool:
-        logger.info(f"testing validate_html_docling_document for {text[0:64]}")
-        return DoclingWritingAgent.convert_html_to_docling_document(text) is not None
 
     def __init__(self, *, model_id: ModelIdentifier, tools: list[Tool]):
         super().__init__(
@@ -271,25 +160,20 @@ class DoclingWritingAgent(BaseDoclingAgent):
                 # "The resulting output should satisfy the following regex ```markdown(.*)?```"
                 Requirement(
                     description="Put the resulting markdown outline in the format ```markdown <insert-content>```",
-                    validation_fn=simple_validate(
-                        DoclingWritingAgent.has_markdown_code_block
-                    ),
+                    validation_fn=simple_validate(has_markdown_code_block),
                 ),
                 # "The resulting outline should have a specific format: start with `paragraph: `,
                 # `table: `, `picture: ` or `list: `.
                 Requirement(
                     description="The resulting outline should be in markdown format. If not a title or subheading, start each line with `paragraph: `, `table: `, `picture: ` or `list: ` followed by a single sentence summary.",
-                    validation_fn=simple_validate(
-                        DoclingWritingAgent.validate_outline_format
-                    ),
+                    validation_fn=simple_validate(validate_outline_format),
                 ),
             ],
             # user_variables={"name": name, "notes": notes},
             strategy=RejectionSamplingStrategy(loop_budget=loop_budget),
         )
 
-        outline = DoclingWritingAgent.find_outline(text=answer.value)
-        # print(outline.export_to_markdown())
+        outline = find_outline(text=answer.value)
 
         return outline
 
@@ -487,16 +371,14 @@ class DoclingWritingAgent(BaseDoclingAgent):
                 Requirement(
                     description="The resulting markdown paragraph should use latex notation for superscript, subscript or inline equations. This means that every superscript, subscript and inline equation in must start and end with a $ sign.",
                     validation_fn=simple_validate(
-                        DoclingWritingAgent.validate_markdown_to_docling_document
+                        validate_markdown_to_docling_document
                     ),
                 ),
             ],
             strategy=RejectionSamplingStrategy(loop_budget=loop_budget),
         )
 
-        result = DoclingWritingAgent.convert_markdown_to_docling_document(
-            text=answer.value
-        )
+        result = convert_markdown_to_docling_document(text=answer.value)
 
         return result
 
@@ -525,16 +407,14 @@ class DoclingWritingAgent(BaseDoclingAgent):
                 Requirement(
                     description="The resulting markdown list should use latex notation for superscript, subscript or inline equations. This means that every superscript, subscript and inline equation in must start and end with a $ sign.",
                     validation_fn=simple_validate(
-                        DoclingWritingAgent.validate_markdown_to_docling_document
+                        validate_markdown_to_docling_document
                     ),
                 ),
             ],
             strategy=RejectionSamplingStrategy(loop_budget=loop_budget),
         )
 
-        result = DoclingWritingAgent.convert_markdown_to_docling_document(
-            text=answer.value
-        )
+        result = convert_markdown_to_docling_document(text=answer.value)
 
         return result
 
@@ -562,21 +442,16 @@ class DoclingWritingAgent(BaseDoclingAgent):
             requirements=[
                 Requirement(
                     description="Put the resulting HTML table in the format ```html <insert-content>```",
-                    validation_fn=simple_validate(
-                        DoclingWritingAgent.has_html_code_block
-                    ),
+                    validation_fn=simple_validate(has_html_code_block),
                 ),
                 Requirement(
                     description="The HTML table should have a valid formatting.",
-                    validation_fn=simple_validate(
-                        DoclingWritingAgent.validate_html_to_docling_document
-                    ),
+                    validation_fn=simple_validate(validate_html_to_docling_document),
                 ),
             ],
             strategy=RejectionSamplingStrategy(loop_budget=loop_budget),
         )
-        # print(answer.value)
 
-        result = DoclingWritingAgent.convert_html_to_docling_document(text=answer.value)
+        result = convert_html_to_docling_document(text=answer.value)
 
         return result
