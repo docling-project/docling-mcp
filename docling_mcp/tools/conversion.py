@@ -25,6 +25,7 @@ from docling_core.types.doc.labels import (
 
 from docling_mcp.docling_cache import get_cache_key
 from docling_mcp.logger import setup_logger
+from docling_mcp.settings.conversion import settings
 from docling_mcp.shared import local_document_cache, local_stack_cache, mcp
 
 # Create a default project logger
@@ -84,6 +85,7 @@ class ConvertDocumentOutput:
 def _get_converter() -> DocumentConverter:
     pipeline_options = PdfPipelineOptions()
     # pipeline_options.do_ocr = False  # Skip OCR for faster processing (enable for scanned docs)
+    pipeline_options.generate_page_images = settings.keep_images
 
     format_options: dict[InputFormat, FormatOption] = {
         InputFormat.PDF: PdfFormatOption(pipeline_options=pipeline_options),
