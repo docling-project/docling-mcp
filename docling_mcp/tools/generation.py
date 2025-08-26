@@ -165,7 +165,7 @@ def page_thumbnail(
         str,
         Field(description="The unique identifier of the document in the local cache."),
     ],
-    page_no: Annotated[int, Field(description="The number of the page")] = 1,
+    page_no: Annotated[int, Field(description="The number of the page starting at 1")] = 1,
     size: Annotated[
         int, Field(description="The width of the thumbnail in pixels")
     ] = 300,
