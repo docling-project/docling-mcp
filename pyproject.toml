@@ -45,15 +45,11 @@ dependencies = [
     "docling~=2.25",
     "httpx>=0.28.1",
     "mcp[cli]>=1.9.4",
+    "mellea",
     "pydantic~=2.10",
     "pydantic-settings~=2.4",
     "python-dotenv>=1.1.0",
 ]
-
-# Hack for mellea at this point
-[tool.hatch.metadata]
-allow-direct-references = true
-
 
 [project.optional-dependencies]
 llama-index-rag = [
@@ -78,8 +74,7 @@ smolagents = [
     "ollama>=0.1.0",
 ]
 mellea = [
-    # "mellea>=0.0.1",
-    "mellea @ https://github.com/generative-computing/mellea.git",
+    "mellea>=0.0.2",
 ]
 
 [dependency-groups]
@@ -110,6 +105,9 @@ Changelog = "https://github.com/docling-project/docling-mcp/blob/main/CHANGELOG.
 
 [tool.uv]
 default-groups = ["dev", "examples"]
+
+[tool.uv.sources]
+mellea = { git = "https://github.com/generative-computing/mellea.git" }
 
 [tool.hatch.build.targets.sdist]
 include = ["docling_mcp"]
