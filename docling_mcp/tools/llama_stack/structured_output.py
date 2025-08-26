@@ -87,7 +87,7 @@ def information_extraction(
     prompt = prompt.strip()
 
     client = get_llama_stack_client()
-    chat_completion = client.chat.completions.create(
+    chat_completion = client.chat.completions.create(  # type: ignore
         model=settings.extraction_model,
         messages=[
             {
@@ -99,7 +99,7 @@ def information_extraction(
                 "content": content_md,
             },
         ],
-        response_format=extraction_schema,  # type: ignore
+        response_format=extraction_schema,
     )
 
     response = json.loads(chat_completion.choices[0].message.content)
