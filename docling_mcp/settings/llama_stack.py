@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     )
     url: str = "http://localhost:8321"
     vdb_embedding: str = "all-MiniLM-L6-v2"
+    extraction_model: str = "openai/gpt-oss-20b"
 
 
 settings = Settings()

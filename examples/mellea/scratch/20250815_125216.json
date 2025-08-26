@@ -1,0 +1,5065 @@
+{
+  "schema_name": "DoclingDocument",
+  "version": "1.5.0",
+  "name": "report on task: `Write me a document on polymers in food-packaging.`",
+  "furniture": {
+    "self_ref": "#/furniture",
+    "children": [],
+    "content_layer": "furniture",
+    "name": "_root_",
+    "label": "unspecified"
+  },
+  "body": {
+    "self_ref": "#/body",
+    "children": [
+      {
+        "$ref": "#/texts/0"
+      },
+      {
+        "$ref": "#/texts/1"
+      },
+      {
+        "$ref": "#/texts/2"
+      },
+      {
+        "$ref": "#/texts/3"
+      },
+      {
+        "$ref": "#/texts/4"
+      },
+      {
+        "$ref": "#/texts/5"
+      },
+      {
+        "$ref": "#/texts/6"
+      },
+      {
+        "$ref": "#/texts/7"
+      },
+      {
+        "$ref": "#/texts/8"
+      },
+      {
+        "$ref": "#/texts/9"
+      },
+      {
+        "$ref": "#/texts/10"
+      },
+      {
+        "$ref": "#/tables/0"
+      },
+      {
+        "$ref": "#/texts/11"
+      },
+      {
+        "$ref": "#/texts/12"
+      },
+      {
+        "$ref": "#/texts/13"
+      },
+      {
+        "$ref": "#/texts/14"
+      },
+      {
+        "$ref": "#/texts/15"
+      },
+      {
+        "$ref": "#/texts/16"
+      },
+      {
+        "$ref": "#/pictures/0"
+      },
+      {
+        "$ref": "#/texts/17"
+      },
+      {
+        "$ref": "#/texts/18"
+      },
+      {
+        "$ref": "#/groups/0"
+      },
+      {
+        "$ref": "#/texts/51"
+      },
+      {
+        "$ref": "#/texts/52"
+      },
+      {
+        "$ref": "#/texts/53"
+      },
+      {
+        "$ref": "#/texts/54"
+      },
+      {
+        "$ref": "#/texts/55"
+      },
+      {
+        "$ref": "#/texts/56"
+      },
+      {
+        "$ref": "#/texts/57"
+      },
+      {
+        "$ref": "#/tables/1"
+      },
+      {
+        "$ref": "#/texts/58"
+      },
+      {
+        "$ref": "#/texts/59"
+      },
+      {
+        "$ref": "#/texts/60"
+      },
+      {
+        "$ref": "#/texts/61"
+      },
+      {
+        "$ref": "#/texts/62"
+      },
+      {
+        "$ref": "#/groups/12"
+      },
+      {
+        "$ref": "#/texts/85"
+      },
+      {
+        "$ref": "#/texts/86"
+      },
+      {
+        "$ref": "#/texts/87"
+      },
+      {
+        "$ref": "#/texts/88"
+      },
+      {
+        "$ref": "#/texts/89"
+      },
+      {
+        "$ref": "#/tables/2"
+      },
+      {
+        "$ref": "#/texts/90"
+      },
+      {
+        "$ref": "#/texts/91"
+      },
+      {
+        "$ref": "#/texts/92"
+      },
+      {
+        "$ref": "#/texts/93"
+      },
+      {
+        "$ref": "#/texts/94"
+      },
+      {
+        "$ref": "#/groups/19"
+      },
+      {
+        "$ref": "#/texts/123"
+      },
+      {
+        "$ref": "#/texts/124"
+      }
+    ],
+    "content_layer": "body",
+    "name": "_root_",
+    "label": "unspecified"
+  },
+  "groups": [
+    {
+      "self_ref": "#/groups/0",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/19"
+        },
+        {
+          "$ref": "#/groups/1"
+        },
+        {
+          "$ref": "#/texts/28"
+        },
+        {
+          "$ref": "#/groups/4"
+        },
+        {
+          "$ref": "#/texts/39"
+        },
+        {
+          "$ref": "#/groups/8"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/1",
+      "parent": {
+        "$ref": "#/groups/0"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/20"
+        },
+        {
+          "$ref": "#/texts/21"
+        },
+        {
+          "$ref": "#/groups/2"
+        },
+        {
+          "$ref": "#/texts/26"
+        },
+        {
+          "$ref": "#/groups/3"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/2",
+      "parent": {
+        "$ref": "#/groups/1"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/22"
+        },
+        {
+          "$ref": "#/texts/23"
+        },
+        {
+          "$ref": "#/texts/24"
+        },
+        {
+          "$ref": "#/texts/25"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/3",
+      "parent": {
+        "$ref": "#/groups/1"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/27"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/4",
+      "parent": {
+        "$ref": "#/groups/0"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/29"
+        },
+        {
+          "$ref": "#/texts/30"
+        },
+        {
+          "$ref": "#/groups/5"
+        },
+        {
+          "$ref": "#/texts/34"
+        },
+        {
+          "$ref": "#/groups/6"
+        },
+        {
+          "$ref": "#/texts/36"
+        },
+        {
+          "$ref": "#/groups/7"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/5",
+      "parent": {
+        "$ref": "#/groups/4"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/31"
+        },
+        {
+          "$ref": "#/texts/32"
+        },
+        {
+          "$ref": "#/texts/33"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/6",
+      "parent": {
+        "$ref": "#/groups/4"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/35"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/7",
+      "parent": {
+        "$ref": "#/groups/4"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/37"
+        },
+        {
+          "$ref": "#/texts/38"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/8",
+      "parent": {
+        "$ref": "#/groups/0"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/40"
+        },
+        {
+          "$ref": "#/texts/41"
+        },
+        {
+          "$ref": "#/groups/9"
+        },
+        {
+          "$ref": "#/texts/45"
+        },
+        {
+          "$ref": "#/groups/10"
+        },
+        {
+          "$ref": "#/texts/47"
+        },
+        {
+          "$ref": "#/groups/11"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/9",
+      "parent": {
+        "$ref": "#/groups/8"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/42"
+        },
+        {
+          "$ref": "#/texts/43"
+        },
+        {
+          "$ref": "#/texts/44"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/10",
+      "parent": {
+        "$ref": "#/groups/8"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/46"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/11",
+      "parent": {
+        "$ref": "#/groups/8"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/48"
+        },
+        {
+          "$ref": "#/texts/49"
+        },
+        {
+          "$ref": "#/texts/50"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/12",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/63"
+        },
+        {
+          "$ref": "#/groups/13"
+        },
+        {
+          "$ref": "#/texts/68"
+        },
+        {
+          "$ref": "#/groups/14"
+        },
+        {
+          "$ref": "#/texts/74"
+        },
+        {
+          "$ref": "#/groups/16"
+        },
+        {
+          "$ref": "#/texts/77"
+        },
+        {
+          "$ref": "#/groups/17"
+        },
+        {
+          "$ref": "#/texts/80"
+        },
+        {
+          "$ref": "#/groups/18"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/13",
+      "parent": {
+        "$ref": "#/groups/12"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/64"
+        },
+        {
+          "$ref": "#/texts/65"
+        },
+        {
+          "$ref": "#/texts/66"
+        },
+        {
+          "$ref": "#/texts/67"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/14",
+      "parent": {
+        "$ref": "#/groups/12"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/69"
+        },
+        {
+          "$ref": "#/groups/15"
+        },
+        {
+          "$ref": "#/texts/72"
+        },
+        {
+          "$ref": "#/texts/73"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/15",
+      "parent": {
+        "$ref": "#/groups/14"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/70"
+        },
+        {
+          "$ref": "#/texts/71"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/16",
+      "parent": {
+        "$ref": "#/groups/12"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/75"
+        },
+        {
+          "$ref": "#/texts/76"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/17",
+      "parent": {
+        "$ref": "#/groups/12"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/78"
+        },
+        {
+          "$ref": "#/texts/79"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/18",
+      "parent": {
+        "$ref": "#/groups/12"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/81"
+        },
+        {
+          "$ref": "#/texts/82"
+        },
+        {
+          "$ref": "#/texts/83"
+        },
+        {
+          "$ref": "#/texts/84"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/19",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/95"
+        },
+        {
+          "$ref": "#/groups/20"
+        },
+        {
+          "$ref": "#/texts/99"
+        },
+        {
+          "$ref": "#/groups/21"
+        },
+        {
+          "$ref": "#/texts/102"
+        },
+        {
+          "$ref": "#/groups/22"
+        },
+        {
+          "$ref": "#/texts/105"
+        },
+        {
+          "$ref": "#/groups/23"
+        },
+        {
+          "$ref": "#/texts/108"
+        },
+        {
+          "$ref": "#/groups/24"
+        },
+        {
+          "$ref": "#/texts/111"
+        },
+        {
+          "$ref": "#/groups/25"
+        },
+        {
+          "$ref": "#/texts/114"
+        },
+        {
+          "$ref": "#/groups/26"
+        },
+        {
+          "$ref": "#/texts/117"
+        },
+        {
+          "$ref": "#/groups/27"
+        },
+        {
+          "$ref": "#/texts/120"
+        },
+        {
+          "$ref": "#/groups/28"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/20",
+      "parent": {
+        "$ref": "#/groups/19"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/96"
+        },
+        {
+          "$ref": "#/texts/97"
+        },
+        {
+          "$ref": "#/texts/98"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/21",
+      "parent": {
+        "$ref": "#/groups/19"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/100"
+        },
+        {
+          "$ref": "#/texts/101"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/22",
+      "parent": {
+        "$ref": "#/groups/19"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/103"
+        },
+        {
+          "$ref": "#/texts/104"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/23",
+      "parent": {
+        "$ref": "#/groups/19"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/106"
+        },
+        {
+          "$ref": "#/texts/107"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/24",
+      "parent": {
+        "$ref": "#/groups/19"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/109"
+        },
+        {
+          "$ref": "#/texts/110"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/25",
+      "parent": {
+        "$ref": "#/groups/19"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/112"
+        },
+        {
+          "$ref": "#/texts/113"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/26",
+      "parent": {
+        "$ref": "#/groups/19"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/115"
+        },
+        {
+          "$ref": "#/texts/116"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/27",
+      "parent": {
+        "$ref": "#/groups/19"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/118"
+        },
+        {
+          "$ref": "#/texts/119"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    },
+    {
+      "self_ref": "#/groups/28",
+      "parent": {
+        "$ref": "#/groups/19"
+      },
+      "children": [
+        {
+          "$ref": "#/texts/121"
+        },
+        {
+          "$ref": "#/texts/122"
+        }
+      ],
+      "content_layer": "body",
+      "name": "list",
+      "label": "list"
+    }
+  ],
+  "texts": [
+    {
+      "self_ref": "#/texts/0",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "title",
+      "prov": [],
+      "orig": "Polymers in Food Packaging",
+      "text": "Polymers in Food Packaging"
+    },
+    {
+      "self_ref": "#/texts/1",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "paragraph",
+      "prov": [],
+      "orig": "Polymer materials such as polyethylene (PE), polypropylene (PP), polyethylene terephthalate (PET)$ {C {10}H_{8}O_{4}}$, poly(lactic acid) (PLA)$ {MW=30kDa}$, and polyethylene glycol (PEG)$ {2000}$ dominate contemporary food packaging, each chosen for distinct barrier, mechanical, and processability traits that are quantified by parameters like tensile strength $E_{max}=50$ MPa, flexural modulus, and glass\u2011transition temperature Tg$=60^\\circ$C, while the oxygen permeability of many films is expressed relative to O$^2$ transmission rates. These polymers are shaped by extrusion, blow\u2011molding, and film\u2011forming processes that control orientation and crystallinity, and their use is governed by regulatory frameworks such as the U.S. FDA\u2019s Food Contact Substances (FCS) list, the EU\u2019s EU\u2011Regulation 10/2011 on food contact materials, and the RoHS restriction on hazardous substances, all of which require migration limits, migration testing protocols, and documentation of barrier performance. From an environmental standpoint, life\u2011cycle assessments reveal that conventional thermoplastics can contribute to persistent microplastic residues, whereas emerging biopolymers (e.g., polylactic acid and polyhydroxyalkanoates) and enzymatically degradable blends promise lower carbon footprints and faster composting, but also present challenges in terms of mechanical robustness and recyclability. Recent innovations\u2014such as nanocomposite films incorporating layered silicates or cellulose nanocrystals, active\u2011sensor coatings that detect spoilage gases, and intelligent packaging that modulates barrier properties in response to temperature or humidity\u2014are pushing the frontier toward smarter, more sustainable solutions that marry performance with environmental stewardship.",
+      "text": "Polymer materials such as polyethylene (PE), polypropylene (PP), polyethylene terephthalate (PET)$ {C {10}H_{8}O_{4}}$, poly(lactic acid) (PLA)$ {MW=30kDa}$, and polyethylene glycol (PEG)$ {2000}$ dominate contemporary food packaging, each chosen for distinct barrier, mechanical, and processability traits that are quantified by parameters like tensile strength $E_{max}=50$ MPa, flexural modulus, and glass\u2011transition temperature Tg$=60^\\circ$C, while the oxygen permeability of many films is expressed relative to O$^2$ transmission rates. These polymers are shaped by extrusion, blow\u2011molding, and film\u2011forming processes that control orientation and crystallinity, and their use is governed by regulatory frameworks such as the U.S. FDA\u2019s Food Contact Substances (FCS) list, the EU\u2019s EU\u2011Regulation 10/2011 on food contact materials, and the RoHS restriction on hazardous substances, all of which require migration limits, migration testing protocols, and documentation of barrier performance. From an environmental standpoint, life\u2011cycle assessments reveal that conventional thermoplastics can contribute to persistent microplastic residues, whereas emerging biopolymers (e.g., polylactic acid and polyhydroxyalkanoates) and enzymatically degradable blends promise lower carbon footprints and faster composting, but also present challenges in terms of mechanical robustness and recyclability. Recent innovations\u2014such as nanocomposite films incorporating layered silicates or cellulose nanocrystals, active\u2011sensor coatings that detect spoilage gases, and intelligent packaging that modulates barrier properties in response to temperature or humidity\u2014are pushing the frontier toward smarter, more sustainable solutions that marry performance with environmental stewardship."
+    },
+    {
+      "self_ref": "#/texts/2",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [],
+      "orig": "1. Introduction",
+      "text": "1. Introduction",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/3",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "paragraph",
+      "prov": [],
+      "orig": "Polymers such as polyethylene, polypropylene, and polyvinyl alcohol form the backbone of modern food packaging, acting as physical barriers that limit the diffusion of oxygen, moisture, and microbial contaminants; for instance, a multilayer laminate might contain a $PE$ outer film, a $PE$ inner film, and a $PA$ (polyamide) barrier layer, each chosen for its selective permeability properties. By tuning the crystallinity and glass\u2011transition temperature of these polymers\u2014often expressed as $T_g = 100^\\circ C$ for a highly rigid polyamide\u2014the rate of oxygen permeation can be reduced to below $1 \\mathrm{cm^3/(m^2 \\cdot h \\cdot atm)}$, thereby slowing oxidative rancidity in fats and preserving flavor compounds. Functional additives such as antioxidants (e.g., $\\mathrm{BHT}$ or $\\mathrm{BHA}$) or active gases (e.g., $O_2$ scavengers) can be incorporated within the polymer matrix, and their release kinetics are governed by Fick\u2019s law, $J = -D \\frac{\\partial C}{\\partial x}$, ensuring a controlled, sustained delivery that extends shelf life by up to 30\u202f% compared to conventional packaging. Moreover, intelligent polymers that respond to environmental stimuli\u2014such as moisture\u2011responsive gels that swell in the presence of $H_2O$ and seal micro\u2011cracks\u2014further guard against spoilage, while biodegradable polymers like polylactic acid ($C_3 H_4 O_2$) offer an eco\u2011friendly alternative that still maintains a protective barrier until the food product is consumed.",
+      "text": "Polymers such as polyethylene, polypropylene, and polyvinyl alcohol form the backbone of modern food packaging, acting as physical barriers that limit the diffusion of oxygen, moisture, and microbial contaminants; for instance, a multilayer laminate might contain a $PE$ outer film, a $PE$ inner film, and a $PA$ (polyamide) barrier layer, each chosen for its selective permeability properties. By tuning the crystallinity and glass\u2011transition temperature of these polymers\u2014often expressed as $T_g = 100^\\circ C$ for a highly rigid polyamide\u2014the rate of oxygen permeation can be reduced to below $1 \\mathrm{cm^3/(m^2 \\cdot h \\cdot atm)}$, thereby slowing oxidative rancidity in fats and preserving flavor compounds. Functional additives such as antioxidants (e.g., $\\mathrm{BHT}$ or $\\mathrm{BHA}$) or active gases (e.g., $O_2$ scavengers) can be incorporated within the polymer matrix, and their release kinetics are governed by Fick\u2019s law, $J = -D \\frac{\\partial C}{\\partial x}$, ensuring a controlled, sustained delivery that extends shelf life by up to 30\u202f% compared to conventional packaging. Moreover, intelligent polymers that respond to environmental stimuli\u2014such as moisture\u2011responsive gels that swell in the presence of $H_2O$ and seal micro\u2011cracks\u2014further guard against spoilage, while biodegradable polymers like polylactic acid ($C_3 H_4 O_2$) offer an eco\u2011friendly alternative that still maintains a protective barrier until the food product is consumed."
+    },
+    {
+      "self_ref": "#/texts/4",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [],
+      "orig": "2. Classification of Polymers Used in Food Packaging",
+      "text": "2. Classification of Polymers Used in Food Packaging",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/5",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [],
+      "orig": "2.1 Thermoplastics",
+      "text": "2.1 Thermoplastics",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/6",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "paragraph",
+      "prov": [],
+      "orig": "Among the most commonly used thermoplastics, polyethylene terephthalate (PET), high\u2011density polyethylene (HDPE), and polypropylene (PP) stand out for their combination of mechanical robustness and ease of recycling; PET, whose repeating unit can be written as (C$_{10}$H$_8$O$_4$)$ n$, is prized for its high tensile strength and excellent moisture barrier, making it the material of choice for beverage bottles that can be re\u2011processed into textiles or packaging through a closed\u2011loop cycle; HDPE, with a density of $\\rho\\approx0.95 $g\u202fcm$^{-3}$ and a melt flow index that allows for tight dimensional control, is favored for items such as milk jugs and geomembranes, and it can be re\u2011extruded into new containers with minimal loss of performance; PP, characterized by a crystalline structure that gives it a melt temperature of $T {\\text{m}}\\approx160^\\circ$C, offers a low cost, high stiffness, and excellent chemical resistance, enabling its widespread use in food containers, automotive parts, and reusable packaging that can be fed back into the recycling stream without contamination\u2014together, these polymers illustrate how material selection can simultaneously satisfy durability requirements and support a circular economy through recyclable feedstocks.",
+      "text": "Among the most commonly used thermoplastics, polyethylene terephthalate (PET), high\u2011density polyethylene (HDPE), and polypropylene (PP) stand out for their combination of mechanical robustness and ease of recycling; PET, whose repeating unit can be written as (C$_{10}$H$_8$O$_4$)$ n$, is prized for its high tensile strength and excellent moisture barrier, making it the material of choice for beverage bottles that can be re\u2011processed into textiles or packaging through a closed\u2011loop cycle; HDPE, with a density of $\\rho\\approx0.95 $g\u202fcm$^{-3}$ and a melt flow index that allows for tight dimensional control, is favored for items such as milk jugs and geomembranes, and it can be re\u2011extruded into new containers with minimal loss of performance; PP, characterized by a crystalline structure that gives it a melt temperature of $T {\\text{m}}\\approx160^\\circ$C, offers a low cost, high stiffness, and excellent chemical resistance, enabling its widespread use in food containers, automotive parts, and reusable packaging that can be fed back into the recycling stream without contamination\u2014together, these polymers illustrate how material selection can simultaneously satisfy durability requirements and support a circular economy through recyclable feedstocks."
+    },
+    {
+      "self_ref": "#/texts/7",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [],
+      "orig": "2.2 Biodegradable Polymers",
+      "text": "2.2 Biodegradable Polymers",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/8",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "paragraph",
+      "prov": [],
+      "orig": "Polymers such as poly(lactic acid) (PLA), poly(butylene adipate terephthalate) (PBAT), and starch\u2011based blends are increasingly employed in packaging, food contact, and biodegradable film applications because they can be sourced from renewable biomass and generally have a lower carbon footprint compared to conventional polyolefins, yet their intrinsic physicochemical properties\u2014particularly high crystallinity, low density, and the presence of hydrophilic functional groups\u2014result in elevated water vapor transmission rates ($\\text{WVTR}\\approx10^{-10} \\text{g} \\text{m}^{-2} \\text{day}^{-1}$) and oxygen permeability ($P_{O_2}\\approx10^{-12} \\text{cm}^3 \\text{cm} \\text{s}^{-1} \\text{Pa}^{-1}$) when measured against poly(ethylene terephthalate) (PET) or high\u2011density polyethylene (HDPE). Consequently, when used alone these materials may not provide sufficient shelf\u2011life protection for high\u2011moisture or high\u2011oxygen\u2011sensitive products\u2014issues that arise because of their relatively high $O_2$ and $H_2O$ diffusion coefficients\u2014unless they are engineered with multilayer architectures, plasticizer additives, or barrier coatings such as nano\u2011clay or inorganic oxides.",
+      "text": "Polymers such as poly(lactic acid) (PLA), poly(butylene adipate terephthalate) (PBAT), and starch\u2011based blends are increasingly employed in packaging, food contact, and biodegradable film applications because they can be sourced from renewable biomass and generally have a lower carbon footprint compared to conventional polyolefins, yet their intrinsic physicochemical properties\u2014particularly high crystallinity, low density, and the presence of hydrophilic functional groups\u2014result in elevated water vapor transmission rates ($\\text{WVTR}\\approx10^{-10} \\text{g} \\text{m}^{-2} \\text{day}^{-1}$) and oxygen permeability ($P_{O_2}\\approx10^{-12} \\text{cm}^3 \\text{cm} \\text{s}^{-1} \\text{Pa}^{-1}$) when measured against poly(ethylene terephthalate) (PET) or high\u2011density polyethylene (HDPE). Consequently, when used alone these materials may not provide sufficient shelf\u2011life protection for high\u2011moisture or high\u2011oxygen\u2011sensitive products\u2014issues that arise because of their relatively high $O_2$ and $H_2O$ diffusion coefficients\u2014unless they are engineered with multilayer architectures, plasticizer additives, or barrier coatings such as nano\u2011clay or inorganic oxides."
+    },
+    {
+      "self_ref": "#/texts/9",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [],
+      "orig": "2.3 Multilayer Structures",
+      "text": "2.3 Multilayer Structures",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/10",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "paragraph",
+      "prov": [],
+      "orig": "In high\u2011performance packaging, the strategic layering of distinct polymer films\u2014such as combining a high\u2011modulus polyethylene (PE) skin with an inner polyamide (PA) core and a top\u2011coat of a barrier polyvinylidene chloride (PVDC)\u2014creates a synergistic architecture that markedly boosts both mechanical resilience and gas\u2011barrier efficacy; the elastic modulus of the multilayer stack can be approximated by a weighted sum $E_{\\text{tot}}=\\sum_i w_iE_i$, where $w_i$ are the thickness fractions and $E_i$ the individual Young\u2019s moduli, while the oxygen transmission rate (OTR) is dramatically reduced due to interlayer diffusion resistance, often dropping by an order of magnitude compared to single\u2011layer films.",
+      "text": "In high\u2011performance packaging, the strategic layering of distinct polymer films\u2014such as combining a high\u2011modulus polyethylene (PE) skin with an inner polyamide (PA) core and a top\u2011coat of a barrier polyvinylidene chloride (PVDC)\u2014creates a synergistic architecture that markedly boosts both mechanical resilience and gas\u2011barrier efficacy; the elastic modulus of the multilayer stack can be approximated by a weighted sum $E_{\\text{tot}}=\\sum_i w_iE_i$, where $w_i$ are the thickness fractions and $E_i$ the individual Young\u2019s moduli, while the oxygen transmission rate (OTR) is dramatically reduced due to interlayer diffusion resistance, often dropping by an order of magnitude compared to single\u2011layer films."
+    },
+    {
+      "self_ref": "#/texts/11",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [],
+      "orig": "3. Properties Relevant to Food Packaging",
+      "text": "3. Properties Relevant to Food Packaging",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/12",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [],
+      "orig": "3.1 Mechanical Properties",
+      "text": "3.1 Mechanical Properties",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/13",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "paragraph",
+      "prov": [],
+      "orig": "The mechanical robustness of food packaging hinges on three interrelated properties\u2014tensile strength, flexibility, and puncture resistance\u2014each quantified by specific parameters that must exceed threshold values to ensure the material can withstand the forces it encounters during handling. Tensile strength, denoted $\\sigma$, measures the maximum stress a film can endure before failure and is typically required to exceed $30$\u202fMPa for flexible trays; flexibility, expressed as the ultimate strain $\\epsilon_{\\text{max}}$ or the ratio $\\epsilon_{\\text{max}}=\\sigma_{\\text{y}}/E$, ensures the material can deform elastically under bending or stacking without cracking, which in practice demands a modulus $E$ below $5$\u202fGPa; puncture resistance, captured by the puncture force $P_{\\text{t}}$, is calculated by $P_{\\text{t}}=K_{\\text{c}}\\sqrt{a}$ where $a$ is the flaw length and $K_{\\text{c}}$ the critical stress\u2011intensity factor, and must be sufficient to exceed the peak forces generated by utensils or sharp edges. Together, these metrics dictate the packaging\u2019s ability to protect food integrity throughout its supply chain.",
+      "text": "The mechanical robustness of food packaging hinges on three interrelated properties\u2014tensile strength, flexibility, and puncture resistance\u2014each quantified by specific parameters that must exceed threshold values to ensure the material can withstand the forces it encounters during handling. Tensile strength, denoted $\\sigma$, measures the maximum stress a film can endure before failure and is typically required to exceed $30$\u202fMPa for flexible trays; flexibility, expressed as the ultimate strain $\\epsilon_{\\text{max}}$ or the ratio $\\epsilon_{\\text{max}}=\\sigma_{\\text{y}}/E$, ensures the material can deform elastically under bending or stacking without cracking, which in practice demands a modulus $E$ below $5$\u202fGPa; puncture resistance, captured by the puncture force $P_{\\text{t}}$, is calculated by $P_{\\text{t}}=K_{\\text{c}}\\sqrt{a}$ where $a$ is the flaw length and $K_{\\text{c}}$ the critical stress\u2011intensity factor, and must be sufficient to exceed the peak forces generated by utensils or sharp edges. Together, these metrics dictate the packaging\u2019s ability to protect food integrity throughout its supply chain."
+    },
+    {
+      "self_ref": "#/texts/14",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [],
+      "orig": "3.2 Barrier Properties",
+      "text": "3.2 Barrier Properties",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/15",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "paragraph",
+      "prov": [],
+      "orig": "Oxygen (O$_2$), moisture (H$_2$O), and carbon dioxide (CO$_2$) barrier values\u2014commonly expressed as O$_2$ transmission rate (OTR), water vapor transmission rate (WVTR), and CO$ 2$ transmission rate (CTR)\u2014are the most critical parameters for preventing microbial growth, enzymatic oxidation, and off\u2011flavor development in packaged foods; a low OTR (typically < 5\u202fcm\u00b3\u202fm\u207b\u00b2\u202fday\u207b\u00b9) limits the diffusion of reactive O$ 2$ molecules across the film, thereby suppressing lipid oxidation that would otherwise degrade aroma and texture, while a WVTR below 10\u207b\u2076\u202fg\u202fm\u207b\u00b2\u202fh\u207b\u00b9 keeps internal humidity low to curb mold proliferation and staling, and a low CTR (\u2264\u202f0.5\u202f\u00b5mol\u202fm\u207b\u00b2\u202fs\u207b\u00b9) ensures that CO$ 2$ generated by respiration does not accumulate to levels that could induce anaerobic spoilage or alter product pH\u2014these three barriers together are quantified by the product of the individual permeability constants, $k {O_2} \\cdot k {H_2O} \\cdot k {CO_2}$, where each $k$ is expressed in units of cm\u00b3\u202fmm\u202fm\u207b\u00b2\u202fday\u207b\u00b9\u202fkPa\u207b\u00b9, and maintaining this product below a critical threshold guarantees that the shelf life of high\u2011moisture, oxygen\u2011sensitive items such as fresh produce or baked goods can be extended by several weeks.",
+      "text": "Oxygen (O$_2$), moisture (H$_2$O), and carbon dioxide (CO$_2$) barrier values\u2014commonly expressed as O$_2$ transmission rate (OTR), water vapor transmission rate (WVTR), and CO$ 2$ transmission rate (CTR)\u2014are the most critical parameters for preventing microbial growth, enzymatic oxidation, and off\u2011flavor development in packaged foods; a low OTR (typically < 5\u202fcm\u00b3\u202fm\u207b\u00b2\u202fday\u207b\u00b9) limits the diffusion of reactive O$ 2$ molecules across the film, thereby suppressing lipid oxidation that would otherwise degrade aroma and texture, while a WVTR below 10\u207b\u2076\u202fg\u202fm\u207b\u00b2\u202fh\u207b\u00b9 keeps internal humidity low to curb mold proliferation and staling, and a low CTR (\u2264\u202f0.5\u202f\u00b5mol\u202fm\u207b\u00b2\u202fs\u207b\u00b9) ensures that CO$ 2$ generated by respiration does not accumulate to levels that could induce anaerobic spoilage or alter product pH\u2014these three barriers together are quantified by the product of the individual permeability constants, $k {O_2} \\cdot k {H_2O} \\cdot k {CO_2}$, where each $k$ is expressed in units of cm\u00b3\u202fmm\u202fm\u207b\u00b2\u202fday\u207b\u00b9\u202fkPa\u207b\u00b9, and maintaining this product below a critical threshold guarantees that the shelf life of high\u2011moisture, oxygen\u2011sensitive items such as fresh produce or baked goods can be extended by several weeks."
+    },
+    {
+      "self_ref": "#/texts/16",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "caption",
+      "prov": [],
+      "orig": "Cross\u2011sectional diagram of a multilayer PET/PE film showing distinct layers and their roles in oxygen and moisture blocking.",
+      "text": "Cross\u2011sectional diagram of a multilayer PET/PE film showing distinct layers and their roles in oxygen and moisture blocking."
+    },
+    {
+      "self_ref": "#/texts/17",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [],
+      "orig": "3.3 Food Safety and Migration",
+      "text": "3.3 Food Safety and Migration",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/18",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "paragraph",
+      "prov": [],
+      "orig": "The polymer\u2019s compatibility with food substances and its resistance to migration are governed by its material composition and the processing conditions it undergoes, as expressed by the migration model $M = k \\exp(-E_a/RT)$ where $k$ is a kinetic prefactor, $E_a$ the activation energy, $R$ the universal gas constant and $T$ the absolute temperature; the choice of monomers, the degree of cross\u2011linking, and the inclusion of additives such as plasticizers or stabilizers dictate the diffusivity $D$ of small molecules within the polymer matrix, thereby controlling the migration rate\u2014higher cross\u2011linking densities reduce $D$ and raise the effective barrier to migration, while increased free volume or lower crystallinity typically elevate $D$ and the potential for leaching; processing parameters\u2014including extrusion temperature, residence time, and cooling rate\u2014further influence chain mobility, with temperatures approaching the glass\u2011transition temperature $T_g$ enhancing chain motion and thus migration, whereas rapid cooling can trap residual stresses, suppressing chain mobility and reducing migration, making a careful balance between monomer selection, cross\u2011linking density, and processing schedule essential to optimize both food\u2011contact safety and mechanical performance.",
+      "text": "The polymer\u2019s compatibility with food substances and its resistance to migration are governed by its material composition and the processing conditions it undergoes, as expressed by the migration model $M = k \\exp(-E_a/RT)$ where $k$ is a kinetic prefactor, $E_a$ the activation energy, $R$ the universal gas constant and $T$ the absolute temperature; the choice of monomers, the degree of cross\u2011linking, and the inclusion of additives such as plasticizers or stabilizers dictate the diffusivity $D$ of small molecules within the polymer matrix, thereby controlling the migration rate\u2014higher cross\u2011linking densities reduce $D$ and raise the effective barrier to migration, while increased free volume or lower crystallinity typically elevate $D$ and the potential for leaching; processing parameters\u2014including extrusion temperature, residence time, and cooling rate\u2014further influence chain mobility, with temperatures approaching the glass\u2011transition temperature $T_g$ enhancing chain motion and thus migration, whereas rapid cooling can trap residual stresses, suppressing chain mobility and reducing migration, making a careful balance between monomer selection, cross\u2011linking density, and processing schedule essential to optimize both food\u2011contact safety and mechanical performance."
+    },
+    {
+      "self_ref": "#/texts/19",
+      "parent": {
+        "$ref": "#/groups/0"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "[<RawText children='Surface contact'>]",
+      "text": "[<RawText children='Surface contact'>]",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/20",
+      "parent": {
+        "$ref": "#/groups/1"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "[<RawText children='Mechanism'>]",
+      "text": "[<RawText children='Mechanism'>]",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/21",
+      "parent": {
+        "$ref": "#/groups/1"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "[<RawText children='Influencing factors'>]",
+      "text": "[<RawText children='Influencing factors'>]",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/22",
+      "parent": {
+        "$ref": "#/groups/2"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Temperature $T$ (higher $T$ increases diffusion rate)  ",
+      "text": "Temperature $T$ (higher $T$ increases diffusion rate)  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/23",
+      "parent": {
+        "$ref": "#/groups/2"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Viscosity $\\eta$ of the food (lower $\\eta$ allows easier spread of migrants)  ",
+      "text": "Viscosity $\\eta$ of the food (lower $\\eta$ allows easier spread of migrants)  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/24",
+      "parent": {
+        "$ref": "#/groups/2"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Applied pressure $P$ (greater $P$ enhances contact area)  ",
+      "text": "Applied pressure $P$ (greater $P$ enhances contact area)  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/25",
+      "parent": {
+        "$ref": "#/groups/2"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Surface area $A$ in contact with food  ",
+      "text": "Surface area $A$ in contact with food  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/26",
+      "parent": {
+        "$ref": "#/groups/1"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "[<RawText children='Typical rate expression'>]",
+      "text": "[<RawText children='Typical rate expression'>]",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/27",
+      "parent": {
+        "$ref": "#/groups/3"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "$R = k ",
+      "text": "$R = k ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/28",
+      "parent": {
+        "$ref": "#/groups/0"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "[<RawText children='Permeation'>]",
+      "text": "[<RawText children='Permeation'>]",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/29",
+      "parent": {
+        "$ref": "#/groups/4"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "[<RawText children='Mechanism'>]",
+      "text": "[<RawText children='Mechanism'>]",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/30",
+      "parent": {
+        "$ref": "#/groups/4"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "[<RawText children='Key transport parameters'>]",
+      "text": "[<RawText children='Key transport parameters'>]",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/31",
+      "parent": {
+        "$ref": "#/groups/5"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Diffusivity $D$ of the species in the polymer  ",
+      "text": "Diffusivity $D$ of the species in the polymer  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/32",
+      "parent": {
+        "$ref": "#/groups/5"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Polymer thickness $x$  ",
+      "text": "Polymer thickness $x$  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/33",
+      "parent": {
+        "$ref": "#/groups/5"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Concentration gradient $\\Delta C$ across the polymer thickness  ",
+      "text": "Concentration gradient $\\Delta C$ across the polymer thickness  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/34",
+      "parent": {
+        "$ref": "#/groups/4"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "[<RawText children='Flux equation'>]",
+      "text": "[<RawText children='Flux equation'>]",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/35",
+      "parent": {
+        "$ref": "#/groups/6"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "$J = -D ",
+      "text": "$J = -D ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/36",
+      "parent": {
+        "$ref": "#/groups/4"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "[<RawText children='Factors affecting $D$'>]",
+      "text": "[<RawText children='Factors affecting $D$'>]",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/37",
+      "parent": {
+        "$ref": "#/groups/7"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Temperature $T$ (often follows Arrhenius behaviour: $D = D_0 e^{-E_a/(RT)}$)  ",
+      "text": "Temperature $T$ (often follows Arrhenius behaviour: $D = D_0 e^{-E_a/(RT)}$)  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/38",
+      "parent": {
+        "$ref": "#/groups/7"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Polymer crystallinity and free\u2011volume fraction  ",
+      "text": "Polymer crystallinity and free\u2011volume fraction  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/39",
+      "parent": {
+        "$ref": "#/groups/0"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "[<RawText children='Leaching'>]",
+      "text": "[<RawText children='Leaching'>]",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/40",
+      "parent": {
+        "$ref": "#/groups/8"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "[<RawText children='Mechanism'>]",
+      "text": "[<RawText children='Mechanism'>]",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/41",
+      "parent": {
+        "$ref": "#/groups/8"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "[<RawText children='Key variables'>]",
+      "text": "[<RawText children='Key variables'>]",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/42",
+      "parent": {
+        "$ref": "#/groups/9"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Solubility $S$ of the additive in the food medium  ",
+      "text": "Solubility $S$ of the additive in the food medium  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/43",
+      "parent": {
+        "$ref": "#/groups/9"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Contact time $t$  ",
+      "text": "Contact time $t$  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/44",
+      "parent": {
+        "$ref": "#/groups/9"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Agitation or stirring factor $a$ (increases mass\u2011transfer coefficient)  ",
+      "text": "Agitation or stirring factor $a$ (increases mass\u2011transfer coefficient)  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/45",
+      "parent": {
+        "$ref": "#/groups/8"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "[<RawText children='Concentration evolution'>]",
+      "text": "[<RawText children='Concentration evolution'>]",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/46",
+      "parent": {
+        "$ref": "#/groups/10"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "$C(t) = C_0 \\left(1 - e^{-k t}\\right)$  (where $C_0$ is the initial additive concentration in the polymer and $k$ is a leaching rate constant)  ",
+      "text": "$C(t) = C_0 \\left(1 - e^{-k t}\\right)$  (where $C_0$ is the initial additive concentration in the polymer and $k$ is a leaching rate constant)  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/47",
+      "parent": {
+        "$ref": "#/groups/8"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "[<RawText children='Factors influencing $k$'>]",
+      "text": "[<RawText children='Factors influencing $k$'>]",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/48",
+      "parent": {
+        "$ref": "#/groups/11"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Diffusion coefficient of the additive in the polymer  ",
+      "text": "Diffusion coefficient of the additive in the polymer  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/49",
+      "parent": {
+        "$ref": "#/groups/11"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Food pH and ionic strength (affect additive ionization)  ",
+      "text": "Food pH and ionic strength (affect additive ionization)  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/50",
+      "parent": {
+        "$ref": "#/groups/11"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Temperature $T$ (raises $k$ exponentially in many cases)",
+      "text": "Temperature $T$ (raises $k$ exponentially in many cases)",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/51",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [],
+      "orig": "4. Processing Technologies",
+      "text": "4. Processing Technologies",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/52",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [],
+      "orig": "4.1 Extrusion",
+      "text": "4.1 Extrusion",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/53",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "paragraph",
+      "prov": [],
+      "orig": "Continuous extrusion, in which molten polymer is forced through a flat die and immediately cooled, yields uniform films and sheets whose thickness $d$ can be tuned to within a few micrometres by adjusting the die gap $g$, the volumetric flow rate $Q$, and the cooling rate $R_c$. Because the material is extruded in a steady stream, the layer composition can be modulated on a sub\u2011millimetre scale by interleaving feeds of different polymers or additives; each layer $i$ is produced at a controlled thickness $d_i$ so that the total thickness $D=\\sum_{i=1}^{n} d_i$ and the overall composition vector $\\mathbf{c}=(c_1,\\dots,c_n)$ are known a priori. The process is often governed by the dimensionless Reynolds number $Re=\\rho U g/\\mu$ and the capillary number $Ca=\\mu U/\\sigma$, where $\\rho$, $U$, $\\mu$, and $\\sigma$ denote the melt density, extrusion velocity, viscosity, and surface tension, respectively; keeping $Re$ and $Ca$ in the laminar and capillary\u2011dominated regimes ensures minimal thickness fluctuations and sharp interfaces between layers.",
+      "text": "Continuous extrusion, in which molten polymer is forced through a flat die and immediately cooled, yields uniform films and sheets whose thickness $d$ can be tuned to within a few micrometres by adjusting the die gap $g$, the volumetric flow rate $Q$, and the cooling rate $R_c$. Because the material is extruded in a steady stream, the layer composition can be modulated on a sub\u2011millimetre scale by interleaving feeds of different polymers or additives; each layer $i$ is produced at a controlled thickness $d_i$ so that the total thickness $D=\\sum_{i=1}^{n} d_i$ and the overall composition vector $\\mathbf{c}=(c_1,\\dots,c_n)$ are known a priori. The process is often governed by the dimensionless Reynolds number $Re=\\rho U g/\\mu$ and the capillary number $Ca=\\mu U/\\sigma$, where $\\rho$, $U$, $\\mu$, and $\\sigma$ denote the melt density, extrusion velocity, viscosity, and surface tension, respectively; keeping $Re$ and $Ca$ in the laminar and capillary\u2011dominated regimes ensures minimal thickness fluctuations and sharp interfaces between layers."
+    },
+    {
+      "self_ref": "#/texts/54",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [],
+      "orig": "4.2 Injection Molding",
+      "text": "4.2 Injection Molding",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/55",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "paragraph",
+      "prov": [],
+      "orig": "Injection molding, a highly automated process that forces molten polymer into a rigid mold under pressures exceeding $10^5 $Pa and temperatures above $T_{\\text{melt}}$, can fabricate complex containers that incorporate multiple barrier layers\u2014often a $PET$ film on the inner surface and a $PVC$ coating on the outer\u2014providing both chemical resistance and mechanical strength. By engineering the mold geometry, manufacturers can add micro\u2011ribs and lattice cores that reduce weight while maintaining a flexural modulus above $E = 3\\times10^9 $Pa, and the use of a tailored melt index $M_{\\text{index}}\\approx20$\u202fg/10\u202fmin ensures consistent flow into every cavity. The resulting parts achieve a surface area to volume ratio that balances barrier performance with material economy, and the integration of a graded polymer composition across the wall thickness yields a barrier effectiveness $S_{\\text{eff}}$ that can be tuned from 0.2 to 0.9 for different packaging requirements.",
+      "text": "Injection molding, a highly automated process that forces molten polymer into a rigid mold under pressures exceeding $10^5 $Pa and temperatures above $T_{\\text{melt}}$, can fabricate complex containers that incorporate multiple barrier layers\u2014often a $PET$ film on the inner surface and a $PVC$ coating on the outer\u2014providing both chemical resistance and mechanical strength. By engineering the mold geometry, manufacturers can add micro\u2011ribs and lattice cores that reduce weight while maintaining a flexural modulus above $E = 3\\times10^9 $Pa, and the use of a tailored melt index $M_{\\text{index}}\\approx20$\u202fg/10\u202fmin ensures consistent flow into every cavity. The resulting parts achieve a surface area to volume ratio that balances barrier performance with material economy, and the integration of a graded polymer composition across the wall thickness yields a barrier effectiveness $S_{\\text{eff}}$ that can be tuned from 0.2 to 0.9 for different packaging requirements."
+    },
+    {
+      "self_ref": "#/texts/56",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [],
+      "orig": "4.3 Co\u2011extrusion",
+      "text": "4.3 Co\u2011extrusion",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/57",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "paragraph",
+      "prov": [],
+      "orig": "Co\u2011extrusion enables the simultaneous formation of multiple layers with distinct polymer types, thereby optimizing overall performance by allowing each layer to be engineered for specific mechanical, barrier, or optical properties; for instance, a bilayer film may consist of a high\u2011modulus polyethylene layer with $E_{1}= 1.5\\ \\text{GPa}$ adjacent to a flexible polyamide layer with $E_{2}= 0.3\\ \\text{GPa}$, where the ratio of their thicknesses $t_{1}:t_{2}$ can be tuned to achieve a desired balance between stiffness and toughness, and the interfacial adhesion energy $U_{int}$ can be quantified by the equation $U_{int}= \\gamma_{A} + \\gamma_{B} - \\gamma_{AB}$, ensuring that the layers remain bonded under stress while each retains its individual functional advantages.",
+      "text": "Co\u2011extrusion enables the simultaneous formation of multiple layers with distinct polymer types, thereby optimizing overall performance by allowing each layer to be engineered for specific mechanical, barrier, or optical properties; for instance, a bilayer film may consist of a high\u2011modulus polyethylene layer with $E_{1}= 1.5\\ \\text{GPa}$ adjacent to a flexible polyamide layer with $E_{2}= 0.3\\ \\text{GPa}$, where the ratio of their thicknesses $t_{1}:t_{2}$ can be tuned to achieve a desired balance between stiffness and toughness, and the interfacial adhesion energy $U_{int}$ can be quantified by the equation $U_{int}= \\gamma_{A} + \\gamma_{B} - \\gamma_{AB}$, ensuring that the layers remain bonded under stress while each retains its individual functional advantages."
+    },
+    {
+      "self_ref": "#/texts/58",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [],
+      "orig": "5. Regulatory and Safety Aspects",
+      "text": "5. Regulatory and Safety Aspects",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/59",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [],
+      "orig": "5.1 Migration Tests",
+      "text": "5.1 Migration Tests",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/60",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "paragraph",
+      "prov": [],
+      "orig": "Standard migration tests, such as the 10\u2011day, 60\u2011day, and accelerated tests, are designed to evaluate whether polymers meet food\u2011contact material safety requirements. In a typical 10\u2011day test, a polymer film is exposed to an aqueous or acidic simulant (e.g., 3\u202f% acetic acid or 50\u202f% ethanol) at $20^\\circ$C for 10\u202fdays, after which the concentration of migrants, $C_{\\text{migrate}}$, is quantified and compared against the maximum migration limits, $E_{\\text{max}}$, stipulated by regulations such as EU Regulation\u202f10/2011 or the U.S. FDA\u2019s 21\u202fCFR\u202f177.1020. The\u202f60\u2011day test extends the exposure to 60\u202fdays, providing data for packaging that undergoes longer shelf\u2011life, while accelerated tests typically involve a shorter time frame\u2014often 24\u202fhours\u2014but at an elevated temperature of $70^\\circ$C or under pressurized conditions ($P\\ge0.5$\u202fMPa), thereby accelerating the diffusion of additives and potential contaminants. The migration data are analyzed using the relation $C_{\\text{migrate}}=\\frac{E}{\\text{Surface area}}\\cdot t^{1/2}$ or via Fickian diffusion models, ensuring that the derived concentration never exceeds $E_{\\text{max}}$ under realistic use scenarios.",
+      "text": "Standard migration tests, such as the 10\u2011day, 60\u2011day, and accelerated tests, are designed to evaluate whether polymers meet food\u2011contact material safety requirements. In a typical 10\u2011day test, a polymer film is exposed to an aqueous or acidic simulant (e.g., 3\u202f% acetic acid or 50\u202f% ethanol) at $20^\\circ$C for 10\u202fdays, after which the concentration of migrants, $C_{\\text{migrate}}$, is quantified and compared against the maximum migration limits, $E_{\\text{max}}$, stipulated by regulations such as EU Regulation\u202f10/2011 or the U.S. FDA\u2019s 21\u202fCFR\u202f177.1020. The\u202f60\u2011day test extends the exposure to 60\u202fdays, providing data for packaging that undergoes longer shelf\u2011life, while accelerated tests typically involve a shorter time frame\u2014often 24\u202fhours\u2014but at an elevated temperature of $70^\\circ$C or under pressurized conditions ($P\\ge0.5$\u202fMPa), thereby accelerating the diffusion of additives and potential contaminants. The migration data are analyzed using the relation $C_{\\text{migrate}}=\\frac{E}{\\text{Surface area}}\\cdot t^{1/2}$ or via Fickian diffusion models, ensuring that the derived concentration never exceeds $E_{\\text{max}}$ under realistic use scenarios."
+    },
+    {
+      "self_ref": "#/texts/61",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [],
+      "orig": "5.2 Food Contact Regulations",
+      "text": "5.2 Food Contact Regulations",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/62",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "paragraph",
+      "prov": [],
+      "orig": "Regulatory agencies such as the U.S. Food and Drug Administration (FDA), the European Food Safety Authority (EFSA), and the Joint FAO/WHO Expert Committee on Food Additives (JECFA) have developed comprehensive, science\u2011based guidance documents that specify which monomers may be safely incorporated into polymers intended for food contact.  These guidelines typically list approved monomer classes\u2014often denoted by chemical formulas like $C_nH_{2n+2}O_n$ for polyethylene glycol (PEG) or $C_4H_8O_4$ for lactide\u2014along with maximum residue limits, migration thresholds, and testing protocols (e.g., $T_\\text{migration}\\leq 0.05\\ \\text{mg/cm}^2$ over 10\u00a0days at 60\u00a0\u00b0C).  Each authority also provides a database of validated migration studies, requiring manufacturers to submit evidence that any residual monomer remains below the specified limits, thereby ensuring that polymers such as poly(lactic acid) or poly(ethylene glycol\u2011co\u2011caprolactone) can be reliably used in packaging, utensils, or food\u2011contact surfaces without compromising consumer safety.",
+      "text": "Regulatory agencies such as the U.S. Food and Drug Administration (FDA), the European Food Safety Authority (EFSA), and the Joint FAO/WHO Expert Committee on Food Additives (JECFA) have developed comprehensive, science\u2011based guidance documents that specify which monomers may be safely incorporated into polymers intended for food contact.  These guidelines typically list approved monomer classes\u2014often denoted by chemical formulas like $C_nH_{2n+2}O_n$ for polyethylene glycol (PEG) or $C_4H_8O_4$ for lactide\u2014along with maximum residue limits, migration thresholds, and testing protocols (e.g., $T_\\text{migration}\\leq 0.05\\ \\text{mg/cm}^2$ over 10\u00a0days at 60\u00a0\u00b0C).  Each authority also provides a database of validated migration studies, requiring manufacturers to submit evidence that any residual monomer remains below the specified limits, thereby ensuring that polymers such as poly(lactic acid) or poly(ethylene glycol\u2011co\u2011caprolactone) can be reliably used in packaging, utensils, or food\u2011contact surfaces without compromising consumer safety."
+    },
+    {
+      "self_ref": "#/texts/63",
+      "parent": {
+        "$ref": "#/groups/12"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "[<RawText children='FDA (United States)'>]",
+      "text": "[<RawText children='FDA (United States)'>]",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/64",
+      "parent": {
+        "$ref": "#/groups/13"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "21\u202fCFR\u202f\u00a7\u202f117 \u2013 Food Contact Substances  ",
+      "text": "21\u202fCFR\u202f\u00a7\u202f117 \u2013 Food Contact Substances  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/65",
+      "parent": {
+        "$ref": "#/groups/13"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "21\u202fCFR\u202f\u00a7\u202f175.300 \u2013 Polymer Materials  ",
+      "text": "21\u202fCFR\u202f\u00a7\u202f175.300 \u2013 Polymer Materials  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/66",
+      "parent": {
+        "$ref": "#/groups/13"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Good Manufacturing Practices \u2013 $^{\\text{GMP}}$ compliance  ",
+      "text": "Good Manufacturing Practices \u2013 $^{\\text{GMP}}$ compliance  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/67",
+      "parent": {
+        "$ref": "#/groups/13"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "FDA Approval Notice / 510(k) filings for certain polymer\u2010based devices  ",
+      "text": "FDA Approval Notice / 510(k) filings for certain polymer\u2010based devices  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/68",
+      "parent": {
+        "$ref": "#/groups/12"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "[<RawText children='EU (European Union)'>]",
+      "text": "[<RawText children='EU (European Union)'>]",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/69",
+      "parent": {
+        "$ref": "#/groups/14"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Regulation (EU)\u202f2019/625 \u2013 Food Contact Materials  ",
+      "text": "Regulation (EU)\u202f2019/625 \u2013 Food Contact Materials  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/70",
+      "parent": {
+        "$ref": "#/groups/15"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Annex\u202fI \u2013 Allowed substances  ",
+      "text": "Annex\u202fI \u2013 Allowed substances  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/71",
+      "parent": {
+        "$ref": "#/groups/15"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Annex\u202fII \u2013 Migration limits $< \\text{m} \\mathrm{g/kg}$  ",
+      "text": "Annex\u202fII \u2013 Migration limits $< \\text{m} \\mathrm{g/kg}$  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/72",
+      "parent": {
+        "$ref": "#/groups/14"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "EFSA scientific opinions on plasticizers (e.g., $^{\\text{PVC}}$) and additives  ",
+      "text": "EFSA scientific opinions on plasticizers (e.g., $^{\\text{PVC}}$) and additives  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/73",
+      "parent": {
+        "$ref": "#/groups/14"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "EN\u202f71 \u2013 Toy safety (if packaging is for children\u2019s products)  ",
+      "text": "EN\u202f71 \u2013 Toy safety (if packaging is for children\u2019s products)  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/74",
+      "parent": {
+        "$ref": "#/groups/12"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "[<RawText children='Japan'>]",
+      "text": "[<RawText children='Japan'>]",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/75",
+      "parent": {
+        "$ref": "#/groups/16"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Food Sanitation Act \u00a7\u202f23 \u2013 Polymer food contact materials  ",
+      "text": "Food Sanitation Act \u00a7\u202f23 \u2013 Polymer food contact materials  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/76",
+      "parent": {
+        "$ref": "#/groups/16"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "JIS migration standard \u2013 $< 0.05 \\text{mg/cm}^2$  ",
+      "text": "JIS migration standard \u2013 $< 0.05 \\text{mg/cm}^2$  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/77",
+      "parent": {
+        "$ref": "#/groups/12"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "[<RawText children='Canada'>]",
+      "text": "[<RawText children='Canada'>]",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/78",
+      "parent": {
+        "$ref": "#/groups/17"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Food and Drugs Act \u2013 Classification of plastic food contact materials  ",
+      "text": "Food and Drugs Act \u2013 Classification of plastic food contact materials  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/79",
+      "parent": {
+        "$ref": "#/groups/17"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Health Canada approvals for specific additives  ",
+      "text": "Health Canada approvals for specific additives  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/80",
+      "parent": {
+        "$ref": "#/groups/12"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "[<RawText children='Other certifications / compliance frameworks'>]",
+      "text": "[<RawText children='Other certifications / compliance frameworks'>]",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/81",
+      "parent": {
+        "$ref": "#/groups/18"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "BPS\u2011free certification \u2013 $^{\\text{BPS-free}}$  ",
+      "text": "BPS\u2011free certification \u2013 $^{\\text{BPS-free}}$  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/82",
+      "parent": {
+        "$ref": "#/groups/18"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "RoHS compliance \u2013 restriction of hazardous substances $^{\\text{RoHS}}$  ",
+      "text": "RoHS compliance \u2013 restriction of hazardous substances $^{\\text{RoHS}}$  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/83",
+      "parent": {
+        "$ref": "#/groups/18"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "ISO\u202f22000 \u2013 Food safety management system  ",
+      "text": "ISO\u202f22000 \u2013 Food safety management system  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/84",
+      "parent": {
+        "$ref": "#/groups/18"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "ISO\u202f14001 \u2013 Environmental management system  ",
+      "text": "ISO\u202f14001 \u2013 Environmental management system  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/85",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [],
+      "orig": "6. Environmental Impact and Sustainability",
+      "text": "6. Environmental Impact and Sustainability",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/86",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [],
+      "orig": "6.1 Life Cycle Assessment",
+      "text": "6.1 Life Cycle Assessment",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/87",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "paragraph",
+      "prov": [],
+      "orig": "A life\u2011cycle assessment (LCA) of polymeric materials quantifies the cumulative environmental burden associated with every stage of a polymer\u2019s existence\u2014from the drilling of a crude\u2011oil well, through the catalytic polymerisation of ethylene monomers ($\\ce{C2H4}$) into long chains, to the extrusion, shaping and eventual disposal of the finished product. During extraction, the energy demand can be expressed as a mass\u2011to\u2011energy conversion, $E_{\\text{ex}} = m_{\\text{oil}}\\cdot \\Delta H_{\\text{ex}}$, where $m_{\\text{oil}}$ is the mass of oil withdrawn and $\\Delta H_{\\text{ex}}$ is the enthalpy released per kilogram. The polymerisation step is typically carried out in high\u2011pressure reactors ($p\\approx 100 \\text{bar}$) at temperatures of 350\u2013400\u202f\u00b0C, and the overall chemical conversion efficiency is captured by the yield factor $\\eta = \\frac{n_{\\text{polymer}}}{n_{\\text{ethylene}}}$. Downstream, the extrusion of polyethylene pellets ($\\text{PE}$) requires a volumetric flow rate $Q$ and a specific heat input $q$, leading to a heat\u2011balance equation $q = \\rho c_p \\frac{dT}{dt} + \\lambda \\nabla^2 T$. At the end\u2011of\u2011life stage, the assessment distinguishes between mechanical recycling, incineration, and landfill pathways, assigning each a characteristic CO\u2082 emission coefficient, $k_{\\text{CO\u2082}}$, such that the total greenhouse\u2011gas pressure is $P_{\\text{GHG}} = \\sum_i k_i m_i$. By integrating these stage\u2011specific expressions across the entire production chain, the LCA provides a comprehensive, quantifiable picture of the polymer\u2019s environmental footprint.",
+      "text": "A life\u2011cycle assessment (LCA) of polymeric materials quantifies the cumulative environmental burden associated with every stage of a polymer\u2019s existence\u2014from the drilling of a crude\u2011oil well, through the catalytic polymerisation of ethylene monomers ($\\ce{C2H4}$) into long chains, to the extrusion, shaping and eventual disposal of the finished product. During extraction, the energy demand can be expressed as a mass\u2011to\u2011energy conversion, $E_{\\text{ex}} = m_{\\text{oil}}\\cdot \\Delta H_{\\text{ex}}$, where $m_{\\text{oil}}$ is the mass of oil withdrawn and $\\Delta H_{\\text{ex}}$ is the enthalpy released per kilogram. The polymerisation step is typically carried out in high\u2011pressure reactors ($p\\approx 100 \\text{bar}$) at temperatures of 350\u2013400\u202f\u00b0C, and the overall chemical conversion efficiency is captured by the yield factor $\\eta = \\frac{n_{\\text{polymer}}}{n_{\\text{ethylene}}}$. Downstream, the extrusion of polyethylene pellets ($\\text{PE}$) requires a volumetric flow rate $Q$ and a specific heat input $q$, leading to a heat\u2011balance equation $q = \\rho c_p \\frac{dT}{dt} + \\lambda \\nabla^2 T$. At the end\u2011of\u2011life stage, the assessment distinguishes between mechanical recycling, incineration, and landfill pathways, assigning each a characteristic CO\u2082 emission coefficient, $k_{\\text{CO\u2082}}$, such that the total greenhouse\u2011gas pressure is $P_{\\text{GHG}} = \\sum_i k_i m_i$. By integrating these stage\u2011specific expressions across the entire production chain, the LCA provides a comprehensive, quantifiable picture of the polymer\u2019s environmental footprint."
+    },
+    {
+      "self_ref": "#/texts/88",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [],
+      "orig": "6.2 Recycling and Composting",
+      "text": "6.2 Recycling and Composting",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/89",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "paragraph",
+      "prov": [],
+      "orig": "Recyclable polymers such as polyethylene terephthalate (PET) $C_{10}H_{8}O_{4}$ and polypropylene (PP) $C_{3}H_{6}$, along with biodegradable alternatives like polylactic acid (PLA) $C_{3}H_{4}O_{2}$, are systematically evaluated for their compatibility with current municipal waste streams and industrial composting facilities, focusing on parameters such as mechanical property retention during mechanical recycling, depolymerization kinetics in alkaline hydrolysis, and the evolution of volatile organic compounds (VOCs) during aerobic composting, with the goal of quantifying both economic feasibility\u2014expressed as a net present value $NPV = \\sum_{t=0}^{T} \\frac{R_t - C_t}{(1+r)^t}$\u2014and environmental impact measured by the life\u2011cycle GHG emissions $E_{GHG}$.",
+      "text": "Recyclable polymers such as polyethylene terephthalate (PET) $C_{10}H_{8}O_{4}$ and polypropylene (PP) $C_{3}H_{6}$, along with biodegradable alternatives like polylactic acid (PLA) $C_{3}H_{4}O_{2}$, are systematically evaluated for their compatibility with current municipal waste streams and industrial composting facilities, focusing on parameters such as mechanical property retention during mechanical recycling, depolymerization kinetics in alkaline hydrolysis, and the evolution of volatile organic compounds (VOCs) during aerobic composting, with the goal of quantifying both economic feasibility\u2014expressed as a net present value $NPV = \\sum_{t=0}^{T} \\frac{R_t - C_t}{(1+r)^t}$\u2014and environmental impact measured by the life\u2011cycle GHG emissions $E_{GHG}$."
+    },
+    {
+      "self_ref": "#/texts/90",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [],
+      "orig": "7. Emerging Trends and Innovations",
+      "text": "7. Emerging Trends and Innovations",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/91",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [],
+      "orig": "7.1 Active Packaging",
+      "text": "7.1 Active Packaging",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/92",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "paragraph",
+      "prov": [],
+      "orig": "Active packaging incorporates antimicrobial or oxygen\u2011scavenging agents such as silver ions ($Ag^+$), nisin, or natural phenolic extracts, and iron\u2011based scavengers ($Fe^{2+}$) to react with and deplete dissolved $O_2$ in the headspace, thereby suppressing aerobic spoilage microorganisms and oxidation reactions that degrade flavor, color, and nutritional quality. In an active package, the concentration of $O_2$ follows a first\u2011order decay $d[O_2]/dt = -k[O_2]$, where $k$ depends on the scavenger\u2019s reactivity and the barrier properties of the film, and the antimicrobial efficacy is often described by the logarithmic reduction $- \\log_{10}\\left(\\frac{N_t}{N_0}\\right)$ of viable cells. By continuously maintaining $[O_2]$ below the critical threshold (typically <$1$\u202f%) and delivering $Ag^+$ at micromolar levels, the product\u2019s microbial shelf life can be extended by several weeks compared with conventional inert packaging.",
+      "text": "Active packaging incorporates antimicrobial or oxygen\u2011scavenging agents such as silver ions ($Ag^+$), nisin, or natural phenolic extracts, and iron\u2011based scavengers ($Fe^{2+}$) to react with and deplete dissolved $O_2$ in the headspace, thereby suppressing aerobic spoilage microorganisms and oxidation reactions that degrade flavor, color, and nutritional quality. In an active package, the concentration of $O_2$ follows a first\u2011order decay $d[O_2]/dt = -k[O_2]$, where $k$ depends on the scavenger\u2019s reactivity and the barrier properties of the film, and the antimicrobial efficacy is often described by the logarithmic reduction $- \\log_{10}\\left(\\frac{N_t}{N_0}\\right)$ of viable cells. By continuously maintaining $[O_2]$ below the critical threshold (typically <$1$\u202f%) and delivering $Ag^+$ at micromolar levels, the product\u2019s microbial shelf life can be extended by several weeks compared with conventional inert packaging."
+    },
+    {
+      "self_ref": "#/texts/93",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [],
+      "orig": "7.2 Smart Sensors",
+      "text": "7.2 Smart Sensors",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/94",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "paragraph",
+      "prov": [],
+      "orig": "Embedding RFID transponders together with miniature temperature ($T$) and humidity ($H_{rel}$) sensors directly into polymeric packaging films creates a self\u2011contained, wireless \u201csmart\u201d film that continuously reports the environmental conditions surrounding a product, thus providing real\u2011time visibility into its integrity. The RFID tag, encoded with a unique identification number ($ID^{\\text{RFID}}$), not only identifies the package but also serves as a low\u2011power data bus that streams the sensor readings to a back\u2011end system without the need for external power sources. By monitoring $T_{\\max}$, $T_{\\min}$ and $H_{rel}$ thresholds that are critical for maintaining quality, the integrated system can trigger alerts or automatically initiate corrective actions (e.g., adjusting refrigeration settings or notifying logistics personnel) whenever the recorded values deviate from the prescribed ranges, thereby preventing spoilage, contamination, or tampering during storage and transport.",
+      "text": "Embedding RFID transponders together with miniature temperature ($T$) and humidity ($H_{rel}$) sensors directly into polymeric packaging films creates a self\u2011contained, wireless \u201csmart\u201d film that continuously reports the environmental conditions surrounding a product, thus providing real\u2011time visibility into its integrity. The RFID tag, encoded with a unique identification number ($ID^{\\text{RFID}}$), not only identifies the package but also serves as a low\u2011power data bus that streams the sensor readings to a back\u2011end system without the need for external power sources. By monitoring $T_{\\max}$, $T_{\\min}$ and $H_{rel}$ thresholds that are critical for maintaining quality, the integrated system can trigger alerts or automatically initiate corrective actions (e.g., adjusting refrigeration settings or notifying logistics personnel) whenever the recorded values deviate from the prescribed ranges, thereby preventing spoilage, contamination, or tampering during storage and transport."
+    },
+    {
+      "self_ref": "#/texts/95",
+      "parent": {
+        "$ref": "#/groups/19"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "RFID Tags ($^{\\text{RFID}}$)  ",
+      "text": "RFID Tags ($^{\\text{RFID}}$)  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/96",
+      "parent": {
+        "$ref": "#/groups/20"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Real\u2011time location: Each package carries a $^{\\text{ID}}$ that is read by scanners along the route, allowing the supply chain to map $x(t)$ of the product.  ",
+      "text": "Real\u2011time location: Each package carries a $^{\\text{ID}}$ that is read by scanners along the route, allowing the supply chain to map $x(t)$ of the product.  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/97",
+      "parent": {
+        "$ref": "#/groups/20"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Data logging: The tag records $T_{\\text{max}}$ (temperature) and $t_{\\text{inc}}$ (time at high temperature) which can be cross\u2011checked against $C(t)=C_0e^{-kt}$ spoilage models.  ",
+      "text": "Data logging: The tag records $T_{\\text{max}}$ (temperature) and $t_{\\text{inc}}$ (time at high temperature) which can be cross\u2011checked against $C(t)=C_0e^{-kt}$ spoilage models.  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/98",
+      "parent": {
+        "$ref": "#/groups/20"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Blockchain integration: Data from the tag can be hashed and stored on a distributed ledger, ensuring tamper\u2011proof provenance.  ",
+      "text": "Blockchain integration: Data from the tag can be hashed and stored on a distributed ledger, ensuring tamper\u2011proof provenance.  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/99",
+      "parent": {
+        "$ref": "#/groups/19"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "QR / NFC Codes ($^{\\text{QR}}$ / $^{\\text{NFC}}$)  ",
+      "text": "QR / NFC Codes ($^{\\text{QR}}$ / $^{\\text{NFC}}$)  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/100",
+      "parent": {
+        "$ref": "#/groups/21"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Consumer authentication: Scanning reveals product batch and expiry, reducing counterfeits.  ",
+      "text": "Consumer authentication: Scanning reveals product batch and expiry, reducing counterfeits.  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/101",
+      "parent": {
+        "$ref": "#/groups/21"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Traceability: Each scan adds a timestamp $t_s$ to a central database, creating an immutable audit trail.  ",
+      "text": "Traceability: Each scan adds a timestamp $t_s$ to a central database, creating an immutable audit trail.  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/102",
+      "parent": {
+        "$ref": "#/groups/19"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Optical Sensor Tags  ",
+      "text": "Optical Sensor Tags  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/103",
+      "parent": {
+        "$ref": "#/groups/22"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Color\u2011change indicators: Chemical sensors produce a color shift governed by $[\\text{O}_2] \\propto e^{-\\lambda t}$, signaling oxygen exposure levels.  ",
+      "text": "Color\u2011change indicators: Chemical sensors produce a color shift governed by $[\\text{O}_2] \\propto e^{-\\lambda t}$, signaling oxygen exposure levels.  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/104",
+      "parent": {
+        "$ref": "#/groups/22"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Real\u2011time freshness: The sensor\u2019s response time $t_f$ can be linked to the remaining shelf life via $L = L_0 - \\alpha t_f$.  ",
+      "text": "Real\u2011time freshness: The sensor\u2019s response time $t_f$ can be linked to the remaining shelf life via $L = L_0 - \\alpha t_f$.  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/105",
+      "parent": {
+        "$ref": "#/groups/19"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Temperature & Humidity Loggers  ",
+      "text": "Temperature & Humidity Loggers  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/106",
+      "parent": {
+        "$ref": "#/groups/23"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Continuous monitoring: Devices record $T(t)$ and $H(t)$ at $5$\u2011min intervals, providing a time\u2011series that can be analysed for deviations.  ",
+      "text": "Continuous monitoring: Devices record $T(t)$ and $H(t)$ at $5$\u2011min intervals, providing a time\u2011series that can be analysed for deviations.  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/107",
+      "parent": {
+        "$ref": "#/groups/23"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Alert thresholds: When $T(t) > T_{\\text{max}}$ or $H(t) > H_{\\text{max}}$, the system triggers an electronic alert and updates the logistics dashboard.  ",
+      "text": "Alert thresholds: When $T(t) > T_{\\text{max}}$ or $H(t) > H_{\\text{max}}$, the system triggers an electronic alert and updates the logistics dashboard.  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/108",
+      "parent": {
+        "$ref": "#/groups/19"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Pressure Sensors  ",
+      "text": "Pressure Sensors  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/109",
+      "parent": {
+        "$ref": "#/groups/24"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Vacuum integrity: $P(t)$ is logged; a sudden rise indicates packaging breach, prompting immediate action.  ",
+      "text": "Vacuum integrity: $P(t)$ is logged; a sudden rise indicates packaging breach, prompting immediate action.  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/110",
+      "parent": {
+        "$ref": "#/groups/24"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Shelf\u2011life estimation: The decay rate $\\beta$ can be inferred from $P(t)$ trends, refining inventory rotation schedules.  ",
+      "text": "Shelf\u2011life estimation: The decay rate $\\beta$ can be inferred from $P(t)$ trends, refining inventory rotation schedules.  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/111",
+      "parent": {
+        "$ref": "#/groups/19"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Biosensors for Pathogens  ",
+      "text": "Biosensors for Pathogens  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/112",
+      "parent": {
+        "$ref": "#/groups/25"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Real\u2011time detection: Detects bacterial load $N(t)$; when $N(t) > N_{\\text{th}}$, the chain halts distribution.  ",
+      "text": "Real\u2011time detection: Detects bacterial load $N(t)$; when $N(t) > N_{\\text{th}}$, the chain halts distribution.  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/113",
+      "parent": {
+        "$ref": "#/groups/25"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Risk assessment: $R = \\int_0^T N(t)",
+      "text": "Risk assessment: $R = \\int_0^T N(t)",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/114",
+      "parent": {
+        "$ref": "#/groups/19"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Time\u2011Temperature Integrators (TTIs)  ",
+      "text": "Time\u2011Temperature Integrators (TTIs)  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/115",
+      "parent": {
+        "$ref": "#/groups/26"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Cumulative heat exposure: $E = \\int_0^T T(t)",
+      "text": "Cumulative heat exposure: $E = \\int_0^T T(t)",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/116",
+      "parent": {
+        "$ref": "#/groups/26"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Supply chain audit: Each TTI provides a one\u2011time\u2011read value of $E$ that can be compared to recorded shipping conditions.  ",
+      "text": "Supply chain audit: Each TTI provides a one\u2011time\u2011read value of $E$ that can be compared to recorded shipping conditions.  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/117",
+      "parent": {
+        "$ref": "#/groups/19"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Smart Labels with IoT Connectivity  ",
+      "text": "Smart Labels with IoT Connectivity  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/118",
+      "parent": {
+        "$ref": "#/groups/27"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Real\u2011time telemetry: Sensors upload data to the cloud via LTE/5G, enabling live dashboards.  ",
+      "text": "Real\u2011time telemetry: Sensors upload data to the cloud via LTE/5G, enabling live dashboards.  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/119",
+      "parent": {
+        "$ref": "#/groups/27"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Predictive analytics: Machine\u2011learning models ingest the telemetry to forecast spoilage risk $P_{\\text{spoil}}(t)$ and optimize routing.  ",
+      "text": "Predictive analytics: Machine\u2011learning models ingest the telemetry to forecast spoilage risk $P_{\\text{spoil}}(t)$ and optimize routing.  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/120",
+      "parent": {
+        "$ref": "#/groups/19"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Active Oxygen Scavengers with Monitoring  ",
+      "text": "Active Oxygen Scavengers with Monitoring  ",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/121",
+      "parent": {
+        "$ref": "#/groups/28"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Oxygen consumption: $",
+      "text": "Oxygen consumption: $",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/122",
+      "parent": {
+        "$ref": "#/groups/28"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "list_item",
+      "prov": [],
+      "orig": "Chain visibility: Oxygen level logs can be shared with stakeholders, ensuring consistent quality.",
+      "text": "Chain visibility: Oxygen level logs can be shared with stakeholders, ensuring consistent quality.",
+      "enumerated": false,
+      "marker": ""
+    },
+    {
+      "self_ref": "#/texts/123",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "section_header",
+      "prov": [],
+      "orig": "8. Conclusion",
+      "text": "8. Conclusion",
+      "level": 1
+    },
+    {
+      "self_ref": "#/texts/124",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "paragraph",
+      "prov": [],
+      "orig": "When selecting polymers for food packaging, the decision hinges on a triad of mechanical robustness, barrier performance, and regulatory compliance, each quantified by parameters such as tensile modulus $E$, oxygen permeability $P_{O_2}$, and food contact safety codes like FDA 21\u202fCFR\u202f177.1035; the polymer\u2019s glass transition temperature $T_g$ dictates its suitability across temperature excursions, while the crystallinity ratio $\\chi_c$ influences both clarity and water vapor barrier $P_{H_2O}$, directly affecting product shelf\u2011life; sustainability considerations push designers toward biobased resins such as polylactic acid (PLA) and polyhydroxyalkanoates (PHA), whose biodegradation rate follows a first\u2011order kinetic law $k = k_0 e^{-E_a/(RT)}$, but their brittleness can be mitigated by incorporating compatibilizers that alter the miscibility parameter $\\chi_{AB}$; emerging intelligent packaging introduces responsive polymers that modulate their opacity or release antimicrobial agents upon sensing pH shifts, often encoded via a stimulus\u2011response relationship $f(\\Delta pH) = k_1 \\Delta pH^{n}$; these systems promise real\u2011time freshness monitoring while simultaneously reducing the environmental footprint of single\u2011use plastics, and collectively the alignment of these critical factors\u2014mechanical, barrier, regulatory, and ecological\u2014guides the next generation of food packaging toward materials that are not only fit for purpose but also capable of active interaction with the packaged food.",
+      "text": "When selecting polymers for food packaging, the decision hinges on a triad of mechanical robustness, barrier performance, and regulatory compliance, each quantified by parameters such as tensile modulus $E$, oxygen permeability $P_{O_2}$, and food contact safety codes like FDA 21\u202fCFR\u202f177.1035; the polymer\u2019s glass transition temperature $T_g$ dictates its suitability across temperature excursions, while the crystallinity ratio $\\chi_c$ influences both clarity and water vapor barrier $P_{H_2O}$, directly affecting product shelf\u2011life; sustainability considerations push designers toward biobased resins such as polylactic acid (PLA) and polyhydroxyalkanoates (PHA), whose biodegradation rate follows a first\u2011order kinetic law $k = k_0 e^{-E_a/(RT)}$, but their brittleness can be mitigated by incorporating compatibilizers that alter the miscibility parameter $\\chi_{AB}$; emerging intelligent packaging introduces responsive polymers that modulate their opacity or release antimicrobial agents upon sensing pH shifts, often encoded via a stimulus\u2011response relationship $f(\\Delta pH) = k_1 \\Delta pH^{n}$; these systems promise real\u2011time freshness monitoring while simultaneously reducing the environmental footprint of single\u2011use plastics, and collectively the alignment of these critical factors\u2014mechanical, barrier, regulatory, and ecological\u2014guides the next generation of food packaging toward materials that are not only fit for purpose but also capable of active interaction with the packaged food."
+    }
+  ],
+  "pictures": [
+    {
+      "self_ref": "#/pictures/0",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "picture",
+      "prov": [],
+      "captions": [
+        {
+          "$ref": "#/texts/16"
+        }
+      ],
+      "references": [],
+      "footnotes": [],
+      "annotations": []
+    }
+  ],
+  "tables": [
+    {
+      "self_ref": "#/tables/0",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "table",
+      "prov": [],
+      "captions": [],
+      "references": [],
+      "footnotes": [],
+      "data": {
+        "table_cells": [
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 0,
+            "end_row_offset_idx": 1,
+            "start_col_offset_idx": 0,
+            "end_col_offset_idx": 1,
+            "text": "Polymer",
+            "column_header": true,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 0,
+            "end_row_offset_idx": 1,
+            "start_col_offset_idx": 1,
+            "end_col_offset_idx": 2,
+            "text": "Type",
+            "column_header": true,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 0,
+            "end_row_offset_idx": 1,
+            "start_col_offset_idx": 2,
+            "end_col_offset_idx": 3,
+            "text": "Melting Temp. (\u00b0C)",
+            "column_header": true,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 0,
+            "end_row_offset_idx": 1,
+            "start_col_offset_idx": 3,
+            "end_col_offset_idx": 4,
+            "text": "Typical Food Applications",
+            "column_header": true,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 0,
+            "end_row_offset_idx": 1,
+            "start_col_offset_idx": 4,
+            "end_col_offset_idx": 5,
+            "text": "Barrier Performance",
+            "column_header": true,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 1,
+            "end_row_offset_idx": 2,
+            "start_col_offset_idx": 0,
+            "end_col_offset_idx": 1,
+            "text": "Polyethylene terephthalate (PET)",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 1,
+            "end_row_offset_idx": 2,
+            "start_col_offset_idx": 1,
+            "end_col_offset_idx": 2,
+            "text": "Thermoplastic",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 1,
+            "end_row_offset_idx": 2,
+            "start_col_offset_idx": 2,
+            "end_col_offset_idx": 3,
+            "text": "250\u2013260",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 1,
+            "end_row_offset_idx": 2,
+            "start_col_offset_idx": 3,
+            "end_col_offset_idx": 4,
+            "text": "Beverage bottles, juice containers",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 1,
+            "end_row_offset_idx": 2,
+            "start_col_offset_idx": 4,
+            "end_col_offset_idx": 5,
+            "text": "Excellent O\u2082 barrier, moderate H\u2082O barrier",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 2,
+            "end_row_offset_idx": 3,
+            "start_col_offset_idx": 0,
+            "end_col_offset_idx": 1,
+            "text": "High\u2011density polyethylene (HDPE)",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 2,
+            "end_row_offset_idx": 3,
+            "start_col_offset_idx": 1,
+            "end_col_offset_idx": 2,
+            "text": "Thermoplastic",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 2,
+            "end_row_offset_idx": 3,
+            "start_col_offset_idx": 2,
+            "end_col_offset_idx": 3,
+            "text": "120\u2013140",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 2,
+            "end_row_offset_idx": 3,
+            "start_col_offset_idx": 3,
+            "end_col_offset_idx": 4,
+            "text": "Milk jugs, detergent bottles",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 2,
+            "end_row_offset_idx": 3,
+            "start_col_offset_idx": 4,
+            "end_col_offset_idx": 5,
+            "text": "Good H\u2082O barrier, moderate O\u2082 permeability",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 3,
+            "end_row_offset_idx": 4,
+            "start_col_offset_idx": 0,
+            "end_col_offset_idx": 1,
+            "text": "Polypropylene (PP)",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 3,
+            "end_row_offset_idx": 4,
+            "start_col_offset_idx": 1,
+            "end_col_offset_idx": 2,
+            "text": "Thermoplastic",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 3,
+            "end_row_offset_idx": 4,
+            "start_col_offset_idx": 2,
+            "end_col_offset_idx": 3,
+            "text": "160\u2013170",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 3,
+            "end_row_offset_idx": 4,
+            "start_col_offset_idx": 3,
+            "end_col_offset_idx": 4,
+            "text": "Food trays, container lids",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 3,
+            "end_row_offset_idx": 4,
+            "start_col_offset_idx": 4,
+            "end_col_offset_idx": 5,
+            "text": "Moderate O\u2082 barrier, excellent H\u2082O barrier",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 4,
+            "end_row_offset_idx": 5,
+            "start_col_offset_idx": 0,
+            "end_col_offset_idx": 1,
+            "text": "Polystyrene (PS)",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 4,
+            "end_row_offset_idx": 5,
+            "start_col_offset_idx": 1,
+            "end_col_offset_idx": 2,
+            "text": "Thermoplastic",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 4,
+            "end_row_offset_idx": 5,
+            "start_col_offset_idx": 2,
+            "end_col_offset_idx": 3,
+            "text": "100\u2013120",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 4,
+            "end_row_offset_idx": 5,
+            "start_col_offset_idx": 3,
+            "end_col_offset_idx": 4,
+            "text": "Plastic cups, take\u2011away trays",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 4,
+            "end_row_offset_idx": 5,
+            "start_col_offset_idx": 4,
+            "end_col_offset_idx": 5,
+            "text": "Low barrier to O\u2082 and H\u2082O",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 5,
+            "end_row_offset_idx": 6,
+            "start_col_offset_idx": 0,
+            "end_col_offset_idx": 1,
+            "text": "Polycarbonate (PC)",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 5,
+            "end_row_offset_idx": 6,
+            "start_col_offset_idx": 1,
+            "end_col_offset_idx": 2,
+            "text": "Thermoplastic",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 5,
+            "end_row_offset_idx": 6,
+            "start_col_offset_idx": 2,
+            "end_col_offset_idx": 3,
+            "text": "250\u2013270",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 5,
+            "end_row_offset_idx": 6,
+            "start_col_offset_idx": 3,
+            "end_col_offset_idx": 4,
+            "text": "Clamshell containers, reusable lids",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 5,
+            "end_row_offset_idx": 6,
+            "start_col_offset_idx": 4,
+            "end_col_offset_idx": 5,
+            "text": "Excellent O\u2082 & H\u2082O barrier, good impact resistance",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 6,
+            "end_row_offset_idx": 7,
+            "start_col_offset_idx": 0,
+            "end_col_offset_idx": 1,
+            "text": "Polylactic acid (PLA)",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 6,
+            "end_row_offset_idx": 7,
+            "start_col_offset_idx": 1,
+            "end_col_offset_idx": 2,
+            "text": "Biodegradable",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 6,
+            "end_row_offset_idx": 7,
+            "start_col_offset_idx": 2,
+            "end_col_offset_idx": 3,
+            "text": "140\u2013160",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 6,
+            "end_row_offset_idx": 7,
+            "start_col_offset_idx": 3,
+            "end_col_offset_idx": 4,
+            "text": "Single\u2011use trays, disposable cutlery",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 6,
+            "end_row_offset_idx": 7,
+            "start_col_offset_idx": 4,
+            "end_col_offset_idx": 5,
+            "text": "Moderate O\u2082 barrier, high H\u2082O barrier",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 7,
+            "end_row_offset_idx": 8,
+            "start_col_offset_idx": 0,
+            "end_col_offset_idx": 1,
+            "text": "Polyhydroxyalkanoate (PHA)",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 7,
+            "end_row_offset_idx": 8,
+            "start_col_offset_idx": 1,
+            "end_col_offset_idx": 2,
+            "text": "Biodegradable",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 7,
+            "end_row_offset_idx": 8,
+            "start_col_offset_idx": 2,
+            "end_col_offset_idx": 3,
+            "text": "140\u2013170",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 7,
+            "end_row_offset_idx": 8,
+            "start_col_offset_idx": 3,
+            "end_col_offset_idx": 4,
+            "text": "Edible films, packaging layers",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 7,
+            "end_row_offset_idx": 8,
+            "start_col_offset_idx": 4,
+            "end_col_offset_idx": 5,
+            "text": "Good O\u2082 barrier, moderate H\u2082O barrier",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 8,
+            "end_row_offset_idx": 9,
+            "start_col_offset_idx": 0,
+            "end_col_offset_idx": 1,
+            "text": "Polybutylene succinate (PBS)",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 8,
+            "end_row_offset_idx": 9,
+            "start_col_offset_idx": 1,
+            "end_col_offset_idx": 2,
+            "text": "Biodegradable",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 8,
+            "end_row_offset_idx": 9,
+            "start_col_offset_idx": 2,
+            "end_col_offset_idx": 3,
+            "text": "120\u2013140",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 8,
+            "end_row_offset_idx": 9,
+            "start_col_offset_idx": 3,
+            "end_col_offset_idx": 4,
+            "text": "Plastic bags, squeeze bottles",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 8,
+            "end_row_offset_idx": 9,
+            "start_col_offset_idx": 4,
+            "end_col_offset_idx": 5,
+            "text": "Moderate O\u2082 and H\u2082O barriers",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          }
+        ],
+        "num_rows": 9,
+        "num_cols": 5,
+        "grid": [
+          [
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 0,
+              "end_row_offset_idx": 1,
+              "start_col_offset_idx": 0,
+              "end_col_offset_idx": 1,
+              "text": "Polymer",
+              "column_header": true,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 0,
+              "end_row_offset_idx": 1,
+              "start_col_offset_idx": 1,
+              "end_col_offset_idx": 2,
+              "text": "Type",
+              "column_header": true,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 0,
+              "end_row_offset_idx": 1,
+              "start_col_offset_idx": 2,
+              "end_col_offset_idx": 3,
+              "text": "Melting Temp. (\u00b0C)",
+              "column_header": true,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 0,
+              "end_row_offset_idx": 1,
+              "start_col_offset_idx": 3,
+              "end_col_offset_idx": 4,
+              "text": "Typical Food Applications",
+              "column_header": true,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 0,
+              "end_row_offset_idx": 1,
+              "start_col_offset_idx": 4,
+              "end_col_offset_idx": 5,
+              "text": "Barrier Performance",
+              "column_header": true,
+              "row_header": false,
+              "row_section": false
+            }
+          ],
+          [
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 1,
+              "end_row_offset_idx": 2,
+              "start_col_offset_idx": 0,
+              "end_col_offset_idx": 1,
+              "text": "Polyethylene terephthalate (PET)",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 1,
+              "end_row_offset_idx": 2,
+              "start_col_offset_idx": 1,
+              "end_col_offset_idx": 2,
+              "text": "Thermoplastic",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 1,
+              "end_row_offset_idx": 2,
+              "start_col_offset_idx": 2,
+              "end_col_offset_idx": 3,
+              "text": "250\u2013260",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 1,
+              "end_row_offset_idx": 2,
+              "start_col_offset_idx": 3,
+              "end_col_offset_idx": 4,
+              "text": "Beverage bottles, juice containers",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 1,
+              "end_row_offset_idx": 2,
+              "start_col_offset_idx": 4,
+              "end_col_offset_idx": 5,
+              "text": "Excellent O\u2082 barrier, moderate H\u2082O barrier",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            }
+          ],
+          [
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 2,
+              "end_row_offset_idx": 3,
+              "start_col_offset_idx": 0,
+              "end_col_offset_idx": 1,
+              "text": "High\u2011density polyethylene (HDPE)",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 2,
+              "end_row_offset_idx": 3,
+              "start_col_offset_idx": 1,
+              "end_col_offset_idx": 2,
+              "text": "Thermoplastic",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 2,
+              "end_row_offset_idx": 3,
+              "start_col_offset_idx": 2,
+              "end_col_offset_idx": 3,
+              "text": "120\u2013140",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 2,
+              "end_row_offset_idx": 3,
+              "start_col_offset_idx": 3,
+              "end_col_offset_idx": 4,
+              "text": "Milk jugs, detergent bottles",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 2,
+              "end_row_offset_idx": 3,
+              "start_col_offset_idx": 4,
+              "end_col_offset_idx": 5,
+              "text": "Good H\u2082O barrier, moderate O\u2082 permeability",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            }
+          ],
+          [
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 3,
+              "end_row_offset_idx": 4,
+              "start_col_offset_idx": 0,
+              "end_col_offset_idx": 1,
+              "text": "Polypropylene (PP)",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 3,
+              "end_row_offset_idx": 4,
+              "start_col_offset_idx": 1,
+              "end_col_offset_idx": 2,
+              "text": "Thermoplastic",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 3,
+              "end_row_offset_idx": 4,
+              "start_col_offset_idx": 2,
+              "end_col_offset_idx": 3,
+              "text": "160\u2013170",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 3,
+              "end_row_offset_idx": 4,
+              "start_col_offset_idx": 3,
+              "end_col_offset_idx": 4,
+              "text": "Food trays, container lids",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 3,
+              "end_row_offset_idx": 4,
+              "start_col_offset_idx": 4,
+              "end_col_offset_idx": 5,
+              "text": "Moderate O\u2082 barrier, excellent H\u2082O barrier",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            }
+          ],
+          [
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 4,
+              "end_row_offset_idx": 5,
+              "start_col_offset_idx": 0,
+              "end_col_offset_idx": 1,
+              "text": "Polystyrene (PS)",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 4,
+              "end_row_offset_idx": 5,
+              "start_col_offset_idx": 1,
+              "end_col_offset_idx": 2,
+              "text": "Thermoplastic",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 4,
+              "end_row_offset_idx": 5,
+              "start_col_offset_idx": 2,
+              "end_col_offset_idx": 3,
+              "text": "100\u2013120",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 4,
+              "end_row_offset_idx": 5,
+              "start_col_offset_idx": 3,
+              "end_col_offset_idx": 4,
+              "text": "Plastic cups, take\u2011away trays",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 4,
+              "end_row_offset_idx": 5,
+              "start_col_offset_idx": 4,
+              "end_col_offset_idx": 5,
+              "text": "Low barrier to O\u2082 and H\u2082O",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            }
+          ],
+          [
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 5,
+              "end_row_offset_idx": 6,
+              "start_col_offset_idx": 0,
+              "end_col_offset_idx": 1,
+              "text": "Polycarbonate (PC)",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 5,
+              "end_row_offset_idx": 6,
+              "start_col_offset_idx": 1,
+              "end_col_offset_idx": 2,
+              "text": "Thermoplastic",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 5,
+              "end_row_offset_idx": 6,
+              "start_col_offset_idx": 2,
+              "end_col_offset_idx": 3,
+              "text": "250\u2013270",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 5,
+              "end_row_offset_idx": 6,
+              "start_col_offset_idx": 3,
+              "end_col_offset_idx": 4,
+              "text": "Clamshell containers, reusable lids",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 5,
+              "end_row_offset_idx": 6,
+              "start_col_offset_idx": 4,
+              "end_col_offset_idx": 5,
+              "text": "Excellent O\u2082 & H\u2082O barrier, good impact resistance",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            }
+          ],
+          [
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 6,
+              "end_row_offset_idx": 7,
+              "start_col_offset_idx": 0,
+              "end_col_offset_idx": 1,
+              "text": "Polylactic acid (PLA)",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 6,
+              "end_row_offset_idx": 7,
+              "start_col_offset_idx": 1,
+              "end_col_offset_idx": 2,
+              "text": "Biodegradable",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 6,
+              "end_row_offset_idx": 7,
+              "start_col_offset_idx": 2,
+              "end_col_offset_idx": 3,
+              "text": "140\u2013160",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 6,
+              "end_row_offset_idx": 7,
+              "start_col_offset_idx": 3,
+              "end_col_offset_idx": 4,
+              "text": "Single\u2011use trays, disposable cutlery",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 6,
+              "end_row_offset_idx": 7,
+              "start_col_offset_idx": 4,
+              "end_col_offset_idx": 5,
+              "text": "Moderate O\u2082 barrier, high H\u2082O barrier",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            }
+          ],
+          [
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 7,
+              "end_row_offset_idx": 8,
+              "start_col_offset_idx": 0,
+              "end_col_offset_idx": 1,
+              "text": "Polyhydroxyalkanoate (PHA)",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 7,
+              "end_row_offset_idx": 8,
+              "start_col_offset_idx": 1,
+              "end_col_offset_idx": 2,
+              "text": "Biodegradable",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 7,
+              "end_row_offset_idx": 8,
+              "start_col_offset_idx": 2,
+              "end_col_offset_idx": 3,
+              "text": "140\u2013170",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 7,
+              "end_row_offset_idx": 8,
+              "start_col_offset_idx": 3,
+              "end_col_offset_idx": 4,
+              "text": "Edible films, packaging layers",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 7,
+              "end_row_offset_idx": 8,
+              "start_col_offset_idx": 4,
+              "end_col_offset_idx": 5,
+              "text": "Good O\u2082 barrier, moderate H\u2082O barrier",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            }
+          ],
+          [
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 8,
+              "end_row_offset_idx": 9,
+              "start_col_offset_idx": 0,
+              "end_col_offset_idx": 1,
+              "text": "Polybutylene succinate (PBS)",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 8,
+              "end_row_offset_idx": 9,
+              "start_col_offset_idx": 1,
+              "end_col_offset_idx": 2,
+              "text": "Biodegradable",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 8,
+              "end_row_offset_idx": 9,
+              "start_col_offset_idx": 2,
+              "end_col_offset_idx": 3,
+              "text": "120\u2013140",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 8,
+              "end_row_offset_idx": 9,
+              "start_col_offset_idx": 3,
+              "end_col_offset_idx": 4,
+              "text": "Plastic bags, squeeze bottles",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 8,
+              "end_row_offset_idx": 9,
+              "start_col_offset_idx": 4,
+              "end_col_offset_idx": 5,
+              "text": "Moderate O\u2082 and H\u2082O barriers",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            }
+          ]
+        ]
+      },
+      "annotations": []
+    },
+    {
+      "self_ref": "#/tables/1",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "table",
+      "prov": [],
+      "captions": [],
+      "references": [],
+      "footnotes": [],
+      "data": {
+        "table_cells": [
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 0,
+            "end_row_offset_idx": 1,
+            "start_col_offset_idx": 0,
+            "end_col_offset_idx": 1,
+            "text": "Process",
+            "column_header": true,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 0,
+            "end_row_offset_idx": 1,
+            "start_col_offset_idx": 1,
+            "end_col_offset_idx": 2,
+            "text": "Typical Throughput",
+            "column_header": true,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 0,
+            "end_row_offset_idx": 1,
+            "start_col_offset_idx": 2,
+            "end_col_offset_idx": 3,
+            "text": "Material Suitability",
+            "column_header": true,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 0,
+            "end_row_offset_idx": 1,
+            "start_col_offset_idx": 3,
+            "end_col_offset_idx": 4,
+            "text": "Cost Implications",
+            "column_header": true,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 1,
+            "end_row_offset_idx": 2,
+            "start_col_offset_idx": 0,
+            "end_col_offset_idx": 1,
+            "text": "Extrusion",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 1,
+            "end_row_offset_idx": 2,
+            "start_col_offset_idx": 1,
+            "end_col_offset_idx": 2,
+            "text": "200\u2013500\u202fm\u202fh\u207b\u00b9 (films, sheets)",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 1,
+            "end_row_offset_idx": 2,
+            "start_col_offset_idx": 2,
+            "end_col_offset_idx": 3,
+            "text": "Linear polymers (PE, PP, PET, HDPE); limited multilayer capability",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 1,
+            "end_row_offset_idx": 2,
+            "start_col_offset_idx": 3,
+            "end_col_offset_idx": 4,
+            "text": "Low tooling cost; moderate energy; high material utilization",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 2,
+            "end_row_offset_idx": 3,
+            "start_col_offset_idx": 0,
+            "end_col_offset_idx": 1,
+            "text": "Injection Molding",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 2,
+            "end_row_offset_idx": 3,
+            "start_col_offset_idx": 1,
+            "end_col_offset_idx": 2,
+            "text": "20\u201350\u202fparts\u202fmin\u207b\u00b9 (small\u2011to\u2011medium parts)",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 2,
+            "end_row_offset_idx": 3,
+            "start_col_offset_idx": 2,
+            "end_col_offset_idx": 3,
+            "text": "Wide range (polyesters, polyamides, nylons, polymers with additives); complex geometries",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 2,
+            "end_row_offset_idx": 3,
+            "start_col_offset_idx": 3,
+            "end_col_offset_idx": 4,
+            "text": "High tooling cost; energy intensive; good for high\u2011volume, low\u2011thickness parts",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 3,
+            "end_row_offset_idx": 4,
+            "start_col_offset_idx": 0,
+            "end_col_offset_idx": 1,
+            "text": "Co\u2011Extrusion",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 3,
+            "end_row_offset_idx": 4,
+            "start_col_offset_idx": 1,
+            "end_col_offset_idx": 2,
+            "text": "150\u2013400\u202fm\u202fh\u207b\u00b9 (multilayer films, sheets)",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 3,
+            "end_row_offset_idx": 4,
+            "start_col_offset_idx": 2,
+            "end_col_offset_idx": 3,
+            "text": "Compatible multilayer stacks (PE/PE\u2011R, PP/PE, PET/PE); can combine barrier and structural layers",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 3,
+            "end_row_offset_idx": 4,
+            "start_col_offset_idx": 3,
+            "end_col_offset_idx": 4,
+            "text": "Moderate tooling (multi\u2011nozzle head); higher material cost; better material utilization than separate extrusion",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          }
+        ],
+        "num_rows": 4,
+        "num_cols": 4,
+        "grid": [
+          [
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 0,
+              "end_row_offset_idx": 1,
+              "start_col_offset_idx": 0,
+              "end_col_offset_idx": 1,
+              "text": "Process",
+              "column_header": true,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 0,
+              "end_row_offset_idx": 1,
+              "start_col_offset_idx": 1,
+              "end_col_offset_idx": 2,
+              "text": "Typical Throughput",
+              "column_header": true,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 0,
+              "end_row_offset_idx": 1,
+              "start_col_offset_idx": 2,
+              "end_col_offset_idx": 3,
+              "text": "Material Suitability",
+              "column_header": true,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 0,
+              "end_row_offset_idx": 1,
+              "start_col_offset_idx": 3,
+              "end_col_offset_idx": 4,
+              "text": "Cost Implications",
+              "column_header": true,
+              "row_header": false,
+              "row_section": false
+            }
+          ],
+          [
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 1,
+              "end_row_offset_idx": 2,
+              "start_col_offset_idx": 0,
+              "end_col_offset_idx": 1,
+              "text": "Extrusion",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 1,
+              "end_row_offset_idx": 2,
+              "start_col_offset_idx": 1,
+              "end_col_offset_idx": 2,
+              "text": "200\u2013500\u202fm\u202fh\u207b\u00b9 (films, sheets)",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 1,
+              "end_row_offset_idx": 2,
+              "start_col_offset_idx": 2,
+              "end_col_offset_idx": 3,
+              "text": "Linear polymers (PE, PP, PET, HDPE); limited multilayer capability",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 1,
+              "end_row_offset_idx": 2,
+              "start_col_offset_idx": 3,
+              "end_col_offset_idx": 4,
+              "text": "Low tooling cost; moderate energy; high material utilization",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            }
+          ],
+          [
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 2,
+              "end_row_offset_idx": 3,
+              "start_col_offset_idx": 0,
+              "end_col_offset_idx": 1,
+              "text": "Injection Molding",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 2,
+              "end_row_offset_idx": 3,
+              "start_col_offset_idx": 1,
+              "end_col_offset_idx": 2,
+              "text": "20\u201350\u202fparts\u202fmin\u207b\u00b9 (small\u2011to\u2011medium parts)",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 2,
+              "end_row_offset_idx": 3,
+              "start_col_offset_idx": 2,
+              "end_col_offset_idx": 3,
+              "text": "Wide range (polyesters, polyamides, nylons, polymers with additives); complex geometries",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 2,
+              "end_row_offset_idx": 3,
+              "start_col_offset_idx": 3,
+              "end_col_offset_idx": 4,
+              "text": "High tooling cost; energy intensive; good for high\u2011volume, low\u2011thickness parts",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            }
+          ],
+          [
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 3,
+              "end_row_offset_idx": 4,
+              "start_col_offset_idx": 0,
+              "end_col_offset_idx": 1,
+              "text": "Co\u2011Extrusion",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 3,
+              "end_row_offset_idx": 4,
+              "start_col_offset_idx": 1,
+              "end_col_offset_idx": 2,
+              "text": "150\u2013400\u202fm\u202fh\u207b\u00b9 (multilayer films, sheets)",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 3,
+              "end_row_offset_idx": 4,
+              "start_col_offset_idx": 2,
+              "end_col_offset_idx": 3,
+              "text": "Compatible multilayer stacks (PE/PE\u2011R, PP/PE, PET/PE); can combine barrier and structural layers",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 3,
+              "end_row_offset_idx": 4,
+              "start_col_offset_idx": 3,
+              "end_col_offset_idx": 4,
+              "text": "Moderate tooling (multi\u2011nozzle head); higher material cost; better material utilization than separate extrusion",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            }
+          ]
+        ]
+      },
+      "annotations": []
+    },
+    {
+      "self_ref": "#/tables/2",
+      "parent": {
+        "$ref": "#/body"
+      },
+      "children": [],
+      "content_layer": "body",
+      "label": "table",
+      "prov": [],
+      "captions": [],
+      "references": [],
+      "footnotes": [],
+      "data": {
+        "table_cells": [
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 0,
+            "end_row_offset_idx": 1,
+            "start_col_offset_idx": 0,
+            "end_col_offset_idx": 1,
+            "text": "Polymer",
+            "column_header": true,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 0,
+            "end_row_offset_idx": 1,
+            "start_col_offset_idx": 1,
+            "end_col_offset_idx": 2,
+            "text": "Recyclability Rate\u00a0(% of market)",
+            "column_header": true,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 0,
+            "end_row_offset_idx": 1,
+            "start_col_offset_idx": 2,
+            "end_col_offset_idx": 3,
+            "text": "Composting Conditions (if applicable)",
+            "column_header": true,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 0,
+            "end_row_offset_idx": 1,
+            "start_col_offset_idx": 3,
+            "end_col_offset_idx": 4,
+            "text": "Typical Waste Management Pathway",
+            "column_header": true,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 1,
+            "end_row_offset_idx": 2,
+            "start_col_offset_idx": 0,
+            "end_col_offset_idx": 1,
+            "text": "Polyethylene terephthalate (PET)",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 1,
+            "end_row_offset_idx": 2,
+            "start_col_offset_idx": 1,
+            "end_col_offset_idx": 2,
+            "text": "\u2248 25\u201330\u202f%",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 1,
+            "end_row_offset_idx": 2,
+            "start_col_offset_idx": 2,
+            "end_col_offset_idx": 3,
+            "text": "\u2014",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 1,
+            "end_row_offset_idx": 2,
+            "start_col_offset_idx": 3,
+            "end_col_offset_idx": 4,
+            "text": "Recycling (PET bottles, fibers), landfill, incineration",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 2,
+            "end_row_offset_idx": 3,
+            "start_col_offset_idx": 0,
+            "end_col_offset_idx": 1,
+            "text": "High\u2011density polyethylene (HDPE)",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 2,
+            "end_row_offset_idx": 3,
+            "start_col_offset_idx": 1,
+            "end_col_offset_idx": 2,
+            "text": "\u2248 30\u201335\u202f%",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 2,
+            "end_row_offset_idx": 3,
+            "start_col_offset_idx": 2,
+            "end_col_offset_idx": 3,
+            "text": "\u2014",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 2,
+            "end_row_offset_idx": 3,
+            "start_col_offset_idx": 3,
+            "end_col_offset_idx": 4,
+            "text": "Recycling (bottles, containers), landfill, incineration",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 3,
+            "end_row_offset_idx": 4,
+            "start_col_offset_idx": 0,
+            "end_col_offset_idx": 1,
+            "text": "Low\u2011density polyethylene (LDPE)",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 3,
+            "end_row_offset_idx": 4,
+            "start_col_offset_idx": 1,
+            "end_col_offset_idx": 2,
+            "text": "\u2248 10\u201315\u202f%",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 3,
+            "end_row_offset_idx": 4,
+            "start_col_offset_idx": 2,
+            "end_col_offset_idx": 3,
+            "text": "\u2014",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 3,
+            "end_row_offset_idx": 4,
+            "start_col_offset_idx": 3,
+            "end_col_offset_idx": 4,
+            "text": "Landfill, incineration, limited recycling (plastic bags)",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 4,
+            "end_row_offset_idx": 5,
+            "start_col_offset_idx": 0,
+            "end_col_offset_idx": 1,
+            "text": "Polypropylene (PP)",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 4,
+            "end_row_offset_idx": 5,
+            "start_col_offset_idx": 1,
+            "end_col_offset_idx": 2,
+            "text": "\u2248 15\u201320\u202f%",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 4,
+            "end_row_offset_idx": 5,
+            "start_col_offset_idx": 2,
+            "end_col_offset_idx": 3,
+            "text": "\u2014",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 4,
+            "end_row_offset_idx": 5,
+            "start_col_offset_idx": 3,
+            "end_col_offset_idx": 4,
+            "text": "Recycling (packaging, automotive parts), landfill, incineration",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 5,
+            "end_row_offset_idx": 6,
+            "start_col_offset_idx": 0,
+            "end_col_offset_idx": 1,
+            "text": "Polystyrene (PS)",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 5,
+            "end_row_offset_idx": 6,
+            "start_col_offset_idx": 1,
+            "end_col_offset_idx": 2,
+            "text": "\u2248 5\u201310\u202f%",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 5,
+            "end_row_offset_idx": 6,
+            "start_col_offset_idx": 2,
+            "end_col_offset_idx": 3,
+            "text": "\u2014",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 5,
+            "end_row_offset_idx": 6,
+            "start_col_offset_idx": 3,
+            "end_col_offset_idx": 4,
+            "text": "Landfill, incineration, minimal recycling (expanded polystyrene)",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 6,
+            "end_row_offset_idx": 7,
+            "start_col_offset_idx": 0,
+            "end_col_offset_idx": 1,
+            "text": "Polyethylene (PE)",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 6,
+            "end_row_offset_idx": 7,
+            "start_col_offset_idx": 1,
+            "end_col_offset_idx": 2,
+            "text": "\u2248 10\u201315\u202f%",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 6,
+            "end_row_offset_idx": 7,
+            "start_col_offset_idx": 2,
+            "end_col_offset_idx": 3,
+            "text": "\u2014",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 6,
+            "end_row_offset_idx": 7,
+            "start_col_offset_idx": 3,
+            "end_col_offset_idx": 4,
+            "text": "Landfill, incineration, limited recycling (films, bags)",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 7,
+            "end_row_offset_idx": 8,
+            "start_col_offset_idx": 0,
+            "end_col_offset_idx": 1,
+            "text": "Polyvinyl chloride (PVC)",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 7,
+            "end_row_offset_idx": 8,
+            "start_col_offset_idx": 1,
+            "end_col_offset_idx": 2,
+            "text": "\u2248 5\u20138\u202f%",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 7,
+            "end_row_offset_idx": 8,
+            "start_col_offset_idx": 2,
+            "end_col_offset_idx": 3,
+            "text": "\u2014",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 7,
+            "end_row_offset_idx": 8,
+            "start_col_offset_idx": 3,
+            "end_col_offset_idx": 4,
+            "text": "Landfill, incineration with emission controls, recycling (pipes, siding)",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 8,
+            "end_row_offset_idx": 9,
+            "start_col_offset_idx": 0,
+            "end_col_offset_idx": 1,
+            "text": "Polylactic acid (PLA)",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 8,
+            "end_row_offset_idx": 9,
+            "start_col_offset_idx": 1,
+            "end_col_offset_idx": 2,
+            "text": "\u2014",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 8,
+            "end_row_offset_idx": 9,
+            "start_col_offset_idx": 2,
+            "end_col_offset_idx": 3,
+            "text": "Industrial composting: 58\u201363\u202f\u00b0C, 4\u20136\u202fweeks, moisture 50\u201160\u202f%",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 8,
+            "end_row_offset_idx": 9,
+            "start_col_offset_idx": 3,
+            "end_col_offset_idx": 4,
+            "text": "Industrial composting (municipal or dedicated facilities)",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 9,
+            "end_row_offset_idx": 10,
+            "start_col_offset_idx": 0,
+            "end_col_offset_idx": 1,
+            "text": "Polybutylene adipate terephthalate (PBAT)",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 9,
+            "end_row_offset_idx": 10,
+            "start_col_offset_idx": 1,
+            "end_col_offset_idx": 2,
+            "text": "\u2014",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 9,
+            "end_row_offset_idx": 10,
+            "start_col_offset_idx": 2,
+            "end_col_offset_idx": 3,
+            "text": "Industrial composting: 58\u201363\u202f\u00b0C, 3\u20135\u202fweeks, moisture 40\u201160\u202f%",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          },
+          {
+            "row_span": 1,
+            "col_span": 1,
+            "start_row_offset_idx": 9,
+            "end_row_offset_idx": 10,
+            "start_col_offset_idx": 3,
+            "end_col_offset_idx": 4,
+            "text": "Industrial composting (mixed with PLA or PS)",
+            "column_header": false,
+            "row_header": false,
+            "row_section": false
+          }
+        ],
+        "num_rows": 10,
+        "num_cols": 4,
+        "grid": [
+          [
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 0,
+              "end_row_offset_idx": 1,
+              "start_col_offset_idx": 0,
+              "end_col_offset_idx": 1,
+              "text": "Polymer",
+              "column_header": true,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 0,
+              "end_row_offset_idx": 1,
+              "start_col_offset_idx": 1,
+              "end_col_offset_idx": 2,
+              "text": "Recyclability Rate\u00a0(% of market)",
+              "column_header": true,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 0,
+              "end_row_offset_idx": 1,
+              "start_col_offset_idx": 2,
+              "end_col_offset_idx": 3,
+              "text": "Composting Conditions (if applicable)",
+              "column_header": true,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 0,
+              "end_row_offset_idx": 1,
+              "start_col_offset_idx": 3,
+              "end_col_offset_idx": 4,
+              "text": "Typical Waste Management Pathway",
+              "column_header": true,
+              "row_header": false,
+              "row_section": false
+            }
+          ],
+          [
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 1,
+              "end_row_offset_idx": 2,
+              "start_col_offset_idx": 0,
+              "end_col_offset_idx": 1,
+              "text": "Polyethylene terephthalate (PET)",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 1,
+              "end_row_offset_idx": 2,
+              "start_col_offset_idx": 1,
+              "end_col_offset_idx": 2,
+              "text": "\u2248 25\u201330\u202f%",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 1,
+              "end_row_offset_idx": 2,
+              "start_col_offset_idx": 2,
+              "end_col_offset_idx": 3,
+              "text": "\u2014",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 1,
+              "end_row_offset_idx": 2,
+              "start_col_offset_idx": 3,
+              "end_col_offset_idx": 4,
+              "text": "Recycling (PET bottles, fibers), landfill, incineration",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            }
+          ],
+          [
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 2,
+              "end_row_offset_idx": 3,
+              "start_col_offset_idx": 0,
+              "end_col_offset_idx": 1,
+              "text": "High\u2011density polyethylene (HDPE)",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 2,
+              "end_row_offset_idx": 3,
+              "start_col_offset_idx": 1,
+              "end_col_offset_idx": 2,
+              "text": "\u2248 30\u201335\u202f%",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 2,
+              "end_row_offset_idx": 3,
+              "start_col_offset_idx": 2,
+              "end_col_offset_idx": 3,
+              "text": "\u2014",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 2,
+              "end_row_offset_idx": 3,
+              "start_col_offset_idx": 3,
+              "end_col_offset_idx": 4,
+              "text": "Recycling (bottles, containers), landfill, incineration",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            }
+          ],
+          [
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 3,
+              "end_row_offset_idx": 4,
+              "start_col_offset_idx": 0,
+              "end_col_offset_idx": 1,
+              "text": "Low\u2011density polyethylene (LDPE)",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 3,
+              "end_row_offset_idx": 4,
+              "start_col_offset_idx": 1,
+              "end_col_offset_idx": 2,
+              "text": "\u2248 10\u201315\u202f%",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 3,
+              "end_row_offset_idx": 4,
+              "start_col_offset_idx": 2,
+              "end_col_offset_idx": 3,
+              "text": "\u2014",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 3,
+              "end_row_offset_idx": 4,
+              "start_col_offset_idx": 3,
+              "end_col_offset_idx": 4,
+              "text": "Landfill, incineration, limited recycling (plastic bags)",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            }
+          ],
+          [
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 4,
+              "end_row_offset_idx": 5,
+              "start_col_offset_idx": 0,
+              "end_col_offset_idx": 1,
+              "text": "Polypropylene (PP)",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 4,
+              "end_row_offset_idx": 5,
+              "start_col_offset_idx": 1,
+              "end_col_offset_idx": 2,
+              "text": "\u2248 15\u201320\u202f%",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 4,
+              "end_row_offset_idx": 5,
+              "start_col_offset_idx": 2,
+              "end_col_offset_idx": 3,
+              "text": "\u2014",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 4,
+              "end_row_offset_idx": 5,
+              "start_col_offset_idx": 3,
+              "end_col_offset_idx": 4,
+              "text": "Recycling (packaging, automotive parts), landfill, incineration",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            }
+          ],
+          [
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 5,
+              "end_row_offset_idx": 6,
+              "start_col_offset_idx": 0,
+              "end_col_offset_idx": 1,
+              "text": "Polystyrene (PS)",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 5,
+              "end_row_offset_idx": 6,
+              "start_col_offset_idx": 1,
+              "end_col_offset_idx": 2,
+              "text": "\u2248 5\u201310\u202f%",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 5,
+              "end_row_offset_idx": 6,
+              "start_col_offset_idx": 2,
+              "end_col_offset_idx": 3,
+              "text": "\u2014",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 5,
+              "end_row_offset_idx": 6,
+              "start_col_offset_idx": 3,
+              "end_col_offset_idx": 4,
+              "text": "Landfill, incineration, minimal recycling (expanded polystyrene)",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            }
+          ],
+          [
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 6,
+              "end_row_offset_idx": 7,
+              "start_col_offset_idx": 0,
+              "end_col_offset_idx": 1,
+              "text": "Polyethylene (PE)",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 6,
+              "end_row_offset_idx": 7,
+              "start_col_offset_idx": 1,
+              "end_col_offset_idx": 2,
+              "text": "\u2248 10\u201315\u202f%",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 6,
+              "end_row_offset_idx": 7,
+              "start_col_offset_idx": 2,
+              "end_col_offset_idx": 3,
+              "text": "\u2014",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 6,
+              "end_row_offset_idx": 7,
+              "start_col_offset_idx": 3,
+              "end_col_offset_idx": 4,
+              "text": "Landfill, incineration, limited recycling (films, bags)",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            }
+          ],
+          [
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 7,
+              "end_row_offset_idx": 8,
+              "start_col_offset_idx": 0,
+              "end_col_offset_idx": 1,
+              "text": "Polyvinyl chloride (PVC)",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 7,
+              "end_row_offset_idx": 8,
+              "start_col_offset_idx": 1,
+              "end_col_offset_idx": 2,
+              "text": "\u2248 5\u20138\u202f%",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 7,
+              "end_row_offset_idx": 8,
+              "start_col_offset_idx": 2,
+              "end_col_offset_idx": 3,
+              "text": "\u2014",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 7,
+              "end_row_offset_idx": 8,
+              "start_col_offset_idx": 3,
+              "end_col_offset_idx": 4,
+              "text": "Landfill, incineration with emission controls, recycling (pipes, siding)",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            }
+          ],
+          [
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 8,
+              "end_row_offset_idx": 9,
+              "start_col_offset_idx": 0,
+              "end_col_offset_idx": 1,
+              "text": "Polylactic acid (PLA)",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 8,
+              "end_row_offset_idx": 9,
+              "start_col_offset_idx": 1,
+              "end_col_offset_idx": 2,
+              "text": "\u2014",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 8,
+              "end_row_offset_idx": 9,
+              "start_col_offset_idx": 2,
+              "end_col_offset_idx": 3,
+              "text": "Industrial composting: 58\u201363\u202f\u00b0C, 4\u20136\u202fweeks, moisture 50\u201160\u202f%",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 8,
+              "end_row_offset_idx": 9,
+              "start_col_offset_idx": 3,
+              "end_col_offset_idx": 4,
+              "text": "Industrial composting (municipal or dedicated facilities)",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            }
+          ],
+          [
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 9,
+              "end_row_offset_idx": 10,
+              "start_col_offset_idx": 0,
+              "end_col_offset_idx": 1,
+              "text": "Polybutylene adipate terephthalate (PBAT)",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 9,
+              "end_row_offset_idx": 10,
+              "start_col_offset_idx": 1,
+              "end_col_offset_idx": 2,
+              "text": "\u2014",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 9,
+              "end_row_offset_idx": 10,
+              "start_col_offset_idx": 2,
+              "end_col_offset_idx": 3,
+              "text": "Industrial composting: 58\u201363\u202f\u00b0C, 3\u20135\u202fweeks, moisture 40\u201160\u202f%",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            },
+            {
+              "row_span": 1,
+              "col_span": 1,
+              "start_row_offset_idx": 9,
+              "end_row_offset_idx": 10,
+              "start_col_offset_idx": 3,
+              "end_col_offset_idx": 4,
+              "text": "Industrial composting (mixed with PLA or PS)",
+              "column_header": false,
+              "row_header": false,
+              "row_section": false
+            }
+          ]
+        ]
+      },
+      "annotations": []
+    }
+  ],
+  "key_value_items": [],
+  "form_items": [],
+  "pages": {}
+}
