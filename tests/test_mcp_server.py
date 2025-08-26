@@ -2,88 +2,21 @@
 
 import json
 from collections.abc import AsyncGenerator
-from contextlib import AsyncExitStack
 from typing import Any
 
 import anyio
 import pytest
-import pytest_asyncio
-from mcp import ClientSession, StdioServerParameters, Tool
-from mcp.client.stdio import stdio_client
-
-
-class MCPClient:
-    def __init__(self) -> None:
-        # Initialize session and client objects
-        self.session: ClientSession | None = None
-        self.exit_stack = AsyncExitStack()
-
-    async def connect_to_server(self, server_script_path: str) -> None:
-        """Connect to an MCP server
-
-        Args:
-            server_script_path: Path to the server script
-        """
-        if not server_script_path.endswith(".py"):
-            raise ValueError("Server script must be a .py file")
-
-        server_params = StdioServerParameters(
-            command="python", args=[server_script_path], env=None
-        )
-
-        stdio_transport = await self.exit_stack.enter_async_context(
-            stdio_client(server_params)
-        )
-        self.stdio, self.write = stdio_transport
-        self.session = await self.exit_stack.enter_async_context(
-            ClientSession(self.stdio, self.write)
-        )
-
-        await self.session.initialize()
-        print("\nServer initialized")
-
-    async def list_tools(self) -> list[str]:
-        assert self.session
-        response = await self.session.list_tools()
-        tools = [tool.name for tool in response.tools]
-
-        return tools
-
-    async def get_tools(self) -> list[Tool]:
-        assert self.session
-        response = await self.session.list_tools()
-
-        return response.tools
-
-    async def call_tool(
-        self, tool_name: str, arguments: dict[str, Any] | None = None
-    ) -> Any:
-        assert self.session
-        response = await self.session.call_tool(tool_name, arguments)
-
-        return response
-
-    async def cleanup(self) -> None:
-        """Clean up resources"""
-        await self.exit_stack.aclose()
-
-
-@pytest_asyncio.fixture()
-async def mcp_client() -> AsyncGenerator[Any, Any]:
-    client = MCPClient()
-    await client.connect_to_server("docling_mcp/servers/mcp_server.py")
-    yield client
-    # await client.cleanup()
+from mcp import Tool
 
 
 @pytest.mark.asyncio
 async def test_list_tools(mcp_client: AsyncGenerator[Any, Any]) -> None:
     tools = await mcp_client.list_tools()  # type: ignore[attr-defined]
     assert isinstance(tools, list)
-    print(tools)
     gold_tools = [
         "is_document_in_local_cache",
         "convert_document_into_docling_document",
+        "convert_directory_files_into_docling_document",
         # "convert_attachments_into_docling_document",
         "create_new_docling_document",
         "export_docling_document_to_markdown",
@@ -105,7 +38,7 @@ async def test_list_tools(mcp_client: AsyncGenerator[Any, Any]) -> None:
     assert tools == gold_tools
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_get_tools(mcp_client: AsyncGenerator[Any, Any]) -> None:
     tools: list[Tool] = await mcp_client.get_tools()  # type: ignore[attr-defined]
 
@@ -117,11 +50,10 @@ async def test_get_tools(mcp_client: AsyncGenerator[Any, Any]) -> None:
     ) as input_file:
         contents = await input_file.read()
         gold_tool = json.loads(contents)
-        print(sample_tool.model_dump_json(indent=4))
         assert gold_tool == sample_tool.model_dump()
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_call_tool(mcp_client: AsyncGenerator[Any, Any]) -> None:
     res = await mcp_client.call_tool(  # type: ignore[attr-defined]
         "create_new_docling_document", {"prompt": "A new Docling document for testing"}

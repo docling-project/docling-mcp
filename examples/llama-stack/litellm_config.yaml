@@ -1,0 +1,19 @@
+model_list:
+  - model_name: "granite-3-3-8b-instruct"
+    litellm_params:
+      model: "watsonx/ibm-granite/granite-3-3-8b-instruct"
+  - model_name: "granite-vision-3.2-2b"
+    litellm_params:
+      model: "watsonx/ibm-granite/granite-vision-3.2-2b"
+  - model_name: "gpt-oss-120b"
+    litellm_params:
+      model: "watsonx/openai/gpt-oss-120b"
+  - model_name: "llama-3-3-70b"
+    litellm_params:
+      model: "watsonx/meta-llama/llama-3-3-70b-instruct"
+  - model_name: "Llama-4-Maverick" 
+    litellm_params:
+      model: "watsonx/meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8"
+  - model_name: "*" 
+    litellm_params:
+      model: "*"

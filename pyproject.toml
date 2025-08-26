@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "docling-mcp"
-version = "1.0.1"  # DO NOT EDIT, updated automatically
+version = "1.1.0"  # DO NOT EDIT, updated automatically
 description = "Running Docling as an agent using tools"
 license = "MIT"
 license-files = ["LICENSE"]
@@ -61,15 +61,14 @@ llama-index-rag = [
     "llama-index-core>=0.12.28",
     "llama-index-embeddings-huggingface>=0.5.2",
     "llama-index-embeddings-openai>=0.3.1",
-    "llama-index-llms-ollama>=0.5.4",
+    "llama-index-llms-openai-like>=0.3.0",
     "llama-index-node-parser-docling>=0.3.1",
     "llama-index-readers-docling>=0.3.2",
     "llama-index-readers-file>=0.4.7",
     "llama-index-vector-stores-milvus>=0.7.2",
 ]
 llama-stack = [
-    "fire>=0.7.0",
-    "llama-stack-client>=0.2.12",
+    "llama-stack-client (>=0.2.14,<0.2.18); python_version>='3.12'",
 ]
 smolagents = [
     "smolagents[mcp,litellm]>=1.0.0",
@@ -200,6 +199,8 @@ module = [
     "tesserocr.*",
     "rapidocr_onnxruntime.*",
     "requests.*",
+    "transformers.*",
+    "llama_stack_client.*",  # needed since this will be there only on python>=3.12
 ]
 ignore_missing_imports = true
 

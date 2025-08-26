@@ -1,3 +1,5 @@
+"""Test the Docling MCP server generation tools."""
+
 import re
 
 import pytest
