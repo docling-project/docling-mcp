@@ -19,6 +19,7 @@ class ToolGroups(str, enum.Enum):
     MANIPULATION = "manipulation"
     LLAMA_INDEX_RAG = "llama-index-rag"
     LLAMA_STACK_RAG = "llama-stack-rag"
+    LLAMA_STACK_IE = "llama-stack-ie"
 
 
 class TransportType(str, enum.Enum):
@@ -70,6 +71,10 @@ def main(
     if ToolGroups.LLAMA_STACK_RAG in tools:
         logger.info("loading Llama Stack RAG tools...")
         import docling_mcp.tools.llama_stack.rag
+
+    if ToolGroups.LLAMA_STACK_IE in tools:
+        logger.info("loading Llama Stack Structured Output tools...")
+        import docling_mcp.tools.llama_stack.structured_output
 
     # Initialize and run the server
     logger.info("starting up Docling MCP-server ...")
