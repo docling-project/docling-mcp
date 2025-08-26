@@ -89,6 +89,9 @@ def export_docling_document_to_markdown(
         str,
         Field(description="The unique identifier of the document in the local cache."),
     ],
+    max_size: Annotated[
+        int | None, Field(description="The maximum number of characters to return.")
+    ] = None,
 ) -> ExportDocumentMarkdownOutput:
     """Export a document from the local document cache to markdown format.
 
@@ -102,6 +105,8 @@ def export_docling_document_to_markdown(
         )
 
     markdown = local_document_cache[document_key].export_to_markdown()
+    if max_size:
+        markdown = markdown[:max_size]
 
     return ExportDocumentMarkdownOutput(document_key, markdown)
 

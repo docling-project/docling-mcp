@@ -1,3 +1,22 @@
+## [v1.1.0](https://github.com/docling-project/docling-mcp/releases/tag/v1.1.0) - 2025-08-23
+
+### Feature
+
+* Enable conversion of files in a directory with a single tool ([#59](https://github.com/docling-project/docling-mcp/issues/59)) ([`10d99e9`](https://github.com/docling-project/docling-mcp/commit/10d99e9fbef00e486bce42a02f6b454f81b1b725))
+* Llama stack tool for ingestion ([#57](https://github.com/docling-project/docling-mcp/issues/57)) ([`56b1402`](https://github.com/docling-project/docling-mcp/commit/56b1402e50328f06fbb83394ddcc956bac71102f))
+
+### Fix
+
+* Tool conversion docstring ([#66](https://github.com/docling-project/docling-mcp/issues/66)) ([`02352ed`](https://github.com/docling-project/docling-mcp/commit/02352ed838f4c52333a91818ca83bb75e03141e2))
+* Add max_size truncating the exported markdown ([#64](https://github.com/docling-project/docling-mcp/issues/64)) ([`2998696`](https://github.com/docling-project/docling-mcp/commit/2998696db4ddaa3a9ec7f195aaaad9b1de5a1be3))
+* Generalization of document conversion/upload tool ([#41](https://github.com/docling-project/docling-mcp/issues/41)) ([`60ec172`](https://github.com/docling-project/docling-mcp/commit/60ec172b5a122453cd202ba447915a8e470f191a))
+
+### Documentation
+
+* Structure output with Pydantic AI ([#65](https://github.com/docling-project/docling-mcp/issues/65)) ([`01896e9`](https://github.com/docling-project/docling-mcp/commit/01896e9f01783238c0af60cb038a51892569c44e))
+* Update to Llama Stack version 0.2.18 ([#63](https://github.com/docling-project/docling-mcp/issues/63)) ([`490c40a`](https://github.com/docling-project/docling-mcp/commit/490c40ac97fb2a139a7b24f0c42d0a6eb64eae78))
+* More options for running llama-stack ([#62](https://github.com/docling-project/docling-mcp/issues/62)) ([`593c664`](https://github.com/docling-project/docling-mcp/commit/593c664eb32fd35a1dab40d73988991e22836df1))
+
 ## [v1.0.1](https://github.com/docling-project/docling-mcp/releases/tag/v1.0.1) - 2025-07-30
 
 ### Fix

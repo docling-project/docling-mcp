@@ -1,6 +1,6 @@
 # LLama Stack examples for creating agents using Docling MCP tools
 
-[Llama Stack](https://github.com/meta-llama/llama-stack) is a framework with a unified API layer for agents that supports a rich ecosystem of tools for building AI applications. Together with its [playground UI](https://llama-stack.readthedocs.io/en/latest/playground/), Llama Stack provides the MCP host and client components to interact with the Docling MCP server and LLMs such as Meta Llama or IBM Granite.
+[Llama Stack](https://github.com/llamastack/llama-stack) is a framework with a unified API layer for agents that supports a rich ecosystem of tools for building AI applications. Together with its [playground UI](https://llama-stack.readthedocs.io/en/latest/playground/), Llama Stack provides the MCP host and client components to interact with the Docling MCP server and LLMs such as Meta Llama or IBM Granite.
 
 In this documentation, we show how to run all those components and test the Docling MCP tools in your local machine.
 
@@ -19,6 +19,7 @@ The following applications are required in this example. Refer to their document
 
 As a simple starting point, we will use the [starter distribution](https://llama-stack.readthedocs.io/en/latest/distributions/self_hosted_distro/starter.html) which allows Llama Stack to easily run locally.
 Other distributions (or custom stack builds) will work very similarly. See a complete list in the [Llama Stack docs](https://llama-stack.readthedocs.io/en/latest/distributions/list_of_distributions.html).
+Other options for starting Llama Stack are documented in the [START_LLS](./START_LLS.md) docs.
 
 We will use [Meta Llama 3.2](https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct) as generative AI model. Other options supported by the stack are [IBM Granite 3.3](https://huggingface.co/ibm-granite/granite-3.3-8b-instruct) and [Qwen3](Qwen/Qwen3-32B).
 
@@ -218,5 +219,5 @@ Instruct the agent to generate a `DoclingDocument` from a given topic and add st
 ### Test the agent programmatically
 
 The notebook [Agents & Docling MCP with Llama Stack](./agents_and_docling_mcp.ipynb) presents an example of
-using the [Llama Stack Client Python API library](https://github.com/meta-llama/llama-stack-client-python)
+using the [Llama Stack Client Python API library](https://github.com/llamastack/llama-stack-client-python)
 to create agents leveraging Docling MCP tools.

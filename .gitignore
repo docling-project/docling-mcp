@@ -1,3 +1,4 @@
+env.secrets
 *~
 **.DS_Store
 _cache/**
