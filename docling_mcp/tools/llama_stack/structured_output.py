@@ -100,7 +100,7 @@ def information_extraction(
             },
         ],
         response_format=extraction_schema,
-    )  # type: ignore
+    )  # type: ignore[call-overload, unused-ignore]
 
     response = json.loads(chat_completion.choices[0].message.content)
 
