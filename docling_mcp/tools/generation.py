@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from io import BytesIO
 from typing import Annotated
 
+from mcp.server.fastmcp import Image as MCPImage
 from pydantic import Field
 
 from docling.datamodel.base_models import ConversionStatus, InputFormat
@@ -156,6 +157,54 @@ def save_docling_document(
     local_document_cache[document_key].save_as_json(filename=json_file)
 
     return SaveDocumentOutput(md_file, json_file)
+
+
+@mcp.tool(title="Generate the thumbnail of a page in the Docling document")
+def page_thumbnail(
+    document_key: Annotated[
+        str,
+        Field(description="The unique identifier of the document in the local cache."),
+    ],
+    page_no: Annotated[
+        int, Field(description="The number of the page starting at 1")
+    ] = 1,
+    size: Annotated[
+        int, Field(description="The width of the thumbnail in pixels")
+    ] = 300,
+) -> MCPImage:
+    """Generate a thumbnail image for the requested page.
+
+    This tool takes a document that exists in the local cache and generates a thumnail image for the requested page.
+    """
+    if document_key not in local_document_cache:
+        doc_keys = ", ".join(local_document_cache.keys())
+        raise ValueError(
+            f"document-key: {document_key} is not found. Existing document-keys are: {doc_keys}"
+        )
+
+    doc = local_document_cache[document_key]
+    if page_no not in doc.pages:
+        raise ValueError(
+            f"page_no={page_no}: not found in the document. Available pages are: {', '.join(str(k) for k in doc.pages.keys())}"
+        )
+
+    im_ref = doc.pages[page_no].image
+    if im_ref is None:
+        raise ValueError(
+            "The DoclingDocument does not have page images. Please configure your server for generating page images using DOCLING_MCP_KEEP_IMAGES=true."
+        )
+    im = im_ref.pil_image
+    if im is None:
+        raise RuntimeError("Server error. The image cannot be loaded in PIL.")
+    width = size
+    scale = float(width) / im.size[0]
+    im.thumbnail((width, int(im.size[1] * scale)))
+
+    cache_dir = get_cache_dir()
+    im_file = cache_dir / f"{document_key}-{page_no}.png"
+    im.save(im_file, format="PNG")
+
+    return MCPImage(path=im_file, format="png")
 
 
 @dataclass

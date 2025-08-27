@@ -21,6 +21,7 @@ async def test_list_tools(mcp_client: AsyncGenerator[Any, Any]) -> None:
         "create_new_docling_document",
         "export_docling_document_to_markdown",
         "save_docling_document",
+        "page_thumbnail",
         "add_title_to_docling_document",
         "add_section_heading_to_docling_document",
         "add_paragraph_to_docling_document",

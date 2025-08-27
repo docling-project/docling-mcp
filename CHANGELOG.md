@@ -1,3 +1,14 @@
+## [v1.2.0](https://github.com/docling-project/docling-mcp/releases/tag/v1.2.0) - 2025-08-26
+
+### Feature
+
+* Tool for thumbnails ([#67](https://github.com/docling-project/docling-mcp/issues/67)) ([`72daeef`](https://github.com/docling-project/docling-mcp/commit/72daeef3bcc88a6894aea7728aad5372a2e0e2e2))
+* Structure information extraction ([#68](https://github.com/docling-project/docling-mcp/issues/68)) ([`f20ea2b`](https://github.com/docling-project/docling-mcp/commit/f20ea2b8ec910c824724c68ae40e093f7329a3ba))
+
+### Documentation
+
+* Add Mellea examples ([#61](https://github.com/docling-project/docling-mcp/issues/61)) ([`c5b0803`](https://github.com/docling-project/docling-mcp/commit/c5b08030c21c08602f6e7fcd6a6157d5ed117d94))
+
 ## [v1.1.0](https://github.com/docling-project/docling-mcp/releases/tag/v1.1.0) - 2025-08-23
 
 ### Feature
