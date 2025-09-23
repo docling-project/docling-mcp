@@ -70,7 +70,7 @@
     "url": "https://github.com/docling-project/docling-mcp"
   },
   "compatibility": {
-    "claude_desktop": ">=1.0.0",
+    "claude_desktop": ">=0.13.0",
     "platforms": ["darwin", "win32", "linux"],
     "runtimes": {
       "python": ">=3.10"
