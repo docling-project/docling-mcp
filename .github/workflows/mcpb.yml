@@ -1,0 +1,31 @@
+name: Build and Upload MCPB
+
+on:
+  pull_request:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build MCPB
+        run: |
+          cd mcpb
+          bash pack.sh
+
+      - name: Upload artifact (PR only)
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: docling-mcp.mcpb
+          path: mcpb/docling-mcp.mcpb
+
+      - name: Upload artifact to release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v1
+        with:
+          files: mcpb/docling-mcp.mcpb
