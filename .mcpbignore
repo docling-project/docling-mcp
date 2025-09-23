@@ -3,7 +3,12 @@ env.secrets
 **.DS_Store
 _cache/**
 
-*.mcpb
+.github/
+examples/
+docs/applications/
+
+
+node_modules/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -139,6 +144,7 @@ celerybeat.pid
 .venv
 env/
 venv/
+venv*/
 ENV/
 env.bak/
 venv.bak/
