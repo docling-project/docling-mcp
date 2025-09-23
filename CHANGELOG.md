@@ -1,3 +1,9 @@
+## [v1.3.0](https://github.com/docling-project/docling-mcp/releases/tag/v1.3.0) - 2025-09-23
+
+### Feature
+
+* Manifest file for mcpb ([#72](https://github.com/docling-project/docling-mcp/issues/72)) ([`fd569c1`](https://github.com/docling-project/docling-mcp/commit/fd569c19ebe9b549d01be2ee52df364711f48174))
+
 ## [v1.2.0](https://github.com/docling-project/docling-mcp/releases/tag/v1.2.0) - 2025-08-26
 
 ### Feature
