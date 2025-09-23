@@ -21,7 +21,7 @@
     "type": "python",
     "entry_point": "docling-mcp-server",
     "mcp_config": {
-      "command": "python",
+      "command": "python3",
       "args": [
         "-m",
         "pipx",
