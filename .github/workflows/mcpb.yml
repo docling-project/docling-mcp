@@ -5,9 +5,13 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -24,8 +28,11 @@ jobs:
           name: docling-mcp.mcpb
           path: mcpb/docling-mcp.mcpb
 
-      - name: Upload artifact to release
+      - name: Upload to release (on release)
         if: github.event_name == 'release'
-        uses: softprops/action-gh-release@v1
-        with:
-          files: mcpb/docling-mcp.mcpb
+        run: |
+          gh release upload "${{ github.event.release.tag_name }}" \
+            mcpb/docling-mcp.mcpb \
+            --clobber
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
