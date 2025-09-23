@@ -3,6 +3,9 @@ env.secrets
 **.DS_Store
 _cache/**
 
+*.mcpb
+mcpb/assets/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

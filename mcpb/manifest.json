@@ -1,0 +1,83 @@
+{
+  "manifest_version": "0.2",
+  "name": "docling-mcp",
+  "display_name": "Docling MCP",
+  "version": "1.2.0",
+  "description": "Docling MCP Server - Document processing and analysis capabilities such as creation and manipulation",
+  "author": {
+    "name": "Docling team",
+    "email": "deepsearch-core@zurich.ibm.com"
+  },
+  "homepage": "https://docling.ai",
+  "support": "https://github.com/docling-project/docling-mcp/issues",
+  "icon": "assets/logo.svg",
+  "screenshots": [
+    "assets/screenshot-summary.png",
+    "assets/screenshot-thumbnail.png",
+    "assets/screenshot-creation.png",
+    "assets/screenshot-extraction.png"
+  ],
+  "server": {
+    "type": "python",
+    "entry_point": "docling-mcp-server",
+    "mcp_config": {
+      "command": "python3",
+      "args": [
+        "-m",
+        "pipx",
+        "run",
+        "--spec",
+        "docling-mcp==${user_config.version}",
+        "docling-mcp-server"
+      ],
+      "env": {
+        "PYTHONPATH": "${__dirname}/lib",
+        "DOCLING_MCP_KEEP_IMAGES": "${user_config.keep_images}"
+      }
+    }
+  },
+  "user_config": {
+    "keep_images": {
+      "type": "boolean",
+      "title": "Keep images",
+      "description": "Generate and store pages images while converting the documents.",
+      "default": false,
+      "required": false
+    },
+    "version": {
+      "type": "string",
+      "title": "Version",
+      "description": "Version of the docling-mcp package which is being installed.",
+      "default": "1.2.0",
+      "required": false
+    }
+  },
+  "keywords": [
+    "docling",
+    "document",
+    "pdf",
+    "docx",
+    "pptx",
+    "html",
+    "markdown",
+    "processing",
+    "convert",
+    "creation"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/docling-project/docling-mcp"
+  },
+  "compatibility": {
+    "claude_desktop": ">=0.13.0",
+    "platforms": [
+      "darwin",
+      "win32",
+      "linux"
+    ],
+    "runtimes": {
+      "python": ">=3.10"
+    }
+  }
+}
