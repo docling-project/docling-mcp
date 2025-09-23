@@ -10,21 +10,28 @@
   },
   "homepage": "https://docling.ai",
   "support": "https://github.com/docling-project/docling-mcp/issues",
-  "icon": "docs/assets/logo.svg",
+  "icon": "assets/logo.svg",
   "screenshots": [
-    "docs/assets/screenshot-summary.png",
-    "docs/assets/screenshot-thumbnail.png",
-    "docs/assets/screenshot-creation.png",
-    "docs/assets/screenshot-extraction.png"
+    "assets/screenshot-summary.png",
+    "assets/screenshot-thumbnail.png",
+    "assets/screenshot-creation.png",
+    "assets/screenshot-extraction.png"
   ],
   "server": {
     "type": "python",
     "entry_point": "docling-mcp-server",
     "mcp_config": {
-      "command": "docling-mcp-server",
-      "args": [],
+      "command": "python",
+      "args": [
+        "-m",
+        "pipx",
+        "run",
+        "--spec",
+        "docling-mcp==${user_config.version}",
+        "docling-mcp-server"
+      ],
       "env": {
-        "PYTHONPATH": "${__dirname}/server/lib",
+        "PYTHONPATH": "${__dirname}/lib",
         "DOCLING_MCP_KEEP_IMAGES": "${user_config.keep_images}"
       }
     }
@@ -35,6 +42,13 @@
       "title": "Keep images",
       "description": "Generate and store pages images while converting the documents.",
       "default": false,
+      "required": false
+    },
+    "version": {
+      "type": "string",
+      "title": "Version",
+      "description": "Version of the docling-mcp package which is being installed.",
+      "default": "1.2.0",
       "required": false
     }
   },

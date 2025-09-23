@@ -4,6 +4,7 @@ env.secrets
 _cache/**
 
 *.mcpb
+mcpb/assets/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
