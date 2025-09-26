@@ -65,6 +65,7 @@
     "creation"
   ],
   "license": "MIT",
+  "privacy_policies": ["https://github.com/docling-project/docling-mcp/blob/main/docs/PRIVACY.md"],
   "repository": {
     "type": "git",
     "url": "https://github.com/docling-project/docling-mcp"
