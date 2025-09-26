@@ -6,6 +6,7 @@ from io import BytesIO
 from typing import Annotated
 
 from mcp.server.fastmcp import Image as MCPImage
+from mcp.types import ToolAnnotations
 from pydantic import Field
 
 from docling.datamodel.base_models import ConversionStatus, InputFormat
@@ -43,7 +44,10 @@ class NewDoclingDocumentOutput:
     prompt: Annotated[str, Field(description="The original prompt.")]
 
 
-@mcp.tool(title="Create new Docling document")
+@mcp.tool(
+    title="Create new Docling document",
+    annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False),
+)
 def create_new_docling_document(
     prompt: Annotated[
         str, Field(description="The prompt text to include in the new document.")
@@ -84,7 +88,10 @@ class ExportDocumentMarkdownOutput:
     ]
 
 
-@mcp.tool(title="Export Docling document to markdown format")
+@mcp.tool(
+    title="Export Docling document to markdown format",
+    annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False),
+)
 def export_docling_document_to_markdown(
     document_key: Annotated[
         str,
@@ -130,7 +137,10 @@ class SaveDocumentOutput:
     ]
 
 
-@mcp.tool(title="Save Docling document")
+@mcp.tool(
+    title="Save Docling document",
+    annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False),
+)
 def save_docling_document(
     document_key: Annotated[
         str,
@@ -159,7 +169,10 @@ def save_docling_document(
     return SaveDocumentOutput(md_file, json_file)
 
 
-@mcp.tool(title="Generate the thumbnail of a page in the Docling document")
+@mcp.tool(
+    title="Generate the thumbnail of a page in the Docling document",
+    annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False),
+)
 def page_thumbnail(
     document_key: Annotated[
         str,
@@ -217,7 +230,10 @@ class UpdateDocumentOutput:
     ]
 
 
-@mcp.tool(title="Add or update title to Docling document")
+@mcp.tool(
+    title="Add or update title to Docling document",
+    annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False),
+)
 def add_title_to_docling_document(
     document_key: Annotated[
         str,
@@ -258,7 +274,10 @@ def add_title_to_docling_document(
     return UpdateDocumentOutput(document_key)
 
 
-@mcp.tool(title="Add section heading to Docling document")
+@mcp.tool(
+    title="Add section heading to Docling document",
+    annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False),
+)
 def add_section_heading_to_docling_document(
     document_key: Annotated[
         str,
@@ -307,7 +326,10 @@ def add_section_heading_to_docling_document(
     return UpdateDocumentOutput(document_key)
 
 
-@mcp.tool(title="Add paragraph to Docling document")
+@mcp.tool(
+    title="Add paragraph to Docling document",
+    annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False),
+)
 def add_paragraph_to_docling_document(
     document_key: Annotated[
         str,
@@ -349,7 +371,10 @@ def add_paragraph_to_docling_document(
     return UpdateDocumentOutput(document_key)
 
 
-@mcp.tool(title="Open list in Docling document")
+@mcp.tool(
+    title="Open list in Docling document",
+    annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False),
+)
 def open_list_in_docling_document(
     document_key: Annotated[
         str,
@@ -379,7 +404,10 @@ def open_list_in_docling_document(
     return UpdateDocumentOutput(document_key)
 
 
-@mcp.tool(title="Close list in Docling document")
+@mcp.tool(
+    title="Close list in Docling document",
+    annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False),
+)
 def close_list_in_docling_document(
     document_key: Annotated[
         str,
@@ -416,7 +444,10 @@ class ListItem:
     list_marker_text: Annotated[str, Field(description="The marker of a list item.")]
 
 
-@mcp.tool(title="Add items to list in Docling document")
+@mcp.tool(
+    title="Add items to list in Docling document",
+    annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False),
+)
 def add_list_items_to_list_in_docling_document(
     document_key: Annotated[
         str,
@@ -466,7 +497,10 @@ def add_list_items_to_list_in_docling_document(
     return UpdateDocumentOutput(document_key)
 
 
-@mcp.tool(title="Add HTML table to Docling document")
+@mcp.tool(
+    title="Add HTML table to Docling document",
+    annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False),
+)
 def add_table_in_html_format_to_docling_document(
     document_key: Annotated[
         str,

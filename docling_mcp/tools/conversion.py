@@ -8,7 +8,7 @@ from typing import Annotated
 
 from mcp.server.fastmcp import Context
 from mcp.shared.exceptions import McpError
-from mcp.types import INTERNAL_ERROR, ErrorData
+from mcp.types import INTERNAL_ERROR, ErrorData, ToolAnnotations
 from pydantic import Field
 
 from docling.datamodel.base_models import InputFormat
@@ -52,7 +52,10 @@ class IsDoclingDocumentInCacheOutput:
     ]
 
 
-@mcp.tool(title="Is Docling document in cache")
+@mcp.tool(
+    title="Is Docling document in cache",
+    annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False),
+)
 def is_document_in_local_cache(
     document_key: Annotated[
         str,
@@ -96,7 +99,10 @@ def _get_converter() -> DocumentConverter:
     return DocumentConverter(format_options=format_options)
 
 
-@mcp.tool(title="Convert document into Docling document")
+@mcp.tool(
+    title="Convert document into Docling document",
+    annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False),
+)
 def convert_document_into_docling_document(
     source: Annotated[
         str,
@@ -177,7 +183,9 @@ def convert_document_into_docling_document(
 
 
 @mcp.tool(
-    title="Convert files from directory into Docling document", structured_output=True
+    title="Convert files from directory into Docling document",
+    structured_output=True,
+    annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False),
 )
 async def convert_directory_files_into_docling_document(
     source: Annotated[
