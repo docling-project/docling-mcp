@@ -35,6 +35,12 @@
         "title": "UpdateDocumentOutput",
         "type": "object"
     },
-    "annotations": null,
+    "annotations": {
+        "title": null,
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": null,
+        "openWorldHint": null
+    },
     "meta": null
 }

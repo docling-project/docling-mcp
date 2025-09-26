@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Annotated
 
 from llama_stack_client.types.vector_io_insert_params import Chunk, ChunkChunkMetadata
+from mcp.types import ToolAnnotations
 from pydantic import Field
 from transformers import AutoTokenizer
 
@@ -29,7 +30,10 @@ class InsertDocumentOutput:
     ]
 
 
-@mcp.tool(title="Insert Docling document into a vector database")
+@mcp.tool(
+    title="Insert Docling document into a vector database",
+    annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False),
+)
 def insert_document_to_vectordb(
     document_key: Annotated[
         str,

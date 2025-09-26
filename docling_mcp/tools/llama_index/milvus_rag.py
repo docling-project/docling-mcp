@@ -10,7 +10,7 @@ from llama_index.core.base.response.schema import (
     Response,
 )
 from mcp.shared.exceptions import McpError
-from mcp.types import INTERNAL_ERROR, ErrorData
+from mcp.types import INTERNAL_ERROR, ErrorData, ToolAnnotations
 from pydantic import Field
 
 from docling_core.types.doc.document import DoclingDocument
@@ -29,7 +29,10 @@ from docling_mcp.tools.llama_index._shared import (
 logger = setup_logger()
 
 
-@mcp.tool(title="Export Docling document to vector database")
+@mcp.tool(
+    title="Export Docling document to vector database",
+    annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False),
+)
 def export_docling_document_to_vector_db(
     document_key: Annotated[
         str,
@@ -87,7 +90,10 @@ class SearchDocumentOutput:
     # TODO: future updates could provide the grounding elements metadata
 
 
-@mcp.tool(title="Search query in documents")
+@mcp.tool(
+    title="Search query in documents",
+    annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False),
+)
 def search_documents(
     query: Annotated[
         str,

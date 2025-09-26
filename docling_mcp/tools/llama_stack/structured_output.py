@@ -4,6 +4,7 @@ import json
 from dataclasses import dataclass
 from typing import Annotated
 
+from mcp.types import ToolAnnotations
 from pydantic import Field
 
 from docling_mcp.logger import setup_logger
@@ -26,7 +27,10 @@ class ExtractedContent:
     ]
 
 
-@mcp.tool(title="Information extraction from a document")
+@mcp.tool(
+    title="Information extraction from a document",
+    annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False),
+)
 def information_extraction(
     document_key: Annotated[
         str,

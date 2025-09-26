@@ -4,6 +4,7 @@ import re
 from dataclasses import dataclass
 from typing import Annotated
 
+from mcp.types import ToolAnnotations
 from pydantic import Field
 
 from docling_core.types.doc.document import (
@@ -38,7 +39,10 @@ class DocumentAnchorOutput:
     ]
 
 
-@mcp.tool(title="Get overview of Docling document anchors")
+@mcp.tool(
+    title="Get overview of Docling document anchors",
+    annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False),
+)
 def get_overview_of_document_anchors(
     document_key: Annotated[
         str,
@@ -104,7 +108,10 @@ class TextSearchOutput:
     ]
 
 
-@mcp.tool(title="Search for text in Docling document anchors")
+@mcp.tool(
+    title="Search for text in Docling document anchors",
+    annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False),
+)
 def search_for_text_in_document_anchors(
     document_key: Annotated[
         str,
@@ -197,7 +204,10 @@ class DocumentItemText:
     ]
 
 
-@mcp.tool(title="Get text of Docling document item at anchor")
+@mcp.tool(
+    title="Get text of Docling document item at anchor",
+    annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False),
+)
 def get_text_of_document_item_at_anchor(
     document_key: Annotated[
         str,
@@ -250,7 +260,10 @@ class UpdateDocumentOutput:
     ]
 
 
-@mcp.tool(title="Update text of Docling document item at anchor")
+@mcp.tool(
+    title="Update text of Docling document item at anchor",
+    annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=True),
+)
 def update_text_of_document_item_at_anchor(
     document_key: Annotated[
         str,
@@ -300,7 +313,10 @@ def update_text_of_document_item_at_anchor(
     return UpdateDocumentOutput(document_key=document_key)
 
 
-@mcp.tool(title="Delete Docling document items at anchors")
+@mcp.tool(
+    title="Delete Docling document items at anchors",
+    annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=True),
+)
 def delete_document_items_at_anchors(
     document_key: Annotated[
         str,
