@@ -1,3 +1,10 @@
+## [v1.3.1](https://github.com/docling-project/docling-mcp/releases/tag/v1.3.1) - 2025-09-26
+
+### Fix
+
+* Add tools annotations for readonly and destructive hints ([#76](https://github.com/docling-project/docling-mcp/issues/76)) ([`1723087`](https://github.com/docling-project/docling-mcp/commit/17230878070d15bb8545c882be0cf5640ee631b6))
+* Add privacy policies in mcpb ([#75](https://github.com/docling-project/docling-mcp/issues/75)) ([`119c3b8`](https://github.com/docling-project/docling-mcp/commit/119c3b84e07e5e9fbfa311856af496943d49bc42))
+
 ## [v1.3.0](https://github.com/docling-project/docling-mcp/releases/tag/v1.3.0) - 2025-09-23
 
 ### Feature
