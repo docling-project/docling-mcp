@@ -1,10 +1,10 @@
 model_list:
   - model_name: "granite-3-3-8b-instruct"
     litellm_params:
-      model: "watsonx/ibm-granite/granite-3-3-8b-instruct"
+      model: "watsonx/ibm/granite-3-3-8b-instruct"
   - model_name: "granite-vision-3.2-2b"
     litellm_params:
-      model: "watsonx/ibm-granite/granite-vision-3.2-2b"
+      model: "watsonx/ibm/granite-vision-3-2-2b"
   - model_name: "gpt-oss-120b"
     litellm_params:
       model: "watsonx/openai/gpt-oss-120b"
