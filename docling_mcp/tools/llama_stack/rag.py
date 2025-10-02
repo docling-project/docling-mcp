@@ -81,7 +81,7 @@ def insert_document_to_vectordb(
             "chunk_id": chunk_id,
             "token_count": token_count,
             # "metadata_token_count": 0,
-            "doc_items": [item.self_ref for item in meta.doc_items],
+            "doc_items": ",".join([item.self_ref for item in meta.doc_items]),
         }
         chunk_metadata: ChunkChunkMetadata = {
             "document_id": doc_id,
