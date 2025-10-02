@@ -1,3 +1,9 @@
+## [v1.3.2](https://github.com/docling-project/docling-mcp/releases/tag/v1.3.2) - 2025-10-02
+
+### Fix
+
+* Remove complex metadata for openai responses api support ([#77](https://github.com/docling-project/docling-mcp/issues/77)) ([`46f6e23`](https://github.com/docling-project/docling-mcp/commit/46f6e2301a115d62ef08eaf6e7ab6b073eecf1d8))
+
 ## [v1.3.1](https://github.com/docling-project/docling-mcp/releases/tag/v1.3.1) - 2025-09-26
 
 ### Fix
