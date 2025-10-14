@@ -18,7 +18,7 @@ def main():
 
     # Save the document
     os.makedirs("./scratch", exist_ok=True)
-    fname = datetime.now().strftime("%Y%m%d_%H%M%S")
+    fname = datetime.now().strftime("%Y_%m_%d_%H:%M:%S")
 
     document.save_as_markdown(filename=f"./scratch/{fname}.md", text_width=72)
     document.save_as_html(filename=f"./scratch/{fname}.html")

@@ -42,6 +42,7 @@ classifiers = [
 ]
 requires-python = ">=3.10"
 dependencies = [
+    "docling-core @ git+https://github.com/docling-project/docling-core.git@refs/pull/389/head",	
     "docling~=2.25",
     "httpx>=0.28.1",
     "mcp[cli]>=1.9.4",
@@ -50,6 +51,9 @@ dependencies = [
     "pydantic-settings~=2.4",
     "python-dotenv>=1.1.0",
 ]
+
+[tool.hatch.metadata]
+allow-direct-references = true
 
 [project.optional-dependencies]
 llama-index-rag = [

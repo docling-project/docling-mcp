@@ -32,10 +32,12 @@ from docling_core.types.doc.document import (
     ListItem,
     SectionHeaderItem,
     TableItem,
+    TableData,
     TextItem,
     TitleItem,
     RefItem,
     PictureItem,
+    ListGroup,
 )
 from docling_core.types.io import DocumentStream
 
@@ -139,7 +141,7 @@ def create_document_outline(doc: DoclingDocument) -> str:
     return outline
 
 
-def find_outline(text: str) -> DoclingDocument | None:
+def find_outline_v1(text: str) -> DoclingDocument | None:
     starts = ["paragraph", "list", "table", "figure", "picture"]
 
     md = find_markdown_code_block(text)
@@ -175,9 +177,72 @@ def find_outline(text: str) -> DoclingDocument | None:
         return None
 
 
+def find_outline_v2(text: str) -> DoclingDocument | None:
+    starts = ["paragraph", "list", "table", "figure", "picture"]
+
+    md = find_markdown_code_block(text)
+
+    if md:
+        converter = DocumentConverter(allowed_formats=[InputFormat.MD])
+
+        buff = BytesIO(md.encode("utf-8"))
+        doc_stream = DocumentStream(name="tmp.md", stream=buff)
+
+        conv: ConversionResult = converter.convert(doc_stream)
+
+        # outline = copy.deepcopy(conv.document)
+
+        lines = []
+        for item, level in conv.document.iterate_items(with_groups=True):
+            if isinstance(item, TitleItem) or isinstance(item, SectionHeaderItem):
+                continue
+            elif isinstance(item, TextItem):
+                pattern = rf"^({'|'.join(starts)}):\s(.*)\.$"
+                match = re.match(pattern, item.text, re.DOTALL)
+
+                if match:
+                    label = match[1]
+                    summary = match[2]
+
+                    if label == "paragraph":
+                        item.summary = summary
+                    elif label == "table":
+                        data = TableData(table_cells=[], num_rows=0, num_cols=0)
+                        new_item = conv.document.add_table(
+                            label=DocItemLabel.TABLE, data=data
+                        )
+                        new_item.summary = summary
+                        conv.document.replace_item(old_item=item, new_item=new_item)
+                    elif label in ["figure", "picture"]:
+                        new_item = conv.document.add_picture()
+                        new_item.summary = summary
+                        conv.document.replace_item(old_item=item, new_item=new_item)
+                    elif label in ["list"]:
+                        new_item = conv.document.add_group()
+                        new_item.summary = summary
+                        conv.document.replace_item(old_item=item, new_item=new_item)
+
+                    else:
+                        print(f"NOT SUPPORTED: {label}")
+                else:
+                    lines.append(item.text)
+            else:
+                continue
+
+        if len(lines) > 0:
+            message = f"Every content line should start with one out of the following choices: {starts}. The following lines need to be updated: {'\n'.join(lines)}"
+            logger.error(message)
+
+            return None
+        else:
+            return conv.document
+    else:
+        return None
+
+
 def validate_outline_format(text: str) -> bool:
     logger.info(f"testing validate_outline_format for {text[0:64]}")
-    return find_outline(text) is not None
+    return find_outline_v2(text) is not None
 
 
 def serialize_item_to_markdown(item: TextItem, doc: DoclingDocument) -> str:
