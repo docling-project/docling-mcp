@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 2
 requires-python = ">=3.10"
 resolution-markers = [
     "python_full_version >= '3.12' and sys_platform == 'darwin'",
@@ -733,8 +733,8 @@ wheels = [
 
 [[package]]
 name = "docling-core"
-version = "2.45.0"
-source = { registry = "https://pypi.org/simple" }
+version = "2.48.2"
+source = { git = "https://github.com/docling-project/docling-core.git?rev=refs%2Fpull%2F389%2Fhead#0c21580c109ded1dafa7df0334fa115b9cb58cde" }
 dependencies = [
     { name = "jsonref" },
     { name = "jsonschema" },
@@ -746,10 +746,6 @@ dependencies = [
     { name = "tabulate" },
     { name = "typer" },
     { name = "typing-extensions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/57/e8/957a263fa00e8e0185589e36812f904618a597d77656187202f4b6bc78f1/docling_core-2.45.0.tar.gz", hash = "sha256:21ae79263f234ec5ed660b0b508019480adf16ddfa81cea60cd3a9f986f9abf1", size = 159058, upload-time = "2025-08-20T12:36:50.649Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/cf/69/ea4ffb14ea5cd43c243be20a03b7b1f12a99f11ac3108f62ef45edf74c18/docling_core-2.45.0-py3-none-any.whl", hash = "sha256:043b2eb75ef48208fe43139aeee828b3d48941ed7083ed714851eee9f6f5c4f3", size = 163251, upload-time = "2025-08-20T12:36:48.858Z" },
 ]
 
 [package.optional-dependencies]
@@ -790,6 +786,7 @@ version = "1.3.2"
 source = { editable = "." }
 dependencies = [
     { name = "docling" },
+    { name = "docling-core" },
     { name = "httpx" },
     { name = "mcp", extra = ["cli"] },
     { name = "mellea" },
@@ -845,6 +842,7 @@ examples = [
 requires-dist = [
     { name = "accelerate", marker = "extra == 'smolagents'", specifier = ">=0.20.0" },
     { name = "docling", specifier = "~=2.25" },
+    { name = "docling-core", git = "https://github.com/docling-project/docling-core.git?rev=refs%2Fpull%2F389%2Fhead" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "llama-index", marker = "extra == 'llama-index-rag'", specifier = ">=0.12.33" },
     { name = "llama-index-core", marker = "extra == 'llama-index-rag'", specifier = ">=0.12.28" },

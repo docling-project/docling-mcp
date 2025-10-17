@@ -77,7 +77,8 @@ from examples.mellea.agent.base_functions import (
     validate_markdown_to_docling_document,
     insert_document,
     create_document_outline,
-    find_outline,
+    find_outline_v1,
+    find_outline_v2,
     validate_outline_format,
     validate_html_to_docling_document,
     convert_html_to_docling_document,
@@ -173,7 +174,9 @@ class DoclingWritingAgent(BaseDoclingAgent):
             strategy=RejectionSamplingStrategy(loop_budget=loop_budget),
         )
 
-        outline = find_outline(text=answer.value)
+        outline = find_outline_v2(text=answer.value)
+
+        exit(-1)
 
         return outline
 
