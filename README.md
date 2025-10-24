@@ -16,7 +16,7 @@
 [![PyPI Downloads](https://static.pepy.tech/badge/docling-mcp/month)](https://pepy.tech/projects/docling-mcp)
 [![LF AI & Data](https://img.shields.io/badge/LF%20AI%20%26%20Data-003778?logo=linuxfoundation&logoColor=fff&color=0094ff&labelColor=003778)](https://lfaidata.foundation/projects/)
 
-A document processing service using the Docling-MCP library and MCP (Message Control Protocol) for tool integration.
+A document processing service using the Docling-MCP library and MCP (Model Context Protocol) for tool integration.
 
 
 ## Overview
