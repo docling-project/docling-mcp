@@ -35,6 +35,7 @@
         "title": "UpdateDocumentOutput",
         "type": "object"
     },
+    "icons": null,
     "annotations": {
         "title": null,
         "readOnlyHint": false,
