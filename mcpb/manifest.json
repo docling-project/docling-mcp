@@ -10,7 +10,7 @@
   },
   "homepage": "https://docling.ai",
   "support": "https://github.com/docling-project/docling-mcp/issues",
-  "icon": "assets/logo.svg",
+  "icon": "assets/logo.png",
   "screenshots": [
     "assets/screenshot-summary.png",
     "assets/screenshot-thumbnail.png",
