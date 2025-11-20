@@ -45,7 +45,6 @@ dependencies = [
     "docling~=2.25",
     "httpx>=0.28.1",
     "mcp[cli]>=1.9.4",
-    "mellea",
     "pydantic~=2.10",
     "pydantic-settings~=2.4",
     "python-dotenv>=1.1.0",
@@ -105,9 +104,6 @@ Changelog = "https://github.com/docling-project/docling-mcp/blob/main/CHANGELOG.
 
 [tool.uv]
 default-groups = ["dev", "examples"]
-
-[tool.uv.sources]
-mellea = { git = "https://github.com/generative-computing/mellea.git" }
 
 [tool.hatch.build.targets.sdist]
 include = ["docling_mcp"]
