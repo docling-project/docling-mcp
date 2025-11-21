@@ -1,3 +1,13 @@
+## [v1.3.3](https://github.com/docling-project/docling-mcp/releases/tag/v1.3.3) - 2025-11-21
+
+### Fix
+
+* Review required deps and update lock ([#83](https://github.com/docling-project/docling-mcp/issues/83)) ([`1d39b3a`](https://github.com/docling-project/docling-mcp/commit/1d39b3a3a8a9bf3c6e62fa419a031b7b77fbd24e))
+
+### Documentation
+
+* Update wrong abbreviation ([#81](https://github.com/docling-project/docling-mcp/issues/81)) ([`8547003`](https://github.com/docling-project/docling-mcp/commit/85470030eeafdf8e76ce57e0479e9f8752ba4349))
+
 ## [v1.3.2](https://github.com/docling-project/docling-mcp/releases/tag/v1.3.2) - 2025-10-02
 
 ### Fix
