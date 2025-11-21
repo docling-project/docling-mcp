@@ -8,7 +8,7 @@ from mcp.types import ToolAnnotations
 from pydantic import Field
 from transformers import AutoTokenizer
 
-from docling_core.transforms.chunker.hierarchical_chunker import DocMeta
+from docling_core.transforms.chunker.doc_chunk import DocMeta
 from docling_core.transforms.chunker.hybrid_chunker import HybridChunker
 from docling_core.transforms.chunker.tokenizer.huggingface import HuggingFaceTokenizer
 
