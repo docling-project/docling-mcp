@@ -28,7 +28,9 @@ def setup_local_session(
     )
 
     # Add the system prompt and the goal to the chat history.
-    m.ctx = m.ctx.add(mellea.stdlib.components.chat.Message(role="system", content=system_prompt))
+    m.ctx = m.ctx.add(
+        mellea.stdlib.components.chat.Message(role="system", content=system_prompt)
+    )
 
     return m
 
