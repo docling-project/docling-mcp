@@ -14,7 +14,7 @@ from smolagents.models import ChatMessage, MessageRole, Model
 
 from mellea.backends import model_ids
 from mellea.backends.model_ids import ModelIdentifier
-from mellea.stdlib.requirement import Requirement, simple_validate
+from mellea.stdlib.requirements import Requirement, simple_validate
 from mellea.stdlib.sampling import RejectionSamplingStrategy
 
 from docling.datamodel.base_models import ConversionStatus, InputFormat
