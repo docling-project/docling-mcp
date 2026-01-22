@@ -1,3 +1,9 @@
+## [v1.3.4](https://github.com/docling-project/docling-mcp/releases/tag/v1.3.4) - 2026-01-22
+
+### Fix
+
+* Update mellea due to API changes and lock the version ([#87](https://github.com/docling-project/docling-mcp/issues/87)) ([`10c6b20`](https://github.com/docling-project/docling-mcp/commit/10c6b20fe602176225e6b522354530e4b99d5a58))
+
 ## [v1.3.3](https://github.com/docling-project/docling-mcp/releases/tag/v1.3.3) - 2025-11-21
 
 ### Fix
