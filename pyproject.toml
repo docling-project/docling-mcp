@@ -74,7 +74,7 @@ smolagents = [
     "ollama>=0.1.0",
 ]
 mellea = [
-    "mellea>=0.0.2",
+    "mellea~=0.3",
 ]
 
 [dependency-groups]

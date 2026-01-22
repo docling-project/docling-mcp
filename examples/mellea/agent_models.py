@@ -2,17 +2,16 @@ import mellea
 
 from mellea.backends import model_ids
 from mellea.backends.ollama import OllamaModelBackend
-from mellea.backends.types import ModelOption
+from mellea.backends import ModelOption
 
 from mellea import MelleaSession
 
 import mellea.backends
-import mellea.backends.types
 import mellea.stdlib
-import mellea.stdlib.base
-import mellea.stdlib.chat
+import mellea.stdlib.context
+import mellea.stdlib.components.chat
 from mellea.backends.model_ids import ModelIdentifier
-from mellea.stdlib.requirement import Requirement, simple_validate
+from mellea.stdlib.requirements import Requirement, simple_validate
 from mellea.stdlib.sampling import RejectionSamplingStrategy
 
 import re
@@ -24,12 +23,14 @@ def setup_local_session(
     system_prompt: str = "You are a helpful assistant.",
 ) -> MelleaSession:
     m = MelleaSession(
-        ctx=mellea.stdlib.base.LinearContext(),
+        ctx=mellea.stdlib.context.SimpleContext(),
         backend=OllamaModelBackend(model_id=model_id),
     )
 
     # Add the system prompt and the goal to the chat history.
-    m.ctx.insert(mellea.stdlib.chat.Message(role="system", content=system_prompt))
+    m.ctx = m.ctx.add(
+        mellea.stdlib.components.chat.Message(role="system", content=system_prompt)
+    )
 
     return m
 
@@ -55,14 +56,14 @@ def matches_html_code_block(text: str) -> bool:
 def main():
     """
     m = MelleaSession(
-        ctx=mellea.stdlib.base.LinearContext(),
+        ctx=mellea.stdlib.context.LinearContext(),
         backend=OllamaModelBackend(
             model_id=model_ids.OPENAI_GPT_OSS_20B #, model_options={ModelOption.SEED: 42}
         )
     )
 
     # Add the system prompt and the goal to the chat history.
-    m.ctx.insert(mellea.stdlib.chat.Message(role="system", content="You are an expert material-scientist."))
+    m.ctx.insert(mellea.stdlib.components.chat.Message(role="system", content="You are an expert material-scientist."))
     """
 
     m = setup_local_session(system_prompt="You are an expert material-scientist.")
@@ -82,7 +83,7 @@ def main():
     # print(answer)
 
     try:
-        for i, _ in enumerate(m.ctx.linearize()):
+        for i, _ in enumerate(m.ctx.view_for_generation()):
             print(i, ": ", _)
     except:
         print("fail ...")
