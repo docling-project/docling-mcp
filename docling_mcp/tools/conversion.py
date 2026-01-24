@@ -89,6 +89,7 @@ def _get_converter() -> DocumentConverter:
     pipeline_options = PdfPipelineOptions()
     # pipeline_options.do_ocr = False  # Skip OCR for faster processing (enable for scanned docs)
     pipeline_options.generate_page_images = settings.keep_images
+    pipeline_options.images_scale = settings.images_scale
 
     format_options: dict[InputFormat, FormatOption] = {
         InputFormat.PDF: PdfFormatOption(pipeline_options=pipeline_options),

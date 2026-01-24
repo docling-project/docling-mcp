@@ -35,6 +35,42 @@ Docling MCP is a service that provides tools for document conversion, processing
 - Logging system for debugging and monitoring
 - RAG applications with Milvus upload and retrieval
 
+## Configuration
+
+Docling MCP can be configured using environment variables. The following options are available:
+
+- **`DOCLING_MCP_KEEP_IMAGES`**: Set to `true` to keep page images in the converted documents (default: `false`)
+- **`DOCLING_MCP_IMAGES_SCALE`**: Scale factor for image processing to avoid tensor padding errors (default: `1.0`). Lower values (e.g., `1.0`, `2.0`) can help prevent batching issues when processing images or PDFs.
+
+To set these variables, you can:
+1. Create a `.env` file in your working directory
+2. Set them as environment variables in your system
+3. Pass them in the MCP client configuration (see examples below)
+
+Example `.env` file:
+```
+DOCLING_MCP_KEEP_IMAGES=true
+DOCLING_MCP_IMAGES_SCALE=2.0
+```
+
+Example MCP client configuration with environment variables:
+```json
+{
+  "mcpServers": {
+    "docling": {
+      "command": "uvx",
+      "args": [
+        "--from=docling-mcp",
+        "docling-mcp-server"
+      ],
+      "env": {
+        "DOCLING_MCP_IMAGES_SCALE": "2.0"
+      }
+    }
+  }
+}
+```
+
 ## Getting started
 
 The easiest way to install Docling MCP is connect it to your client is launching it via [uvx](https://docs.astral.sh/uv/).
