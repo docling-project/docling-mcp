@@ -40,7 +40,7 @@ Docling MCP is a service that provides tools for document conversion, processing
 Docling MCP can be configured using environment variables. The following options are available:
 
 - **`DOCLING_MCP_KEEP_IMAGES`**: Set to `true` to keep page images in the converted documents (default: `false`)
-- **`DOCLING_MCP_IMAGES_SCALE`**: Scale factor for image processing to avoid tensor padding errors (default: `1.0`). Lower values (e.g., `1.0`, `2.0`) can help prevent batching issues when processing images or PDFs.
+- **`DOCLING_MCP_IMAGES_SCALE`**: Scale factor for image processing to avoid tensor padding errors (default: `1.0`). Adjusting this value (e.g., `1.0`, `2.0`) can help prevent batching issues when processing images or PDFs.
 
 To set these variables, you can:
 1. Create a `.env` file in your working directory
