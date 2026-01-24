@@ -13,7 +13,7 @@ class ConversionSettings(BaseSettings):
     )
 
     keep_images: bool = False
-    # Add local-specific settings
+    images_scale: float = 1.0
     do_ocr: bool = True
     do_table_structure: bool = True
 
