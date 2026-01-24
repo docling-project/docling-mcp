@@ -12,6 +12,7 @@ class Settings(BaseSettings):
         # extra="allow",
     )
     keep_images: bool = False
+    images_scale: float = 1.0
 
 
 settings = Settings()
