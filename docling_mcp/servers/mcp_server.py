@@ -80,6 +80,15 @@ def main(
     logger.info("starting up Docling MCP-server ...")
     mcp.settings.host = host
     mcp.settings.port = port
+    
+    # Configure trusted hosts to support both hostname and IP address connections
+    # This fixes issue #89: 421 error when accessing via IP instead of localhost
+    # When host is "0.0.0.0", we need to allow any valid connection
+    if host == "0.0.0.0":
+        mcp.settings.uvicorn_kwargs = {
+            "trusted_hosts": ["*"],
+        }
+    
     mcp.run(transport=transport.value)
 
 
