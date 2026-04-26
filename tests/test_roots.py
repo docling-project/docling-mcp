@@ -62,7 +62,7 @@ def test_to_filesystem_path_plain() -> None:
 def test_to_filesystem_path_file_url() -> None:
     p = to_filesystem_path("file:///tmp/foo.pdf")
     assert p.is_absolute()
-    assert str(p) == "/tmp/foo.pdf"
+    assert p == Path("/tmp/foo.pdf").resolve()
 
 
 def test_to_filesystem_path_rejects_remote() -> None:
