@@ -26,7 +26,7 @@ from docling_core.types.doc.labels import (
 from docling_mcp.docling_cache import get_cache_key
 from docling_mcp.logger import setup_logger
 from docling_mcp.settings.conversion import settings
-from docling_mcp.shared import local_document_cache, local_stack_cache, mcp
+from docling_mcp.shared import allowed_roots, local_document_cache, local_stack_cache, mcp
 
 # Create a default project logger
 logger = setup_logger()
@@ -121,6 +121,14 @@ def convert_document_into_docling_document(
         # Remove any quotes from the source string
         source = source.strip("\"'")
 
+        # Authorize the source against MCP Roots / --allowed-directories.
+        # Remote URLs and unconstrained registries pass through untouched;
+        # local paths outside any allowed root raise PermissionError.
+        try:
+            allowed_roots.validate_source(source)
+        except PermissionError as e:
+            raise McpError(ErrorData(code=INTERNAL_ERROR, message=str(e))) from e
+
         # Log the cleaned source
         logger.info(f"Processing document from source: {source}")
 
@@ -206,6 +214,13 @@ async def convert_directory_files_into_docling_document(
     try:
         # Remove any quotes from the source string
         source = source.strip("\"'")
+
+        # Authorize the directory against MCP Roots / --allowed-directories.
+        try:
+            allowed_roots.validate_source(source)
+        except PermissionError as e:
+            raise McpError(ErrorData(code=INTERNAL_ERROR, message=str(e))) from e
+
         directory = Path(source)
         files: list[Path] = list(directory.iterdir())
         out: list[ConvertDocumentOutput] = []
