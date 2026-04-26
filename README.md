@@ -91,6 +91,48 @@ In **[LM Studio](https://lmstudio.ai/)**, edit the `mcp.json` file with the appr
 
 Other integrations are described in [./docs/integrations/](./docs/integrations/).
 
+## Filesystem access (MCP Roots)
+
+Docling MCP supports the [MCP **Roots** protocol](https://modelcontextprotocol.io/specification/draft/client/roots),
+which lets the client tell the server which directories on the host
+filesystem the user has authorized it to read from. The reference for the
+behavior is the
+[`modelcontextprotocol/servers` filesystem server](https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem):
+
+> MCP clients that support Roots can dynamically update the Allowed
+> directories. Roots notified by Client to Server, completely replace any
+> server-side Allowed directories when provided.
+
+In practice this means:
+
+- **Claude Desktop / Claude Code** users get filesystem access scoped
+  exactly to the folders they have authorized in the client. When the user
+  changes that authorization, the server's allowed-paths set is refreshed
+  automatically via `notifications/roots/list_changed`.
+- **Clients without Roots support** can still constrain the server with the
+  `--allowed-directories` CLI flag (see below). When the client never sends
+  roots, this static list governs.
+- **No flag and no client roots** preserves the legacy unconstrained
+  behavior — every path the server can resolve is allowed. Set at least one
+  of the two if you care about path containment.
+
+The conversion tools (`convert_document_into_docling_document` and
+`convert_directory_files_into_docling_document`) check the source path
+against the active root set before reading from disk. Remote URLs
+(`http://`, `https://`, `ftp://`, `s3://`, etc.) pass through unchecked —
+roots authorize filesystem access, not network access.
+
+### Static fallback
+
+```sh
+uvx --from docling-mcp docling-mcp-server \
+    --transport stdio \
+    --allowed-directories /Users/me/Documents /Users/me/Downloads
+```
+
+The server will only resolve paths under those two directories until/unless
+a Roots-capable client overrides them.
+
 ## Examples
 
 ### Converting documents
