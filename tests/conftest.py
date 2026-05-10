@@ -1,5 +1,6 @@
 """Define configuration options across tests."""
 
+import os
 from collections.abc import AsyncGenerator
 from contextlib import AsyncExitStack
 from typing import Any
@@ -24,8 +25,13 @@ class MCPClient:
         if not server_script_path.endswith(".py"):
             raise ValueError("Server script must be a .py file")
 
+        # Set up test environment to use local conversion mode
+        # This ensures tests work without requiring Docling Serve access
+        test_env = os.environ.copy()
+        test_env["DOCLING_CONVERSION_MODE"] = "local"
+
         server_params = StdioServerParameters(
-            command="python", args=[server_script_path], env=None
+            command="python", args=[server_script_path], env=test_env
         )
 
         stdio_transport = await self.exit_stack.enter_async_context(

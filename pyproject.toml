@@ -42,7 +42,7 @@ classifiers = [
 ]
 requires-python = ">=3.10"
 dependencies = [
-    "docling~=2.25",
+    "docling-slim[service-client]~=2.92",
     "docling-core>=2.51.0",
     "httpx>=0.28.1",
     "mcp[cli]>=1.9.4",
@@ -52,6 +52,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+local = [
+    "docling-slim[standard]~=2.92",
+]
 llama-index-rag = [
     "llama-index>=0.12.33",
     "llama-index-core>=0.12.28",
