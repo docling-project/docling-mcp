@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 2
 requires-python = ">=3.10"
 resolution-markers = [
     "python_full_version >= '3.12'",
@@ -33,6 +33,29 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/ca/14/787e5498cd062640f0f3d92ef4ae4063174f76f9afd29d13fc52a319daae/accelerate-1.13.0.tar.gz", hash = "sha256:d631b4e0f5b3de4aff2d7e9e6857d164810dfc3237d54d017f075122d057b236", size = 402835, upload-time = "2026-03-04T19:34:12.359Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/7e/46/02ac5e262d4af18054b3e922b2baedbb2a03289ee792162de60a865defc5/accelerate-1.13.0-py3-none-any.whl", hash = "sha256:cf1a3efb96c18f7b152eb0fa7490f3710b19c3f395699358f08decca2b8b62e0", size = 383744, upload-time = "2026-03-04T19:34:10.313Z" },
+]
+
+[[package]]
+name = "agno"
+version = "2.0.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "docstring-parser" },
+    { name = "gitpython" },
+    { name = "httpx" },
+    { name = "packaging" },
+    { name = "pydantic" },
+    { name = "pydantic-settings" },
+    { name = "python-dotenv" },
+    { name = "python-multipart" },
+    { name = "pyyaml" },
+    { name = "rich" },
+    { name = "typer" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/cf/38/82263452a74c6176c2a37d1a6ac7c3ccff3526ebd128df76632a70d6817b/agno-2.0.3.tar.gz", hash = "sha256:d669da6647fb1e57fb05438504093847d7e2b747b48446d5fd90996f48795c29", size = 845490, upload-time = "2025-09-10T21:03:01.771Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/43/9a/145d8ea9e6df799ef21b59aba44de9e6ff161444a5793eb3d8615110cccb/agno-2.0.3-py3-none-any.whl", hash = "sha256:d47d67b0816f01d71c4dbc91b620aa68552319fb16cc27d1bc1c1bf84a058ac8", size = 1066823, upload-time = "2025-09-10T21:02:59.515Z" },
 ]
 
 [[package]]
@@ -1089,6 +1112,9 @@ dependencies = [
 ]
 
 [package.optional-dependencies]
+agno = [
+    { name = "agno" },
+]
 llama-index-rag = [
     { name = "llama-index" },
     { name = "llama-index-core" },
@@ -1135,6 +1161,7 @@ examples = [
 [package.metadata]
 requires-dist = [
     { name = "accelerate", marker = "extra == 'smolagents'", specifier = ">=0.20.0" },
+    { name = "agno", marker = "extra == 'agno'" },
     { name = "docling", specifier = "~=2.25" },
     { name = "docling-core", specifier = ">=2.51.0" },
     { name = "httpx", specifier = ">=0.28.1" },
@@ -1158,7 +1185,7 @@ requires-dist = [
     { name = "torch", marker = "extra == 'smolagents'", specifier = ">=2.0.0" },
     { name = "transformers", marker = "extra == 'smolagents'", specifier = ">=4.30.0" },
 ]
-provides-extras = ["llama-index-rag", "llama-stack", "smolagents", "mellea"]
+provides-extras = ["llama-index-rag", "llama-stack", "smolagents", "mellea", "agno"]
 
 [package.metadata.requires-dev]
 dev = [
@@ -1210,6 +1237,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/83/b3/1bbbc0dcf705c2cff54ab571dd1c9b99195915c37aaea7b18f2e8b875790/docling_parse-5.9.0-cp314-cp314-manylinux_2_26_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:6d99e3441501b81adc65dcee8fb4155d6b943b528301fd25e3c1bf8d99805744", size = 9296695, upload-time = "2026-04-15T14:53:32.112Z" },
     { url = "https://files.pythonhosted.org/packages/38/bf/4593e9d47313cc5e1c2a588ba2f88d4665d13455156b6f20cef0827de498/docling_parse-5.9.0-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:c144a501e646441112469a7c7e7d7daba6d02e94b06b296dd31c57a8a6ac09e2", size = 9633818, upload-time = "2026-04-15T14:53:34.781Z" },
     { url = "https://files.pythonhosted.org/packages/86/10/99d039d0c297dcae9b2ea5583cb9ef15a4b6464e52213e822b9631685bb9/docling_parse-5.9.0-cp314-cp314-win_amd64.whl", hash = "sha256:71663ffa62578127cc8372cbcda87405194ed19510cc2fe32e54524f46fd935c", size = 10782901, upload-time = "2026-04-15T14:53:37.505Z" },
+]
+
+[[package]]
+name = "docstring-parser"
+version = "0.17.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/b2/9d/c3b43da9515bd270df0f80548d9944e389870713cc1fe2b8fb35fe2bcefd/docstring_parser-0.17.0.tar.gz", hash = "sha256:583de4a309722b3315439bb31d64ba3eebada841f2e2cee23b99df001434c912", size = 27442, upload-time = "2025-07-21T07:35:01.868Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/55/e2/2537ebcff11c1ee1ff17d8d0b6f4db75873e3b0fb32c2d4a2ee31ecb310a/docstring_parser-0.17.0-py3-none-any.whl", hash = "sha256:cf2569abd23dce8099b300f9b4fa8191e9582dda731fd533daf54c4551658708", size = 36896, upload-time = "2025-07-21T07:35:00.684Z" },
 ]
 
 [[package]]

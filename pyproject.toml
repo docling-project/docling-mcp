@@ -76,6 +76,9 @@ smolagents = [
 mellea = [
     "mellea~=0.3",
 ]
+agno = [
+    "agno"
+]
 
 [dependency-groups]
 dev = [
