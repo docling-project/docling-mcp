@@ -2,7 +2,7 @@
   "manifest_version": "0.2",
   "name": "docling-mcp",
   "display_name": "Docling MCP",
-  "version": "1.2.0",
+  "version": "1.3.4",
   "description": "Docling MCP Server - Document processing and analysis with remote API and local conversion support",
   "author": {
     "name": "Docling team",
@@ -48,57 +48,43 @@
       "type": "string",
       "title": "Version",
       "description": "Version of the docling-mcp package to install.",
-      "default": "1.2.0",
+      "default": "1.3.4",
       "required": false
     },
     "install_extras": {
       "type": "string",
       "title": "Installation Extras",
-      "description": "Optional extras to install. Use '[local]' for local conversion support, or leave empty for remote-only (lightweight).",
+      "description": "Optional extras to install. Options: '' (remote-only, lightweight), '[local]' (local conversion), '[local,llama-index-rag]', '[local,llama-stack]'",
       "default": "",
-      "required": false,
-      "enum": ["", "[local]", "[local,llama-index-rag]", "[local,llama-stack]"],
-      "enumLabels": [
-        "Remote API only (lightweight)",
-        "Local conversion support",
-        "Local + LlamaIndex RAG",
-        "Local + Llama Stack"
-      ]
+      "required": false
     },
     "conversion_mode": {
       "type": "string",
       "title": "Conversion Mode",
-      "description": "Choose between remote API or local conversion. Remote mode requires service_url to be set. Local mode requires [local] extra to be installed.",
+      "description": "Choose 'remote' (requires service_url) or 'local' (requires [local] extra). Default: remote",
       "default": "remote",
-      "required": true,
-      "enum": ["remote", "local"],
-      "enumLabels": ["Remote API (recommended)", "Local Conversion"]
+      "required": true
     },
     "service_url": {
       "type": "string",
       "title": "Docling Service URL",
       "description": "URL of the Docling Serve API endpoint (required for remote mode). Example: https://your-docling-service.example.com",
       "default": "",
-      "required": false,
-      "placeholder": "https://your-docling-service.example.com"
+      "required": false
     },
     "service_api_key": {
       "type": "string",
       "title": "Service API Key",
-      "description": "API key for authenticating with Docling Serve (optional, if required by your service).",
+      "description": "API key for authenticating with Docling Serve (optional, if required by your service). Leave empty if not needed.",
       "default": "",
-      "required": false,
-      "secret": true,
-      "placeholder": "your-api-key-here"
+      "required": false
     },
     "service_timeout": {
       "type": "number",
-      "title": "Service Timeout",
-      "description": "Timeout in seconds for remote API requests.",
+      "title": "Service Timeout (seconds)",
+      "description": "Timeout in seconds for remote API requests. Range: 10-3600, Default: 300",
       "default": 300.0,
-      "required": false,
-      "minimum": 10,
-      "maximum": 3600
+      "required": false
     },
     "fallback_to_local": {
       "type": "boolean",
@@ -144,7 +130,9 @@
     "service-client"
   ],
   "license": "MIT",
-  "privacy_policies": ["https://github.com/docling-project/docling-mcp/blob/main/docs/PRIVACY.md"],
+  "privacy_policies": [
+    "https://github.com/docling-project/docling-mcp/blob/main/docs/PRIVACY.md"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/docling-project/docling-mcp"
