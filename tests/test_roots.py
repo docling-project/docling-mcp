@@ -373,3 +373,32 @@ def test_registry_logs_decoded_paths_not_encoded() -> None:
     roots = r.active_roots()
     assert all("%20" not in str(p) for p in roots)
     assert all("Application Support" in str(p) for p in roots)
+
+
+# ---------------------------------------------------------------------------
+# Preload flag — wiring smoke tests
+# ---------------------------------------------------------------------------
+
+
+def test_preload_flag_exists_in_cli() -> None:
+    """`--preload-models` is a registered Typer option on main()."""
+    from typer.testing import CliRunner
+
+    from docling_mcp.servers import mcp_server
+
+    runner = CliRunner()
+    result = runner.invoke(mcp_server.app, ["--help"])
+    assert result.exit_code == 0
+    assert "--preload-models" in result.output
+    assert "cold-start" in result.output.lower()
+
+
+def test_preload_flag_defaults_false() -> None:
+    """Default behavior is lazy initialization (no preload). Backward compat."""
+    import inspect
+
+    from docling_mcp.servers.mcp_server import main
+
+    sig = inspect.signature(main)
+    assert "preload_models" in sig.parameters
+    assert sig.parameters["preload_models"].default is False

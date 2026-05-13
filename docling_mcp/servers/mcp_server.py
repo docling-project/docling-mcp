@@ -56,6 +56,21 @@ def main(
             ),
         ),
     ] = None,
+    preload_models: Annotated[
+        bool,
+        typer.Option(
+            "--preload-models",
+            help=(
+                "Eagerly initialize the Docling DocumentConverter at server "
+                "startup so the first conversion tool call doesn't pay the "
+                "cold-start cost (PyTorch import, OCR model load, layout "
+                "detector init). Adds 30-120s to server boot but lets the "
+                "first conversion return inside the MCP client's per-request "
+                "timeout (Claude Desktop's spawn timeout is more generous "
+                "than its per-request one). Recommended for interactive use."
+            ),
+        ),
+    ] = False,
 ) -> None:
     """Initialize and run the Docling MCP server."""
     # Create a default project logger
@@ -105,6 +120,20 @@ def main(
     from docling_mcp._roots_wiring import install_roots_handlers
 
     install_roots_handlers()
+
+    # Optionally pay the Docling cold-start cost at boot time so the first
+    # user-facing conversion call returns inside the client's request
+    # timeout. See docling-project/docling-mcp#98 for the motivating
+    # symptom and analysis.
+    if preload_models and ToolGroups.CONVERSION in tools:
+        logger.info(
+            "--preload-models: warming up DocumentConverter (this can "
+            "take 30-120s depending on hardware and model cache state)..."
+        )
+        from docling_mcp.tools.conversion import _get_converter
+
+        _get_converter()  # @lru_cache, loads PyTorch + models once
+        logger.info("DocumentConverter ready (cold-start paid at boot)")
 
     # Initialize and run the server
     logger.info("starting up Docling MCP-server ...")
