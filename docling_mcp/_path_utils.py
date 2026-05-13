@@ -12,7 +12,7 @@ from both the registry and the conversion tools without introducing cycles.
 from __future__ import annotations
 
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import unquote, urlparse
 
 # URL schemes we treat as remote/non-filesystem and therefore exempt from
 # roots authorization. ``file://`` is intentionally excluded so it falls
@@ -47,8 +47,10 @@ def to_filesystem_path(source: str) -> Path:
         )
 
     if scheme == "file":
-        # urlparse on "file:///a/b" gives path="/a/b"
-        candidate = Path(parsed.path)
+        # urlparse on "file:///a/b" gives path="/a/b"; unquote so that
+        # percent-encoded characters (e.g. %20 for space in macOS paths
+        # like "Application Support") match the real filesystem path.
+        candidate = Path(unquote(parsed.path))
     else:
         candidate = Path(source)
 

@@ -23,7 +23,7 @@ from __future__ import annotations
 
 import threading
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import unquote, urlparse
 
 from docling_mcp._path_utils import is_remote_url, to_filesystem_path
 from docling_mcp.logger import setup_logger
@@ -78,7 +78,10 @@ class AllowedRootsRegistry:
                     "(only file:// roots constrain filesystem access)"
                 )
                 continue
-            new_set.add(Path(parsed.path).expanduser().resolve())
+            # Decode percent-escapes so file:///path/with%20space matches
+            # the real filesystem path. Clients (Claude Desktop, Cowork)
+            # frequently send roots like file:///Users/x/Library/Application%20Support/...
+            new_set.add(Path(unquote(parsed.path)).expanduser().resolve())
 
         with self._lock:
             self._client_roots = new_set

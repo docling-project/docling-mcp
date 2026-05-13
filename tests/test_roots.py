@@ -325,3 +325,51 @@ async def test_on_list_changed_refreshes_registry() -> None:
     active = allowed_roots.active_roots()
     assert Path("/tmp/a").resolve() in active
     assert Path("/tmp/b").resolve() in active
+
+
+# ---------------------------------------------------------------------------
+# Regression tests — URL-encoded paths
+# ---------------------------------------------------------------------------
+
+
+def test_to_filesystem_path_decodes_percent_escapes() -> None:
+    """file:// URLs with %20 (space) decode to the real filesystem path."""
+    p = to_filesystem_path("file:///Users/me/Application%20Support/foo.pdf")
+    assert p == Path("/Users/me/Application Support/foo.pdf").resolve()
+    assert "%20" not in str(p)
+
+
+def test_to_filesystem_path_handles_special_chars() -> None:
+    """Percent-encoded special characters (colons, parens) also decode."""
+    p = to_filesystem_path("file:///tmp/yerk%3A%20Career%20Debugger/x.pdf")
+    assert "%3A" not in str(p)
+    assert "%20" not in str(p)
+    assert "yerk: Career Debugger" in str(p)
+
+
+def test_registry_client_root_with_percent_encoded_space() -> None:
+    """Roots like file:///Application%20Support/... validate real paths."""
+    r = AllowedRootsRegistry()
+    with tempfile.TemporaryDirectory() as parent:
+        # Build a path with a real space, the way macOS does
+        real_dir = os.path.join(parent, "App Support")
+        os.makedirs(real_dir)
+        target = os.path.join(real_dir, "doc.pdf")
+        Path(target).touch()
+
+        # Client sends the percent-encoded form (the way urlparse emits it)
+        r.update_from_client_roots([f"file://{parent}/App%20Support"])
+
+        # The real-disk path with a literal space should validate
+        r.validate_source(target)
+
+
+def test_registry_logs_decoded_paths_not_encoded() -> None:
+    """active_roots() exposes decoded paths so error messages are readable."""
+    r = AllowedRootsRegistry()
+    r.update_from_client_roots(
+        ["file:///Users/me/Application%20Support/Claude/uploads"]
+    )
+    roots = r.active_roots()
+    assert all("%20" not in str(p) for p in roots)
+    assert all("Application Support" in str(p) for p in roots)
