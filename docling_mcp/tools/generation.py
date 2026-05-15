@@ -13,7 +13,6 @@ from docling.datamodel.base_models import ConversionStatus, InputFormat
 from docling.datamodel.document import (
     ConversionResult,
 )
-from docling.document_converter import DocumentConverter
 from docling_core.types.doc.document import (
     ContentLayer,
     DoclingDocument,
@@ -548,6 +547,15 @@ def add_table_in_html_format_to_docling_document(
 
     buff = BytesIO(html_doc.encode("utf-8"))
     doc_stream = DocumentStream(name="tmp", stream=buff)
+
+    # Import DocumentConverter only when needed for HTML table parsing
+    try:
+        from docling.document_converter import DocumentConverter
+    except ImportError as e:
+        raise ImportError(
+            "HTML table generation requires docling-mcp[local] extra. "
+            "Install with: pip install docling-mcp[local]"
+        ) from e
 
     converter = DocumentConverter(allowed_formats=[InputFormat.HTML])
     conv_result: ConversionResult = converter.convert(doc_stream)

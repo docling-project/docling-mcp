@@ -35,7 +35,7 @@ _DEFAULT_TOOLS = [ToolGroups.CONVERSION, ToolGroups.GENERATION, ToolGroups.MANIP
 
 @app.command()
 def main(
-    transport: TransportType = TransportType.STDIO,
+    transport: TransportType = TransportType.STREAMABLE_HTTP,
     host: str = "localhost",
     port: int = 8000,
     tools: Annotated[
@@ -84,4 +84,4 @@ def main(
 
 
 if __name__ == "__main__":
-    main()
+    app()

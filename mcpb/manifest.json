@@ -2,8 +2,8 @@
   "manifest_version": "0.2",
   "name": "docling-mcp",
   "display_name": "Docling MCP",
-  "version": "1.2.0",
-  "description": "Docling MCP Server - Document processing and analysis capabilities such as creation and manipulation",
+  "version": "1.3.4",
+  "description": "Docling MCP Server - Document processing and analysis with remote API and local conversion support",
   "author": {
     "name": "Docling team",
     "email": "deepsearch-core@zurich.ibm.com"
@@ -27,28 +27,92 @@
         "pipx",
         "run",
         "--spec",
-        "docling-mcp==${user_config.version}",
+        "docling-mcp${user_config.install_extras}==${user_config.version}",
         "docling-mcp-server"
       ],
       "env": {
         "PYTHONPATH": "${__dirname}/lib",
-        "DOCLING_MCP_KEEP_IMAGES": "${user_config.keep_images}"
+        "DOCLING_SERVICE_URL": "${user_config.service_url}",
+        "DOCLING_SERVICE_API_KEY": "${user_config.service_api_key}",
+        "DOCLING_CONVERSION_MODE": "${user_config.conversion_mode}",
+        "DOCLING_SERVICE_TIMEOUT": "${user_config.service_timeout}",
+        "DOCLING_FALLBACK_TO_LOCAL": "${user_config.fallback_to_local}",
+        "DOCLING_MCP_KEEP_IMAGES": "${user_config.keep_images}",
+        "DOCLING_MCP_DO_OCR": "${user_config.do_ocr}",
+        "DOCLING_MCP_DO_TABLE_STRUCTURE": "${user_config.do_table_structure}"
       }
     }
   },
   "user_config": {
-    "keep_images": {
-      "type": "boolean",
-      "title": "Keep images",
-      "description": "Generate and store pages images while converting the documents.",
-      "default": false,
-      "required": false
-    },
     "version": {
       "type": "string",
       "title": "Version",
-      "description": "Version of the docling-mcp package which is being installed.",
-      "default": "1.2.0",
+      "description": "Version of the docling-mcp package to install.",
+      "default": "1.3.4",
+      "required": false
+    },
+    "install_extras": {
+      "type": "string",
+      "title": "Installation Extras",
+      "description": "Optional extras to install. Options: '' (remote-only, lightweight), '[local]' (local conversion), '[local,llama-index-rag]', '[local,llama-stack]'",
+      "default": "",
+      "required": false
+    },
+    "conversion_mode": {
+      "type": "string",
+      "title": "Conversion Mode",
+      "description": "Choose 'remote' (requires service_url) or 'local' (requires [local] extra). Default: remote",
+      "default": "remote",
+      "required": true
+    },
+    "service_url": {
+      "type": "string",
+      "title": "Docling Service URL",
+      "description": "URL of the Docling Serve API endpoint (required for remote mode). Example: https://your-docling-service.example.com",
+      "default": "",
+      "required": false
+    },
+    "service_api_key": {
+      "type": "string",
+      "title": "Service API Key",
+      "description": "API key for authenticating with Docling Serve (optional, if required by your service). Leave empty if not needed.",
+      "default": "",
+      "sensitive": true,
+      "required": false
+    },
+    "service_timeout": {
+      "type": "number",
+      "title": "Service Timeout (seconds)",
+      "description": "Timeout in seconds for remote API requests. Range: 10-3600, Default: 300",
+      "default": 300.0,
+      "required": false
+    },
+    "fallback_to_local": {
+      "type": "boolean",
+      "title": "Fallback to Local",
+      "description": "If remote service is unavailable, automatically fall back to local conversion (requires [local] extra).",
+      "default": false,
+      "required": false
+    },
+    "keep_images": {
+      "type": "boolean",
+      "title": "Keep Images",
+      "description": "Generate and store page images while converting documents (applies to local mode).",
+      "default": false,
+      "required": false
+    },
+    "do_ocr": {
+      "type": "boolean",
+      "title": "Enable OCR",
+      "description": "Enable Optical Character Recognition for scanned documents (applies to local mode).",
+      "default": true,
+      "required": false
+    },
+    "do_table_structure": {
+      "type": "boolean",
+      "title": "Enable Table Structure",
+      "description": "Enable table structure recognition (applies to local mode).",
+      "default": true,
       "required": false
     }
   },
@@ -62,10 +126,14 @@
     "markdown",
     "processing",
     "convert",
-    "creation"
+    "creation",
+    "remote-api",
+    "service-client"
   ],
   "license": "MIT",
-  "privacy_policies": ["https://github.com/docling-project/docling-mcp/blob/main/docs/PRIVACY.md"],
+  "privacy_policies": [
+    "https://github.com/docling-project/docling-mcp/blob/main/docs/PRIVACY.md"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/docling-project/docling-mcp"
