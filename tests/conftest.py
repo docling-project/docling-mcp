@@ -31,9 +31,10 @@ class MCPClient:
         test_env["DOCLING_CONVERSION_MODE"] = "local"
 
         # Explicitly use STDIO transport for tests (server default is now streamable-http)
+        # Run as module instead of script to ensure proper Typer CLI initialization
         server_params = StdioServerParameters(
             command="python",
-            args=[server_script_path, "stdio"],  # Pass 'stdio' as transport argument
+            args=["-m", "docling_mcp.servers.mcp_server", "--transport", "stdio"],
             env=test_env,
         )
 
