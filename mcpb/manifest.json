@@ -77,6 +77,7 @@
       "title": "Service API Key",
       "description": "API key for authenticating with Docling Serve (optional, if required by your service). Leave empty if not needed.",
       "default": "",
+      "secret": true,
       "required": false
     },
     "service_timeout": {
