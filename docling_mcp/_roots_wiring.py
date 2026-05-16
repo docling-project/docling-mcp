@@ -15,7 +15,7 @@ it is a no-op if invoked twice on the same server instance.
 from __future__ import annotations
 
 import contextvars
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from mcp.types import (
     InitializedNotification,
@@ -92,8 +92,11 @@ def install_roots_handlers() -> None:
     original = server._handle_message
 
     async def _handle_message_with_session(
-        message, session, lifespan_context, raise_exceptions=False
-    ):
+        message: Any,
+        session: Any,
+        lifespan_context: Any,
+        raise_exceptions: bool = False,
+    ) -> Any:
         token = _active_session.set(session)
         try:
             return await original(message, session, lifespan_context, raise_exceptions)
