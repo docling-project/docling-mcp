@@ -26,7 +26,12 @@ from docling_core.types.doc.labels import (
 from docling_mcp.docling_cache import get_cache_key
 from docling_mcp.logger import setup_logger
 from docling_mcp.settings.conversion import settings
-from docling_mcp.shared import allowed_roots, local_document_cache, local_stack_cache, mcp
+from docling_mcp.shared import (
+    allowed_roots,
+    local_document_cache,
+    local_stack_cache,
+    mcp,
+)
 
 # Create a default project logger
 logger = setup_logger()

@@ -33,8 +33,8 @@ logger = setup_logger()
 # ContextVar that holds the active ServerSession during message dispatch.
 # Notification handlers fish the session out of here when they need to issue
 # server-to-client requests like ``roots/list``.
-_active_session: contextvars.ContextVar["ServerSession | None"] = (
-    contextvars.ContextVar("docling_mcp_active_session", default=None)
+_active_session: contextvars.ContextVar[ServerSession | None] = contextvars.ContextVar(
+    "docling_mcp_active_session", default=None
 )
 
 # Sentinel attribute we set on the patched bound method so a second
@@ -42,7 +42,7 @@ _active_session: contextvars.ContextVar["ServerSession | None"] = (
 _PATCH_MARKER = "_docling_mcp_roots_patched"
 
 
-async def _refresh_from_client(session: "ServerSession") -> None:
+async def _refresh_from_client(session: ServerSession) -> None:
     """Pull the current roots list from the client and rebuild the registry."""
     caps = session.client_params.capabilities if session.client_params else None
     if caps is None or caps.roots is None:
@@ -69,9 +69,7 @@ async def _on_roots_list_changed(notify: RootsListChangedNotification) -> None:
     """Refresh the registry when the client signals roots have changed."""
     session = _active_session.get()
     if session is None:
-        logger.warning(
-            "notifications/roots/list_changed fired with no active session"
-        )
+        logger.warning("notifications/roots/list_changed fired with no active session")
         return
     await _refresh_from_client(session)
 
@@ -85,9 +83,7 @@ def install_roots_handlers() -> None:
 
     # Register notification handlers (keyed by type, per the SDK).
     server.notification_handlers[InitializedNotification] = _on_initialized
-    server.notification_handlers[RootsListChangedNotification] = (
-        _on_roots_list_changed
-    )
+    server.notification_handlers[RootsListChangedNotification] = _on_roots_list_changed
 
     # Patch _handle_message to expose session via the ContextVar.
     if getattr(server._handle_message, _PATCH_MARKER, False):
@@ -100,9 +96,7 @@ def install_roots_handlers() -> None:
     ):
         token = _active_session.set(session)
         try:
-            return await original(
-                message, session, lifespan_context, raise_exceptions
-            )
+            return await original(message, session, lifespan_context, raise_exceptions)
         finally:
             _active_session.reset(token)
 

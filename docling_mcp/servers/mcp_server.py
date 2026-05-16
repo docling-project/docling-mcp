@@ -6,15 +6,18 @@ from typing import Annotated
 
 import typer
 
+from docling_mcp.logger import setup_logger
+from docling_mcp.shared import allowed_roots, mcp
+
 
 def _crumb(step: str) -> None:
-    """Emit a flushed stderr breadcrumb. Visible in Claude Desktop's log
-    immediately, regardless of Python logging buffer state.
+    """Emit a flushed stderr breadcrumb.
+
+    Visible in Claude Desktop's log immediately, regardless of Python
+    logging buffer state.
     """
     print(f"[docling-mcp-boot] {step}", file=sys.stderr, flush=True)
 
-from docling_mcp.logger import setup_logger
-from docling_mcp.shared import allowed_roots, mcp
 
 app = typer.Typer()
 
@@ -117,9 +120,7 @@ def main(
     # Client-sent Roots will replace this set at runtime when present.
     if allowed_directories:
         allowed_roots.set_static_roots(allowed_directories)
-        logger.info(
-            f"static allowed-directories: {allowed_directories}"
-        )
+        logger.info(f"static allowed-directories: {allowed_directories}")
     else:
         logger.info(
             "no --allowed-directories given; relying on MCP Roots from client "
@@ -151,8 +152,7 @@ def main(
                 _crumb("preload thread: calling _get_converter()")
                 converter = _get_converter()
                 _crumb(
-                    "preload thread: _get_converter() returned; "
-                    "initializing pipelines"
+                    "preload thread: _get_converter() returned; initializing pipelines"
                 )
                 # DocumentConverter.__init__ is lazy; pipelines (and the
                 # underlying models) load on first .convert(). Force load
@@ -182,12 +182,8 @@ def main(
             except Exception as e:
                 _crumb(f"preload thread: FAILED with {e!r}")
 
-        threading.Thread(
-            target=_warmup, daemon=True, name="docling-preload"
-        ).start()
-        _crumb(
-            "preload: background thread launched; proceeding to mcp.run()"
-        )
+        threading.Thread(target=_warmup, daemon=True, name="docling-preload").start()
+        _crumb("preload: background thread launched; proceeding to mcp.run()")
 
     # Initialize and run the server
     _crumb("about to call mcp.run() — server will block here serving MCP")

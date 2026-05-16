@@ -18,7 +18,6 @@ import pytest
 from docling_mcp._path_utils import is_remote_url, to_filesystem_path
 from docling_mcp.roots import AllowedRootsRegistry
 
-
 # ---------------------------------------------------------------------------
 # _path_utils
 # ---------------------------------------------------------------------------
@@ -157,9 +156,7 @@ def test_registry_clear_client_roots_restores_static() -> None:
 
 def test_registry_update_ignores_non_file_uris() -> None:
     r = AllowedRootsRegistry()
-    r.update_from_client_roots(
-        ["https://example.com/", "file:///tmp/ok"]
-    )
+    r.update_from_client_roots(["https://example.com/", "file:///tmp/ok"])
     # The https root is dropped; only the file:// root is kept
     assert r.active_roots() == {Path("/tmp/ok").resolve()}
 
@@ -199,9 +196,10 @@ def test_registry_dotdot_resolution() -> None:
 
 
 def test_install_roots_handlers_registers_both() -> None:
+    from mcp.types import InitializedNotification, RootsListChangedNotification
+
     from docling_mcp._roots_wiring import install_roots_handlers
     from docling_mcp.shared import mcp
-    from mcp.types import InitializedNotification, RootsListChangedNotification
 
     install_roots_handlers()
     handlers = mcp._mcp_server.notification_handlers
@@ -225,15 +223,16 @@ def test_install_roots_handlers_is_idempotent() -> None:
 @pytest.mark.asyncio
 async def test_on_initialized_seeds_from_session() -> None:
     """Handler queries session.list_roots() and updates the registry."""
-    from docling_mcp import _roots_wiring as wiring
-    from docling_mcp.shared import allowed_roots
     from mcp.types import (
+        ClientCapabilities,
         InitializedNotification,
         ListRootsResult,
         Root,
         RootsCapability,
-        ClientCapabilities,
     )
+
+    from docling_mcp import _roots_wiring as wiring
+    from docling_mcp.shared import allowed_roots
 
     # Ensure clean state for this test
     allowed_roots.clear_client_roots()
@@ -244,9 +243,7 @@ async def test_on_initialized_seeds_from_session() -> None:
         roots=RootsCapability(listChanged=True)
     )
     fake_session.list_roots = AsyncMock(
-        return_value=ListRootsResult(
-            roots=[Root(uri="file:///tmp/from-client")]
-        )
+        return_value=ListRootsResult(roots=[Root(uri="file:///tmp/from-client")])
     )
 
     token = wiring._active_session.set(fake_session)
@@ -264,8 +261,9 @@ async def test_on_initialized_seeds_from_session() -> None:
 @pytest.mark.asyncio
 async def test_on_initialized_skips_when_client_lacks_roots() -> None:
     """No client roots capability → don't call list_roots()."""
-    from docling_mcp import _roots_wiring as wiring
     from mcp.types import ClientCapabilities, InitializedNotification
+
+    from docling_mcp import _roots_wiring as wiring
 
     fake_session = MagicMock()
     fake_session.client_params = MagicMock()
@@ -287,8 +285,6 @@ async def test_on_initialized_skips_when_client_lacks_roots() -> None:
 @pytest.mark.asyncio
 async def test_on_list_changed_refreshes_registry() -> None:
     """Handler refreshes the registry on a list_changed notification."""
-    from docling_mcp import _roots_wiring as wiring
-    from docling_mcp.shared import allowed_roots
     from mcp.types import (
         ClientCapabilities,
         ListRootsResult,
@@ -296,6 +292,9 @@ async def test_on_list_changed_refreshes_registry() -> None:
         RootsCapability,
         RootsListChangedNotification,
     )
+
+    from docling_mcp import _roots_wiring as wiring
+    from docling_mcp.shared import allowed_roots
 
     allowed_roots.clear_client_roots()
     fake_session = MagicMock()
@@ -312,19 +311,19 @@ async def test_on_list_changed_refreshes_registry() -> None:
         )
     )
 
+    expected_a = Path("/tmp/a").resolve()
+    expected_b = Path("/tmp/b").resolve()
     token = wiring._active_session.set(fake_session)
     try:
         await wiring._on_roots_list_changed(
-            RootsListChangedNotification(
-                method="notifications/roots/list_changed"
-            )
+            RootsListChangedNotification(method="notifications/roots/list_changed")
         )
     finally:
         wiring._active_session.reset(token)
 
     active = allowed_roots.active_roots()
-    assert Path("/tmp/a").resolve() in active
-    assert Path("/tmp/b").resolve() in active
+    assert expected_a in active
+    assert expected_b in active
 
 
 # ---------------------------------------------------------------------------
