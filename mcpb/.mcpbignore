@@ -1,0 +1,3 @@
+node_modules/
+pack.sh
+**.DS_Store

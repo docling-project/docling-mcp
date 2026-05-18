@@ -1,0 +1,16 @@
+name: "Run CI"
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+  push:
+    branches:
+      - "**"
+      - "!gh-pages"
+
+jobs:
+  code-checks:
+    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.full_name != 'docling-project/docling-mcp' }}
+    uses: ./.github/workflows/job-checks.yml
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

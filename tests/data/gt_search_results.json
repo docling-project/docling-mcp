@@ -1,0 +1,14 @@
+{
+  "exact_match": [
+    "Found exact text matches in the following anchors:\n[anchor:#/texts/3]",
+    "Found exact text matches in the following anchors:\n[anchor:#/texts/2]"
+  ],
+  "keywords_match": [
+    "No exact text matches were found. Found individual keyword matches in the following anchors:\n[anchor:#/texts/4] keyword matches (8 total): locking (3 occurrences), section (3 occurrences), spring (2 occurrences)\n[anchor:#/texts/5] keyword matches (7 total): locking (3 occurrences), section (3 occurrences), spring (1 occurrences)\n[anchor:#/texts/16] keyword matches (6 total): locking (6 occurrences)\n[anchor:#/texts/1] keyword matches (4 total): locking (4 occurrences)\n[anchor:#/texts/3] keyword matches (3 total): locking (2 occurrences), spring (1 occurrences)\n[anchor:#/texts/6] keyword matches (2 total): locking (1 occurrences), spring (1 occurrences)\n[anchor:#/texts/2] keyword matches (1 total): locking (1 occurrences)\n[anchor:#/texts/7] keyword matches (1 total): locking (1 occurrences)\n[anchor:#/texts/15] keyword matches (1 total): locking (1 occurrences)\n[anchor:#/texts/18] keyword matches (1 total): locking (1 occurrences)\n[anchor:#/texts/19] keyword matches (1 total): locking (1 occurrences)",
+    "No exact text matches were found. Found individual keyword matches in the following anchors:\n[anchor:#/texts/0] keyword matches (4 total): porttitor (2 occurrences), varius (2 occurrences)\n[anchor:#/texts/2] keyword matches (1 total): porttitor (1 occurrences)"
+  ],
+  "no_match": [
+    "No exact text matches nor individual keyword matches found for 'Banana Peel' in document with key test_doc_1.",
+    "No exact text matches nor individual keyword matches found for 'Banana Peel' in document with key test_doc_2."
+  ]
+}

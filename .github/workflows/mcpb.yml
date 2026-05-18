@@ -1,0 +1,38 @@
+name: Build and Upload MCPB
+
+on:
+  pull_request:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build MCPB
+        run: |
+          cd mcpb
+          bash pack.sh
+
+      - name: Upload artifact (PR only)
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: docling-mcp.mcpb
+          path: mcpb/docling-mcp.mcpb
+
+      - name: Upload to release (on release)
+        if: github.event_name == 'release'
+        run: |
+          gh release upload "${{ github.event.release.tag_name }}" \
+            mcpb/docling-mcp.mcpb \
+            --clobber
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
