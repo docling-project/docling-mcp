@@ -1,3 +1,17 @@
+## [v2.0.0](https://github.com/docling-project/docling-mcp/releases/tag/v2.0.0) - 2026-05-19
+
+### Feature
+
+* Use remote Docling within tool - with local fallback as optional ([#97](https://github.com/docling-project/docling-mcp/issues/97)) ([`b418ec6`](https://github.com/docling-project/docling-mcp/commit/b418ec61b1d4b3fd7b21ea7a7e40281a4b78428b))
+
+### Breaking
+
+* Use remote Docling within tool - with local fallback as optional ([#97](https://github.com/docling-project/docling-mcp/issues/97)) ([`b418ec6`](https://github.com/docling-project/docling-mcp/commit/b418ec61b1d4b3fd7b21ea7a7e40281a4b78428b))
+
+### Documentation
+
+* **security:** Add GitHub Private Vulnerability Reporting ([#96](https://github.com/docling-project/docling-mcp/issues/96)) ([`2c80fb0`](https://github.com/docling-project/docling-mcp/commit/2c80fb0fd2c3f0fbd84ab808d50ab787bceec124))
+
 ## [v1.3.4](https://github.com/docling-project/docling-mcp/releases/tag/v1.3.4) - 2026-01-22
 
 ### Fix
