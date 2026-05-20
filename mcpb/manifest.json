@@ -2,7 +2,7 @@
   "manifest_version": "0.2",
   "name": "docling-mcp",
   "display_name": "Docling MCP",
-  "version": "1.3.4",
+  "version": "2.0.0",
   "description": "Docling MCP Server - Document processing and analysis with remote API and local conversion support",
   "author": {
     "name": "Docling team",
@@ -28,7 +28,8 @@
         "run",
         "--spec",
         "docling-mcp${user_config.install_extras}==${user_config.version}",
-        "docling-mcp-server"
+        "docling-mcp-server",
+        "stdio"
       ],
       "env": {
         "PYTHONPATH": "${__dirname}/lib",
@@ -48,7 +49,7 @@
       "type": "string",
       "title": "Version",
       "description": "Version of the docling-mcp package to install.",
-      "default": "1.3.4",
+      "default": "2.0.0",
       "required": false
     },
     "install_extras": {
