@@ -29,7 +29,7 @@
         "--spec",
         "docling-mcp${user_config.install_extras}==${user_config.version}",
         "docling-mcp-server",
-        "stdio"
+        "--transport=stdio"
       ],
       "env": {
         "PYTHONPATH": "${__dirname}/lib",
