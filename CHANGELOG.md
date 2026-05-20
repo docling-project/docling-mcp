@@ -1,3 +1,9 @@
+## [v2.0.1](https://github.com/docling-project/docling-mcp/releases/tag/v2.0.1) - 2026-05-20
+
+### Fix
+
+* Use stdio in mcpb ([#100](https://github.com/docling-project/docling-mcp/issues/100)) ([`8c03c5f`](https://github.com/docling-project/docling-mcp/commit/8c03c5f1c92abe36956b39805e193e3da7ce178b))
+
 ## [v2.0.0](https://github.com/docling-project/docling-mcp/releases/tag/v2.0.0) - 2026-05-19
 
 ### Feature
