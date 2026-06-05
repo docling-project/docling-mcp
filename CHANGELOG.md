@@ -1,3 +1,9 @@
+## [v2.1.0](https://github.com/docling-project/docling-mcp/releases/tag/v2.1.0) - 2026-06-05
+
+### Feature
+
+* Add MCP prompts for document conversion, generation, and manipulation ([#92](https://github.com/docling-project/docling-mcp/issues/92)) ([`67b17f0`](https://github.com/docling-project/docling-mcp/commit/67b17f003227d9cc00853f53f087c71ca9685abd))
+
 ## [v2.0.1](https://github.com/docling-project/docling-mcp/releases/tag/v2.0.1) - 2026-05-20
 
 ### Fix
