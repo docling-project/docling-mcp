@@ -76,6 +76,12 @@ def main(
         logger.info("loading Llama Stack Structured Output tools...")
         import docling_mcp.tools.llama_stack.structured_output
 
+    # Always load prompts regardless of tool group selection
+    logger.info("loading prompts...")
+    import docling_mcp.prompts.conversion
+    import docling_mcp.prompts.generation
+    import docling_mcp.prompts.manipulation
+
     # Initialize and run the server
     logger.info("starting up Docling MCP-server ...")
     mcp.settings.host = host
