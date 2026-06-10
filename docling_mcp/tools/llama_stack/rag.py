@@ -59,7 +59,7 @@ def insert_document_to_vectordb(
     doc_id = str(doc.origin.binary_hash) if doc.origin is not None else document_key
 
     tokenizer = HuggingFaceTokenizer(
-        tokenizer=AutoTokenizer.from_pretrained(  # type: ignore
+        tokenizer=AutoTokenizer.from_pretrained(
             pretrained_model_name_or_path=f"sentence-transformers/{settings.vdb_embedding}"
         ),
     )
