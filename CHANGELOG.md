@@ -1,3 +1,29 @@
+## [v2.1.0](https://github.com/docling-project/docling-mcp/releases/tag/v2.1.0) - 2026-06-05
+
+### Feature
+
+* Add MCP prompts for document conversion, generation, and manipulation ([#92](https://github.com/docling-project/docling-mcp/issues/92)) ([`67b17f0`](https://github.com/docling-project/docling-mcp/commit/67b17f003227d9cc00853f53f087c71ca9685abd))
+
+## [v2.0.1](https://github.com/docling-project/docling-mcp/releases/tag/v2.0.1) - 2026-05-20
+
+### Fix
+
+* Use stdio in mcpb ([#100](https://github.com/docling-project/docling-mcp/issues/100)) ([`8c03c5f`](https://github.com/docling-project/docling-mcp/commit/8c03c5f1c92abe36956b39805e193e3da7ce178b))
+
+## [v2.0.0](https://github.com/docling-project/docling-mcp/releases/tag/v2.0.0) - 2026-05-19
+
+### Feature
+
+* Use remote Docling within tool - with local fallback as optional ([#97](https://github.com/docling-project/docling-mcp/issues/97)) ([`b418ec6`](https://github.com/docling-project/docling-mcp/commit/b418ec61b1d4b3fd7b21ea7a7e40281a4b78428b))
+
+### Breaking
+
+* Use remote Docling within tool - with local fallback as optional ([#97](https://github.com/docling-project/docling-mcp/issues/97)) ([`b418ec6`](https://github.com/docling-project/docling-mcp/commit/b418ec61b1d4b3fd7b21ea7a7e40281a4b78428b))
+
+### Documentation
+
+* **security:** Add GitHub Private Vulnerability Reporting ([#96](https://github.com/docling-project/docling-mcp/issues/96)) ([`2c80fb0`](https://github.com/docling-project/docling-mcp/commit/2c80fb0fd2c3f0fbd84ab808d50ab787bceec124))
+
 ## [v1.3.4](https://github.com/docling-project/docling-mcp/releases/tag/v1.3.4) - 2026-01-22
 
 ### Fix

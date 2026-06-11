@@ -23,6 +23,66 @@ A document processing service using the Docling-MCP library and MCP (Model Conte
 
 Docling MCP is a service that provides tools for document conversion, processing and generation. It uses the Docling library to convert PDF documents into structured formats and provides a caching mechanism to improve performance. The service exposes functionality through a set of tools that can be called by client applications.
 
+## 🆕 What's New in v2.0
+
+**Major Architecture Update**: Docling MCP v2.0 introduces a hybrid architecture with support for both remote API and local conversion modes:
+
+- **🚀 90% Size Reduction**: Base package is now ~50MB (down from ~500MB)
+- **⚡ Faster Installation**: No model downloads required for default remote mode
+- **🌐 Remote API Support**: Use Docling Serve for scalable cloud-based conversion
+- **💻 Local Mode Available**: Install `[local]` extra for offline/local conversion
+- **🔄 Automatic Fallback**: Optional fallback from remote to local mode
+- **🎯 Flexible Configuration**: Choose the mode that fits your needs
+
+**Migration**: Upgrading from v1.x? See [MIGRATION_v2.md](MIGRATION_v2.md) for detailed instructions.
+
+## Installation Options
+
+### Remote Mode (Recommended - Lightweight)
+
+For users with access to Docling Serve API:
+
+> **Getting Docling Serve**: Visit [docling-serve](https://github.com/docling-project/docling-serve) for installation guides. You can deploy it from published container images or look for managed Docling SaaS offerings.
+
+```bash
+pip install docling-mcp
+```
+
+Then configure your environment:
+```bash
+export DOCLING_SERVICE_URL=https://your-docling-service.example.com
+export DOCLING_SERVICE_API_KEY=your-api-key-here
+export DOCLING_CONVERSION_MODE=remote
+```
+
+### Local Mode (Full Features)
+
+For users who need local conversion or don't have Docling Serve access:
+
+```bash
+pip install docling-mcp[local]
+```
+
+Then configure your environment:
+```bash
+export DOCLING_CONVERSION_MODE=local
+```
+
+### Hybrid Mode (Best of Both)
+
+Install with local support and enable automatic fallback:
+
+```bash
+pip install docling-mcp[local]
+```
+
+Configure for remote with fallback:
+```bash
+export DOCLING_SERVICE_URL=https://your-docling-service.example.com
+export DOCLING_CONVERSION_MODE=remote
+export DOCLING_FALLBACK_TO_LOCAL=true
+```
+
 ## Features
 
 - Conversion tools:
