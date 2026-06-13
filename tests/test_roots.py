@@ -375,12 +375,29 @@ def test_registry_logs_decoded_paths_not_encoded() -> None:
 
 
 # ---------------------------------------------------------------------------
-# Preload flag — wiring smoke tests
+# --preload-models — intentionally absent (scope tripwire)
 # ---------------------------------------------------------------------------
+#
+# These two tests exist to PREVENT accidental re-introduction of a
+# `--preload-models` CLI flag that was scoped OUT of this PR during the
+# 2026-06-11 merge with upstream/main (merge commit 6408167).
+#
+# Why the flag is not here:
+#   1. Out of scope for the MCP Roots PR. The flag was added during local
+#      live-test debugging to dodge Claude Desktop's per-request timeout —
+#      it has nothing to do with path authorization.
+#   2. Upstream PR #97 (feat!: Use remote Docling within tool) made
+#      conversion remote-by-default with an opt-in `[local]` extra. Local
+#      models are no longer imported at server boot in the default config,
+#      which removes the cold-start problem the flag worked around.
+#
+# If you have a real reason to re-add this flag (e.g., for the local-extra
+# path where boot-time warmup still matters), do it as a separate PR and
+# delete or invert these two tests as part of that change.
 
 
-def test_preload_flag_exists_in_cli() -> None:
-    """`--preload-models` is a registered Typer option on main()."""
+def test_preload_flag_intentionally_absent_from_cli() -> None:
+    """`--preload-models` MUST NOT appear in the CLI — see comment above."""
     from typer.testing import CliRunner
 
     from docling_mcp.servers import mcp_server
@@ -388,16 +405,20 @@ def test_preload_flag_exists_in_cli() -> None:
     runner = CliRunner()
     result = runner.invoke(mcp_server.app, ["--help"])
     assert result.exit_code == 0
-    assert "--preload-models" in result.output
-    assert "cold-start" in result.output.lower()
+    assert "--preload-models" not in result.output, (
+        "--preload-models was re-introduced to the CLI. "
+        "If intentional, see the comment above this test and delete it."
+    )
 
 
-def test_preload_flag_defaults_false() -> None:
-    """Default behavior is lazy initialization (no preload). Backward compat."""
+def test_preload_param_intentionally_absent_from_main() -> None:
+    """`preload_models` MUST NOT be a parameter of main() — see comment above."""
     import inspect
 
     from docling_mcp.servers.mcp_server import main
 
     sig = inspect.signature(main)
-    assert "preload_models" in sig.parameters
-    assert sig.parameters["preload_models"].default is False
+    assert "preload_models" not in sig.parameters, (
+        "preload_models was re-added to main()'s signature. "
+        "If intentional, see the comment above this test and delete it."
+    )
