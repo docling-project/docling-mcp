@@ -72,7 +72,9 @@ llama-stack = [
 smolagents = [
     "smolagents[mcp,litellm]>=1.0.0",
     "torch>=2.0.0",
-    "transformers>=4.30.0",
+    # temporary solution until huggingface/transformers#46159 is resolved
+    'transformers (>=4.42.0,<5.9.0,!=5.0.*,!=5.1.*,!=5.2.*,!=5.3.*) ; sys_platform == "darwin"',
+    'transformers (>=4.42.0,<6.0.0,!=5.0.*,!=5.1.*,!=5.2.*,!=5.3.*) ; sys_platform != "darwin"',
     "accelerate>=0.20.0",
     "ollama>=0.1.0",
 ]
@@ -82,9 +84,9 @@ mellea = [
 
 [dependency-groups]
 dev = [
-    "mypy~=1.11",
+    "mypy~=2.0.0",
     "pre-commit-uv~=4.1",
-    "pytest~=8.3",
+    "pytest~=9.0.3",
     "pytest-asyncio>=1.0.0",
     "pytest-check~=2.4",
     "pytest-cov>=6.1.1",
