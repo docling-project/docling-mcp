@@ -14,11 +14,18 @@ class TestRemoteDocumentConverter:
 
     @patch("docling_mcp.tools.converters.remote.settings")
     def test_init_without_service_url_raises_error(self, mock_settings: Any) -> None:
-        """Test that initialization fails without service URL."""
+        """Test that the error names both the remote and local remedies."""
         mock_settings.service_url = None
 
-        with pytest.raises(ValueError, match="DOCLING_MCP_SERVICE_URL is not set"):
+        with pytest.raises(
+            ValueError, match="DOCLING_MCP_SERVICE_URL is not set"
+        ) as exc_info:
             RemoteDocumentConverter()
+
+        message = str(exc_info.value)
+        assert "Remote: set DOCLING_MCP_SERVICE_URL" in message
+        assert "DOCLING_MCP_CONVERSION_MODE=local" in message
+        assert "docling-mcp[local]" in message
 
     @patch("docling_mcp.tools.converters.remote.DoclingServiceClient")
     @patch("docling_mcp.tools.converters.remote.settings")
