@@ -83,6 +83,17 @@ export DOCLING_CONVERSION_MODE=remote
 export DOCLING_FALLBACK_TO_LOCAL=true
 ```
 
+### Troubleshooting
+
+**`ValueError: DOCLING_SERVICE_URL must be set for remote mode.`**
+
+The server uses **remote** conversion mode by default, which needs a Docling Serve
+endpoint. If you hit this error, choose one:
+
+- **Remote:** set `DOCLING_SERVICE_URL` to your Docling Serve endpoint (see Remote Mode above).
+- **Local:** set `DOCLING_CONVERSION_MODE=local` and install the local extra with
+  `pip install 'docling-mcp[local]'` (see Local Mode above).
+
 ## Features
 
 - Conversion tools:
