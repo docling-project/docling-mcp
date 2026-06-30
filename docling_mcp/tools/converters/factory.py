@@ -12,14 +12,27 @@ if TYPE_CHECKING:
 logger = setup_logger()
 
 
-def get_converter() -> Union["RemoteDocumentConverter", "LocalDocumentConverter"]:
-    """Get the appropriate converter based on settings."""
+def get_converter(
+    conversion_mode: ConversionMode | str | None = None,
+) -> Union["RemoteDocumentConverter", "LocalDocumentConverter"]:
+    """Get the appropriate converter based on settings.
+
+    Args:
+        conversion_mode: Optional per-call override for the conversion mode.
+            When None, falls back to the DOCLING_CONVERSION_MODE environment
+            variable (default: REMOTE).
+    """
     # Import converters lazily to avoid importing DocumentConverter when not needed
     from .remote import RemoteDocumentConverter
 
-    logger.info(f"Selecting converter for mode: {settings.conversion_mode}")
+    effective_mode = (
+        ConversionMode(conversion_mode)
+        if conversion_mode is not None
+        else settings.conversion_mode
+    )
+    logger.info(f"Selecting converter for mode: {effective_mode}")
 
-    if settings.conversion_mode == ConversionMode.REMOTE:
+    if effective_mode == ConversionMode.REMOTE:
         try:
             converter = RemoteDocumentConverter()
             if converter.is_available():
@@ -59,7 +72,7 @@ def get_converter() -> Union["RemoteDocumentConverter", "LocalDocumentConverter"
         # No fallback, return the unavailable converter
         return converter
 
-    elif settings.conversion_mode == ConversionMode.LOCAL:
+    elif effective_mode == ConversionMode.LOCAL:
         # Import local converter only when needed
         from .local import LOCAL_CONVERSION_AVAILABLE, LocalDocumentConverter
 
@@ -71,4 +84,4 @@ def get_converter() -> Union["RemoteDocumentConverter", "LocalDocumentConverter"
         logger.info("Using local converter")
         return LocalDocumentConverter()
 
-    raise ValueError(f"Unknown conversion mode: {settings.conversion_mode}")
+    raise ValueError(f"Unknown conversion mode: {effective_mode}")

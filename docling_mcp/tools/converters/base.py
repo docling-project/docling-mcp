@@ -15,8 +15,19 @@ class ConversionOutput:
 class DocumentConverterProtocol(Protocol):
     """Protocol for document converters."""
 
-    def convert_document(self, source: str) -> ConversionOutput:
-        """Convert a single document."""
+    def convert_document(
+        self,
+        source: str,
+        do_ocr: bool | None = None,
+        do_table_structure: bool | None = None,
+        keep_images: bool | None = None,
+    ) -> ConversionOutput:
+        """Convert a single document.
+
+        All pipeline-option overrides are optional; when None, the converter
+        falls back to its environment-variable defaults (DOCLING_MCP_DO_OCR,
+        DOCLING_MCP_DO_TABLE_STRUCTURE, DOCLING_MCP_KEEP_IMAGES).
+        """
         ...
 
     def convert_directory(self, source: str) -> list[ConversionOutput]:

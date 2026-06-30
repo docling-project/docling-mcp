@@ -187,6 +187,36 @@ In **[LM Studio](https://lmstudio.ai/)**, edit the `mcp.json` file with the appr
 
 Other integrations are described in the [integrations] page.
 
+## Pipeline overrides (per-call + env-var fallback)
+
+The convert tool exposes four optional pipeline overrides. When omitted, each
+falls back to its environment-variable default — but for one-off calls (born-
+digital PDF that needs no OCR, single document where you also want page
+images, switching between local and remote mid-session), passing them per-call
+avoids server-restart churn.
+
+```python
+docling-pr-95:convert_document_into_docling_document(
+    source="/path/to/born-digital.pdf",
+    do_ocr=False,              # skip OCR for clean PDFs (huge speed-up)
+    do_table_structure=False,  # skip table layout analysis
+    keep_images=True,          # enable page_thumbnail downstream
+    conversion_mode="local",   # use local converter even if env says remote
+)
+```
+
+| Param | Env-var default | Behavior |
+|---|---|---|
+| `do_ocr` | `DOCLING_MCP_DO_OCR` (default `true`) | Run OCR over every page. Disable for born-digital PDFs to skip a multi-minute step. |
+| `do_table_structure` | `DOCLING_MCP_DO_TABLE_STRUCTURE` (default `true`) | Detect table layout. Disable for plain-text PDFs. |
+| `keep_images` | `DOCLING_MCP_KEEP_IMAGES` (default `false`) | Generate per-page images at convert time. Required if you'll call `page_thumbnail` afterward — images are not retrievable after the fact. |
+| `conversion_mode` | `DOCLING_CONVERSION_MODE` (default `remote`) | `local` uses `DocumentConverter` from the `[local]` extra. `remote` requires `DOCLING_SERVICE_URL` to be set. |
+
+Per-call overrides take precedence; env vars are the fallback default for
+calls that omit them. The `LocalDocumentConverter` caches one underlying
+`DocumentConverter` instance per unique override tuple, so repeated calls
+with the same options don't pay the model-load cost twice.
+
 ## Examples
 
 ### Converting documents
