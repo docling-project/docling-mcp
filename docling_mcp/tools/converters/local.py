@@ -15,12 +15,20 @@ from .base import ConversionOutput
 # Import DocumentConverter only if available
 try:
     from docling.datamodel.base_models import InputFormat
-    from docling.datamodel.pipeline_options import PdfPipelineOptions
+    from docling.datamodel.pipeline_options import (
+        PdfPipelineOptions,
+        VlmConvertOptions,
+        VlmPipelineOptions,
+    )
+    from docling.datamodel.vlm_engine_options import ApiVlmEngineOptions
     from docling.document_converter import (
         DocumentConverter,
         FormatOption,
+        ImageFormatOption,
         PdfFormatOption,
     )
+    from docling.models.inference_engines.vlm import VlmEngineType
+    from docling.pipeline.vlm_pipeline import VlmPipeline
 
     LOCAL_CONVERSION_AVAILABLE = True
 except ImportError:
@@ -47,16 +55,45 @@ class LocalDocumentConverter:
         if self._converter is not None:
             return self._converter
 
-        pipeline_options = PdfPipelineOptions()
-        pipeline_options.generate_page_images = settings.keep_images
-        pipeline_options.images_scale = settings.images_scale
-        pipeline_options.do_ocr = settings.do_ocr
-        pipeline_options.do_table_structure = settings.do_table_structure
+        format_options: dict[InputFormat, FormatOption]
+        if settings.use_vlm:
+            engine_options = ApiVlmEngineOptions.model_validate(
+                {
+                    "engine_type": VlmEngineType.API_OLLAMA,
+                    "url": f"{settings.vlm_host.rstrip('/')}/v1/chat/completions",
+                }
+            )
+            vlm_pipeline_options = VlmPipelineOptions(
+                enable_remote_services=True,
+                vlm_options=VlmConvertOptions.from_preset(
+                    "granite_docling", engine_options=engine_options
+                ),
+            )
+            pdf_format_option = PdfFormatOption(
+                pipeline_options=vlm_pipeline_options,
+                pipeline_cls=VlmPipeline,
+            )
+            image_format_option = ImageFormatOption(
+                pipeline_options=vlm_pipeline_options,
+                pipeline_cls=VlmPipeline,
+            )
+            format_options = {
+                InputFormat.PDF: pdf_format_option,
+                InputFormat.IMAGE: image_format_option,
+            }
+        else:
+            pdf_pipeline_options = PdfPipelineOptions()
+            pdf_pipeline_options.generate_page_images = settings.keep_images
+            pdf_pipeline_options.images_scale = settings.images_scale
+            pdf_pipeline_options.do_ocr = settings.do_ocr
+            pdf_pipeline_options.do_table_structure = settings.do_table_structure
 
-        format_options: dict[InputFormat, FormatOption] = {
-            InputFormat.PDF: PdfFormatOption(pipeline_options=pipeline_options),
-            InputFormat.IMAGE: PdfFormatOption(pipeline_options=pipeline_options),
-        }
+            format_options = {
+                InputFormat.PDF: PdfFormatOption(pipeline_options=pdf_pipeline_options),
+                InputFormat.IMAGE: PdfFormatOption(
+                    pipeline_options=pdf_pipeline_options
+                ),
+            }
 
         logger.info(f"Creating DocumentConverter with options: {format_options}")
         self._converter = DocumentConverter(format_options=format_options)

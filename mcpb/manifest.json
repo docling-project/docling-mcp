@@ -42,7 +42,9 @@
         "DOCLING_MCP_KEEP_IMAGES": "${user_config.keep_images}",
         "DOCLING_MCP_IMAGES_SCALE": "${user_config.images_scale}",
         "DOCLING_MCP_DO_OCR": "${user_config.do_ocr}",
-        "DOCLING_MCP_DO_TABLE_STRUCTURE": "${user_config.do_table_structure}"
+        "DOCLING_MCP_DO_TABLE_STRUCTURE": "${user_config.do_table_structure}",
+        "DOCLING_MCP_USE_VLM": "${user_config.use_vlm}",
+        "DOCLING_MCP_VLM_HOST": "${user_config.vlm_host}"
       }
     }
   },
@@ -130,6 +132,20 @@
       "title": "Enable Table Structure",
       "description": "Enable table structure recognition.",
       "default": true,
+      "required": false
+    },
+    "use_vlm": {
+      "type": "boolean",
+      "title": "Use VLM Pipeline",
+      "description": "Use the VLM pipeline (e.g. granite-docling via a local Ollama instance) instead of the standard OCR/layout pipeline (applies to local mode).",
+      "default": false,
+      "required": false
+    },
+    "vlm_host": {
+      "type": "string",
+      "title": "Ollama Host",
+      "description": "Base URL of the Ollama server to use when the VLM pipeline is enabled.",
+      "default": "http://localhost:11434",
       "required": false
     }
   },

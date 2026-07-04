@@ -47,6 +47,8 @@ class ServiceClientSettings(BaseSettings):
     images_scale: float = 1.0
     do_ocr: bool = True
     do_table_structure: bool = True
+    use_vlm: bool = False
+    vlm_host: str = "http://localhost:11434"
 
     def model_post_init(self, __context: object) -> None:
         """Warn when deprecated (pre-refactor) environment variable names are set."""
