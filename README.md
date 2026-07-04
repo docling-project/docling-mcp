@@ -68,6 +68,14 @@ Then configure your environment:
 export DOCLING_CONVERSION_MODE=local
 ```
 
+By default, local mode uses Docling's standard OCR/layout pipeline. To use the
+VLM pipeline instead (e.g. [granite-docling](https://huggingface.co/ibm-granite/granite-docling-258M)
+served by a local [Ollama](https://ollama.com) instance), set:
+```bash
+export DOCLING_MCP_USE_VLM=true
+export DOCLING_MCP_VLM_HOST=http://localhost:11434
+```
+
 ### Hybrid Mode (Best of Both)
 
 Install with local support and enable automatic fallback:
