@@ -122,7 +122,7 @@ Depending on the transfer protocol required, specify the argument `--transport`,
 
 More options are available, e.g. the selection of which toolgroup to launch. Use the `--help` argument to inspect all the CLI options.
 
-For developing the MCP tools further, please refer to the [docs/development.md](docs/development.md) page for instructions.
+For developing the MCP tools further, please refer to the [Developing](CONTRIBUTING.md#developing) section of CONTRIBUTING.md for instructions.
 
 ## Integration with MCP clients
 
