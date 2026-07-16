@@ -4,7 +4,7 @@
   </a>
 </p>
 
-# Docling MCP: making docling agentic 
+# Docling MCP: making docling agentic
 
 [![PyPI version](https://img.shields.io/pypi/v/docling-mcp)](https://pypi.org/project/docling-mcp/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/docling-mcp)](https://pypi.org/project/docling-mcp/)
@@ -21,7 +21,7 @@ A document processing service using the Docling-MCP library and MCP (Model Conte
 
 ## Overview
 
-Docling MCP is a service that provides tools for document conversion, processing and generation. It uses the Docling library to convert PDF documents into structured formats and provides a caching mechanism to improve performance. The service exposes functionality through a set of tools that can be called by client applications.
+[Docling](https://github.com/docling-project/docling) MCP is a service that provides tools for document conversion, processing and generation. It uses the Docling library to convert PDF documents into structured formats and provides a caching mechanism to improve performance. The service exposes functionality through a set of tools that can be called by client applications.
 
 ## 🆕 What's New in v2.0
 
@@ -86,7 +86,7 @@ export DOCLING_FALLBACK_TO_LOCAL=true
 ## Features
 
 - Conversion tools:
-    - PDF document conversion to structured JSON format (DoclingDocument)
+    - PDF document conversion to structured JSON format ([DoclingDocument][docling_document])
 - Generation tools:
     - Document generation in DoclingDocument, which can be exported to multiple formats
 - Local document caching for improved performance
@@ -97,7 +97,7 @@ export DOCLING_FALLBACK_TO_LOCAL=true
 
 ## Getting started
 
-The easiest way to install Docling MCP is connect it to your client is launching it via [uvx](https://docs.astral.sh/uv/).
+The easiest way to install Docling MCP and connect it to your client is by launching it via [uvx](https://docs.astral.sh/uv/).
 
 Depending on the transfer protocol required, specify the argument `--transport`, for example
 
@@ -145,11 +145,11 @@ Most of these clients use a common config interface. Adding Docling MCP in your 
 
 When using **[Claude for Desktop](https://claude.ai/download)**, simply edit the config file `claude_desktop_config.json` with the snippet above or the example provided [here](docs/integrations/claude_desktop_config.json).
 
-In **[LM Studio](https://lmstudio.ai/)**, edit the `mcp.json` file with the appropriate section or simply clik on the button below for a direct install.
+In **[LM Studio](https://lmstudio.ai/)**, edit the `mcp.json` file with the appropriate section or simply click on the button below for a direct install.
 
 [![Add MCP Server docling to LM Studio](https://files.lmstudio.ai/deeplink/mcp-install-light.svg)](https://lmstudio.ai/install-mcp?name=docling&config=eyJjb21tYW5kIjoidXZ4IiwiYXJncyI6WyItLWZyb209ZG9jbGluZy1tY3AiLCJkb2NsaW5nLW1jcC1zZXJ2ZXIiXX0%3D)
 
-Other integrations are described in [./docs/integrations/](./docs/integrations/).
+Other integrations are described in the [integrations] page.
 
 ## Examples
 
@@ -172,6 +172,10 @@ During the writing process, you can check what has been written already by calli
 
 The document should investigate the impact of tokenizers on the quality of LLMs.
 ```
+
+## Contributing
+
+We welcome external contributions. See [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to get started.
 
 ## License
 
