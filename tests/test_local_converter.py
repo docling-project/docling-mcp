@@ -5,6 +5,10 @@ from unittest.mock import Mock, patch
 
 import pytest
 
+from docling.datamodel.base_models import InputFormat
+from docling.datamodel.pipeline_options import PdfPipelineOptions, VlmPipelineOptions
+from docling.datamodel.pipeline_options_vlm_model import ApiVlmOptions
+
 from docling_mcp.tools.converters.base import ConversionOutput
 from docling_mcp.tools.converters.local import (
     LocalDocumentConverter,
@@ -76,6 +80,41 @@ class TestLocalDocumentConverter:
         assert isinstance(result, ConversionOutput)
         assert result.from_cache is False
         assert result.document_key == cache_key
+
+    @patch("docling_mcp.tools.converters.local.LOCAL_CONVERSION_AVAILABLE", True)
+    @patch("docling_mcp.tools.converters.local.settings")
+    def test_get_converter_uses_pdf_pipeline_by_default(
+        self, mock_settings: Any
+    ) -> None:
+        """Test the default converter uses the standard PDF pipeline."""
+        mock_settings.use_vlm = False
+        mock_settings.keep_images = False
+        mock_settings.do_ocr = True
+        mock_settings.do_table_structure = True
+
+        converter = LocalDocumentConverter()
+        docling_converter = converter._get_converter()
+
+        pdf_option = docling_converter.format_to_options[InputFormat.PDF]
+        assert isinstance(pdf_option.pipeline_options, PdfPipelineOptions)
+
+    @patch("docling_mcp.tools.converters.local.LOCAL_CONVERSION_AVAILABLE", True)
+    @patch("docling_mcp.tools.converters.local.settings")
+    def test_get_converter_uses_vlm_pipeline_when_enabled(
+        self, mock_settings: Any
+    ) -> None:
+        """Test the converter switches to the VLM pipeline when use_vlm is set."""
+        mock_settings.use_vlm = True
+        mock_settings.vlm_host = "http://localhost:11434"
+
+        converter = LocalDocumentConverter()
+        docling_converter = converter._get_converter()
+
+        pdf_option = docling_converter.format_to_options[InputFormat.PDF]
+        assert isinstance(pdf_option.pipeline_options, VlmPipelineOptions)
+        vlm_options = pdf_option.pipeline_options.vlm_options
+        assert isinstance(vlm_options, ApiVlmOptions)
+        assert str(vlm_options.url) == "http://localhost:11434/v1/chat/completions"
 
     @patch("docling_mcp.tools.converters.local.LOCAL_CONVERSION_AVAILABLE", True)
     def test_is_available_when_installed(self) -> None:

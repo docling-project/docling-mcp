@@ -17,5 +17,10 @@ class ConversionSettings(BaseSettings):
     do_ocr: bool = True
     do_table_structure: bool = True
 
+    # Use the VLM pipeline (e.g. granite-docling via a local Ollama instance)
+    # instead of the standard OCR/layout pipeline.
+    use_vlm: bool = False
+    vlm_host: str = "http://localhost:11434"
+
 
 settings = ConversionSettings()

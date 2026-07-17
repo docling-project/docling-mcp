@@ -15,12 +15,20 @@ from .base import ConversionOutput
 # Import DocumentConverter only if available
 try:
     from docling.datamodel.base_models import InputFormat
-    from docling.datamodel.pipeline_options import PdfPipelineOptions
+    from docling.datamodel.pipeline_options import (
+        PdfPipelineOptions,
+        VlmPipelineOptions,
+    )
+    from docling.datamodel.pipeline_options_vlm_model import (
+        ApiVlmOptions,
+        ResponseFormat,
+    )
     from docling.document_converter import (
         DocumentConverter,
         FormatOption,
         PdfFormatOption,
     )
+    from docling.pipeline.vlm_pipeline import VlmPipeline
 
     LOCAL_CONVERSION_AVAILABLE = True
 except ImportError:
@@ -47,15 +55,36 @@ class LocalDocumentConverter:
         if self._converter is not None:
             return self._converter
 
-        pipeline_options = PdfPipelineOptions()
-        pipeline_options.generate_page_images = settings.keep_images
-        pipeline_options.do_ocr = settings.do_ocr
-        pipeline_options.do_table_structure = settings.do_table_structure
+        format_options: dict[InputFormat, FormatOption]
+        if settings.use_vlm:
+            vlm_pipeline_options = VlmPipelineOptions(
+                enable_remote_services=True,
+                vlm_options=ApiVlmOptions(
+                    url=f"{settings.vlm_host}/v1/chat/completions",
+                    params={"model": "ibm/granite-docling:258m"},
+                    prompt="Convert this page to docling.",
+                    response_format=ResponseFormat.DOCTAGS,
+                    stop_strings=["</doctag>", "<|end_of_text|>"],
+                ),
+            )
+            format_options = {
+                InputFormat.PDF: PdfFormatOption(
+                    pipeline_options=vlm_pipeline_options, pipeline_cls=VlmPipeline
+                ),
+                InputFormat.IMAGE: PdfFormatOption(
+                    pipeline_options=vlm_pipeline_options, pipeline_cls=VlmPipeline
+                ),
+            }
+        else:
+            pipeline_options = PdfPipelineOptions()
+            pipeline_options.generate_page_images = settings.keep_images
+            pipeline_options.do_ocr = settings.do_ocr
+            pipeline_options.do_table_structure = settings.do_table_structure
 
-        format_options: dict[InputFormat, FormatOption] = {
-            InputFormat.PDF: PdfFormatOption(pipeline_options=pipeline_options),
-            InputFormat.IMAGE: PdfFormatOption(pipeline_options=pipeline_options),
-        }
+            format_options = {
+                InputFormat.PDF: PdfFormatOption(pipeline_options=pipeline_options),
+                InputFormat.IMAGE: PdfFormatOption(pipeline_options=pipeline_options),
+            }
 
         logger.info(f"Creating DocumentConverter with options: {format_options}")
         self._converter = DocumentConverter(format_options=format_options)
