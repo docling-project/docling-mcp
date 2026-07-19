@@ -5,7 +5,7 @@ from pathlib import Path
 from docling_core.types.doc.common.content_layer import ContentLayer
 from docling_core.types.doc.labels import DocItemLabel
 
-from docling_mcp.docling_cache import get_cache_key
+from docling_mcp.docling_cache import get_cache_key, local_conversion_context
 from docling_mcp.logger import setup_logger
 from docling_mcp.settings.conversion import settings
 from docling_mcp.shared import local_document_cache, local_stack_cache
@@ -67,7 +67,7 @@ class LocalDocumentConverter:
         source = source.strip("\"'")
         logger.info(f"Converting document locally: {source}")
 
-        cache_key = get_cache_key(source)
+        cache_key = get_cache_key(source, conversion=local_conversion_context())
 
         if cache_key in local_document_cache:
             logger.info(f"Document found in cache: {cache_key}")
@@ -88,15 +88,15 @@ class LocalDocumentConverter:
         if has_error:
             raise Exception(f"Local conversion failed: {result.errors}")
 
-        # Cache the result
-        local_document_cache[cache_key] = result.document
-
-        # Add source metadata
+        # Add source metadata before caching so the persisted document is complete
         item = result.document.add_text(
             label=DocItemLabel.TEXT,
             text=f"source: {source}",
             content_layer=ContentLayer.FURNITURE,
         )
+
+        # Cache the result
+        local_document_cache[cache_key] = result.document
         local_stack_cache[cache_key] = [item]
 
         logger.info(f"Successfully converted document: {cache_key}")

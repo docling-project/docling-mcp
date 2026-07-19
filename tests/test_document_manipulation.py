@@ -31,12 +31,12 @@ def test_search_for_text_in_document_anchors() -> None:
     # Load two documents into the local cache to search across
     file_path = Path("./tests/data/amt_handbook_sample.json")
     doc = DoclingDocument.load_from_json(filename=file_path)
-    doc_1_key = "test_doc_1"
+    doc_1_key = "1" * 32
     local_document_cache[doc_1_key] = doc
 
     file_path = Path("./tests/data/lorem_ipsum.docx.json")
     doc = DoclingDocument.load_from_json(filename=file_path)
-    doc_2_key = "test_doc_2"
+    doc_2_key = "2" * 32
     local_document_cache[doc_2_key] = doc
 
     # Test exact match searches
