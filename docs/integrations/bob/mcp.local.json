@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "docling": {
+      "command": "uvx",
+      "args": [
+        "--from=docling-mcp[local]==2.1.0",
+        "docling-mcp-server",
+        "--transport",
+        "stdio"
+      ],
+      "env": {
+        "DOCLING_CONVERSION_MODE": "local"
+      }
+    }
+  }
+}
