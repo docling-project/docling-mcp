@@ -62,7 +62,13 @@ def is_document_in_local_cache(
 def convert_document_into_docling_document(
     source: Annotated[
         str,
-        Field(description="The URL or local file path to the document."),
+        Field(
+            description=(
+                "The URL or local file path to the document. Object-storage "
+                "URIs (s3://, gs://, abfs://) are supported when the "
+                "matching provider extra is installed."
+            )
+        ),
     ],
 ) -> ConversionOutput:
     """Convert a document of any type from a URL or local path and store in local cache.
