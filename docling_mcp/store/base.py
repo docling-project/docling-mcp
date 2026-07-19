@@ -36,11 +36,21 @@ class DocumentMetadata(BaseModel):
         )
 
 
+class CorpusSearchHit(BaseModel):
+    """One ranked match from a search across the stored documents."""
+
+    document_key: str
+    anchor: str
+    snippet: str
+    page: int | None = None
+
+
 class DocumentStoreProtocol(Protocol):
     """Protocol for document stores.
 
     Stores behave as mutable mappings from document key to DoclingDocument and
-    additionally expose metadata listing for corpus-level tools.
+    additionally expose metadata listing and lexical search for corpus-level
+    tools.
     """
 
     def __getitem__(self, document_key: str) -> DoclingDocument:
@@ -73,4 +83,13 @@ class DocumentStoreProtocol(Protocol):
 
     def list_metadata(self) -> list[DocumentMetadata]:
         """Return metadata records for all stored documents."""
+        ...
+
+    def search_corpus(
+        self,
+        query: str,
+        max_results: int,
+        document_keys: list[str] | None = None,
+    ) -> list[CorpusSearchHit]:
+        """Return ranked lexical matches across the stored documents."""
         ...

@@ -13,12 +13,14 @@ from typing import TypeGuard
 from docling_core.types.doc.document import DoclingDocument
 
 from docling_mcp.logger import setup_logger
-from docling_mcp.store.base import DocumentMetadata
+from docling_mcp.store.base import CorpusSearchHit, DocumentMetadata
+from docling_mcp.store.index import CorpusIndex
 
 logger = setup_logger()
 
 _KEY_PATTERN = re.compile(r"[0-9a-f]{32}")
 _META_SUFFIX = ".meta.json"
+_INDEX_FILENAME = "corpus-index.sqlite3"
 
 
 def is_valid_document_key(document_key: object) -> TypeGuard[str]:
@@ -40,12 +42,19 @@ class InMemoryDocumentStore(MutableMapping[str, DoclingDocument]):
 
     def __init__(self) -> None:
         self._documents: dict[str, DoclingDocument] = {}
+        self._index = CorpusIndex(db_path=None)
 
     def __setitem__(self, document_key: str, document: DoclingDocument) -> None:
         """Store a document under a well-formed key."""
         if not is_valid_document_key(document_key):
             raise ValueError(f"Invalid document key: {document_key!r}")
         self._documents[document_key] = document
+        # Only conversion artifacts are searchable; replacing one with an
+        # in-progress authored document also drops its stale index rows.
+        if document.origin is not None:
+            self._index.index_document(document_key, document)
+        else:
+            self._index.remove_document(document_key)
 
     def __getitem__(self, document_key: str) -> DoclingDocument:
         """Return the document stored under a key."""
@@ -54,6 +63,7 @@ class InMemoryDocumentStore(MutableMapping[str, DoclingDocument]):
     def __delitem__(self, document_key: str) -> None:
         """Remove a document."""
         del self._documents[document_key]
+        self._index.remove_document(document_key)
 
     def __iter__(self) -> Iterator[str]:
         """Iterate over the stored document keys."""
@@ -70,6 +80,15 @@ class InMemoryDocumentStore(MutableMapping[str, DoclingDocument]):
             for key, doc in list(self._documents.items())
         ]
 
+    def search_corpus(
+        self,
+        query: str,
+        max_results: int,
+        document_keys: list[str] | None = None,
+    ) -> list[CorpusSearchHit]:
+        """Return ranked lexical matches across the stored documents."""
+        return self._index.search(query, max_results, document_keys)
+
 
 class LocalDocumentStore(MutableMapping[str, DoclingDocument]):
     """Document store persisting converted documents to a local directory.
@@ -83,7 +102,9 @@ class LocalDocumentStore(MutableMapping[str, DoclingDocument]):
     tools live in session memory only and are not written back under the
     conversion key, so a cache hit always returns document state derived
     from the converted source. Use the save/export tools to make edited
-    state durable.
+    state durable. A lexical search index derived from the conversion
+    artifacts lives beside the document files and is reconciled with them
+    on every search, so it can always be rebuilt from disk.
 
     Documents are never evicted from memory during a session, so object
     identity is stable for as long as the process lives. Durability is best
@@ -112,6 +133,7 @@ class LocalDocumentStore(MutableMapping[str, DoclingDocument]):
             probe.unlink(missing_ok=True)
         self._memory: dict[str, DoclingDocument] = {}
         self._lock = threading.RLock()
+        self._index = CorpusIndex(db_path=self._dir / _INDEX_FILENAME)
 
     def _doc_path(self, document_key: str) -> Path:
         return self._dir / f"{document_key}.json"
@@ -177,6 +199,7 @@ class LocalDocumentStore(MutableMapping[str, DoclingDocument]):
             if document.origin is not None:
                 self._memory[document_key] = document
                 self._try_persist(document_key, document)
+                self._index.index_document(document_key, document)
             else:
                 # Replacing a persisted document with a memory-only one must
                 # not let the old disk copy resurface after a restart; if the
@@ -184,6 +207,7 @@ class LocalDocumentStore(MutableMapping[str, DoclingDocument]):
                 # succeeding in memory only.
                 self._drop_persisted(document_key)
                 self._memory[document_key] = document
+                self._index.remove_document(document_key)
 
     def __getitem__(self, document_key: str) -> DoclingDocument:
         """Return a document from memory or load it from disk.
@@ -233,6 +257,7 @@ class LocalDocumentStore(MutableMapping[str, DoclingDocument]):
             found = document_key in self
             self._drop_persisted(document_key)
             self._memory.pop(document_key, None)
+            self._index.remove_document(document_key)
             if not found:
                 raise KeyError(document_key)
 
@@ -241,10 +266,7 @@ class LocalDocumentStore(MutableMapping[str, DoclingDocument]):
         if not is_valid_document_key(document_key):
             return False
         with self._lock:
-            return (
-                document_key in self._memory
-                or self._doc_path(document_key).exists()
-            )
+            return document_key in self._memory or self._doc_path(document_key).exists()
 
     def _disk_keys(self) -> list[str]:
         keys = []
@@ -307,11 +329,53 @@ class LocalDocumentStore(MutableMapping[str, DoclingDocument]):
                     )
 
             for key, doc in self._memory.items():
-                disk_stored_at = (
-                    records[key].stored_at if key in records else None
-                )
+                disk_stored_at = records[key].stored_at if key in records else None
                 records[key] = DocumentMetadata.from_document(
                     key, doc, stored_at=disk_stored_at
                 )
 
             return sorted(records.values(), key=lambda r: r.document_key)
+
+    def _sync_index(self) -> None:
+        """Reconcile the search index with the stored conversion artifacts.
+
+        Rebuilds any missing entries (a deleted or freshly recreated index
+        database) and drops entries whose document no longer exists, so the
+        index is always derivable from the store. Documents only on disk are
+        loaded transiently for indexing without pinning them in memory.
+        """
+        indexed = self._index.indexed_keys()
+        current: dict[str, DoclingDocument | None] = {
+            key: doc for key, doc in self._memory.items() if doc.origin is not None
+        }
+        for key in self._disk_keys():
+            current.setdefault(key, None)
+
+        for key in indexed - set(current):
+            self._index.remove_document(key)
+
+        for key, doc in current.items():
+            if key in indexed:
+                continue
+            if doc is None:
+                try:
+                    doc = DoclingDocument.load_from_json(filename=self._doc_path(key))
+                except (OSError, ValueError) as exc:
+                    logger.warning(f"Could not index document {key}: {exc}")
+                    continue
+            self._index.index_document(key, doc)
+
+    def search_corpus(
+        self,
+        query: str,
+        max_results: int,
+        document_keys: list[str] | None = None,
+    ) -> list[CorpusSearchHit]:
+        """Return ranked lexical matches across the stored documents.
+
+        The index reflects immutable conversion artifacts: session-only tool
+        edits are not searchable, matching what a restart would serve.
+        """
+        with self._lock:
+            self._sync_index()
+            return self._index.search(query, max_results, document_keys)
