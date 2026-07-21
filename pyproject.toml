@@ -46,6 +46,7 @@ dependencies = [
     "docling-core>=2.51.0",
     "httpx>=0.28.1",
     "mcp[cli]>=1.9.4",
+    "pypdfium2>=4.30.0,<6.0.0",
     "pydantic~=2.10",
     "pydantic-settings~=2.4",
     "python-dotenv>=1.1.0",
