@@ -98,6 +98,9 @@ examples = [
     "ipywidgets~=8.1",
     "nbqa~=1.9",
 ]
+constraints = [
+    'numpy (<2.5.0)',   # numpy 2.5.0+ stubs use PEP 695 syntax, incompatible with mypy python_version < 3.12
+]
 
 [project.scripts]
 docling-mcp-server = "docling_mcp.servers.mcp_server:app"

@@ -2,10 +2,8 @@
 
 from mcp.server.fastmcp import FastMCP
 
-from docling_core.types.doc.document import (
-    DoclingDocument,
-    NodeItem,
-)
+from docling_core.types.doc.document import DoclingDocument
+from docling_core.types.doc.items.node import NodeItem
 
 # Create a single shared FastMCP instance
 mcp = FastMCP("docling")

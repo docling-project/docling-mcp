@@ -13,12 +13,10 @@ from docling.datamodel.base_models import ConversionStatus, InputFormat
 from docling.datamodel.document import (
     ConversionResult,
 )
-from docling_core.types.doc.document import (
-    ContentLayer,
-    DoclingDocument,
-    GroupItem,
-    LevelNumber,
-)
+from docling_core.types.doc.common.content_layer import ContentLayer
+from docling_core.types.doc.common.scalars import LevelNumber
+from docling_core.types.doc.document import DoclingDocument
+from docling_core.types.doc.items.group import GroupItem
 from docling_core.types.doc.labels import (
     DocItemLabel,
     GroupLabel,
