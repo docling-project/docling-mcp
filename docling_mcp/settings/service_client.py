@@ -1,7 +1,6 @@
 """Settings for Docling service client."""
 
 from enum import Enum
-from typing import Optional
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -22,8 +21,8 @@ class ServiceClientSettings(BaseSettings):
     )
 
     # Service configuration
-    service_url: Optional[str] = None
-    service_api_key: Optional[str] = None
+    service_url: str | None = None
+    service_api_key: str | None = None
 
     # Operation mode
     conversion_mode: ConversionMode = ConversionMode.REMOTE
