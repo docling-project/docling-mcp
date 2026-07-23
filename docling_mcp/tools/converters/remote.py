@@ -56,6 +56,7 @@ class RemoteDocumentConverter:
             do_ocr=True,
             do_table_structure=True,
             include_images=False,
+            images_scale=1.0,
             to_formats=[OutputFormat.JSON],
             abort_on_error=False,
         )

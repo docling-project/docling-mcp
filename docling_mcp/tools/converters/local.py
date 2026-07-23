@@ -49,6 +49,7 @@ class LocalDocumentConverter:
 
         pipeline_options = PdfPipelineOptions()
         pipeline_options.generate_page_images = settings.keep_images
+        pipeline_options.images_scale = settings.images_scale
         pipeline_options.do_ocr = settings.do_ocr
         pipeline_options.do_table_structure = settings.do_table_structure
 
