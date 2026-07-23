@@ -39,6 +39,7 @@
         "DOCLING_SERVICE_TIMEOUT": "${user_config.service_timeout}",
         "DOCLING_FALLBACK_TO_LOCAL": "${user_config.fallback_to_local}",
         "DOCLING_MCP_KEEP_IMAGES": "${user_config.keep_images}",
+        "DOCLING_MCP_IMAGES_SCALE": "${user_config.images_scale}",
         "DOCLING_MCP_DO_OCR": "${user_config.do_ocr}",
         "DOCLING_MCP_DO_TABLE_STRUCTURE": "${user_config.do_table_structure}"
       }
@@ -98,21 +99,28 @@
     "keep_images": {
       "type": "boolean",
       "title": "Keep Images",
-      "description": "Generate and store page images while converting documents (applies to local mode).",
+      "description": "Generate and store page images while converting documents.",
       "default": false,
+      "required": false
+    },
+    "images_scale": {
+      "type": "number",
+      "title": "Images Scale",
+      "description": "Scaling factor for generated images.",
+      "default": 1.0,
       "required": false
     },
     "do_ocr": {
       "type": "boolean",
       "title": "Enable OCR",
-      "description": "Enable Optical Character Recognition for scanned documents (applies to local mode).",
+      "description": "Enable Optical Character Recognition for scanned documents.",
       "default": true,
       "required": false
     },
     "do_table_structure": {
       "type": "boolean",
       "title": "Enable Table Structure",
-      "description": "Enable table structure recognition (applies to local mode).",
+      "description": "Enable table structure recognition.",
       "default": true,
       "required": false
     }
