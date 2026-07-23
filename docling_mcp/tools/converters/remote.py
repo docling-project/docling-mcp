@@ -53,10 +53,10 @@ class RemoteDocumentConverter:
 
         # Configure conversion options
         options = ConvertDocumentsOptions(
-            do_ocr=True,
-            do_table_structure=True,
-            include_images=False,
-            images_scale=1.0,
+            do_ocr=settings.do_ocr,
+            do_table_structure=settings.do_table_structure,
+            include_images=settings.keep_images,
+            images_scale=settings.images_scale,
             to_formats=[OutputFormat.JSON],
             abort_on_error=False,
         )

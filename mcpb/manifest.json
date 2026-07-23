@@ -99,28 +99,28 @@
     "keep_images": {
       "type": "boolean",
       "title": "Keep Images",
-      "description": "Generate and store page images while converting documents (applies to local mode).",
+      "description": "Generate and store page images while converting documents.",
       "default": false,
       "required": false
     },
     "images_scale": {
       "type": "number",
       "title": "Images Scale",
-      "description": "Scaling factor for generated images (applies to local mode).",
+      "description": "Scaling factor for generated images.",
       "default": 1.0,
       "required": false
     },
     "do_ocr": {
       "type": "boolean",
       "title": "Enable OCR",
-      "description": "Enable Optical Character Recognition for scanned documents (applies to local mode).",
+      "description": "Enable Optical Character Recognition for scanned documents.",
       "default": true,
       "required": false
     },
     "do_table_structure": {
       "type": "boolean",
       "title": "Enable Table Structure",
-      "description": "Enable table structure recognition (applies to local mode).",
+      "description": "Enable table structure recognition.",
       "default": true,
       "required": false
     }

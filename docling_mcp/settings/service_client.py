@@ -31,6 +31,12 @@ class ServiceClientSettings(BaseSettings):
     service_timeout: float = 300.0
     service_max_retries: int = 3
 
+    # Conversion Settings
+    keep_images: bool = False
+    images_scale: float = 1.0
+    do_ocr: bool = True
+    do_table_structure: bool = True
+
     # Fallback behavior
     fallback_to_local: bool = False  # If remote fails, try local (if available)
 
