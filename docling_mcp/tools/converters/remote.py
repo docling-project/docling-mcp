@@ -5,7 +5,7 @@ from pathlib import Path
 from docling.datamodel.base_models import OutputFormat
 from docling.datamodel.service.options import ConvertDocumentsOptions
 from docling.service_client import DoclingServiceClient
-from docling_core.types.doc.document import ContentLayer
+from docling_core.types.doc.common.content_layer import ContentLayer
 from docling_core.types.doc.labels import DocItemLabel
 
 from docling_mcp.docling_cache import get_cache_key

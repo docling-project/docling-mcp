@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from docling_core.types.doc.document import ContentLayer
+from docling_core.types.doc.common.content_layer import ContentLayer
 from docling_core.types.doc.labels import DocItemLabel
 
 from docling_mcp.docling_cache import get_cache_key

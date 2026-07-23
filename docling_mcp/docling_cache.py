@@ -5,7 +5,6 @@ import json
 import os
 import sys
 from pathlib import Path
-from typing import Optional
 
 from docling_mcp.logger import setup_logger
 
@@ -69,7 +68,7 @@ def get_cache_dir() -> Path:
 
 
 def get_cache_key(
-    source: str, enable_ocr: bool = False, ocr_language: Optional[list[str]] = None
+    source: str, enable_ocr: bool = False, ocr_language: list[str] | None = None
 ) -> str:
     """Generate a cache key for the document conversion."""
     key_data = {

@@ -7,14 +7,10 @@ from typing import Annotated
 from mcp.types import ToolAnnotations
 from pydantic import Field
 
-from docling_core.types.doc.document import (
-    DocItem,
-    GroupItem,
-    RefItem,
-    SectionHeaderItem,
-    TextItem,
-    TitleItem,
-)
+from docling_core.types.doc.common.reference import RefItem
+from docling_core.types.doc.items.group import GroupItem
+from docling_core.types.doc.items.node import DocItem
+from docling_core.types.doc.items.text import SectionHeaderItem, TextItem, TitleItem
 
 from docling_mcp.logger import setup_logger
 from docling_mcp.shared import local_document_cache, mcp

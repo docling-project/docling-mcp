@@ -1,5 +1,6 @@
 """Tools for converting documents into DoclingDocument objects."""
 
+import asyncio
 import gc
 from dataclasses import dataclass
 from pathlib import Path
@@ -114,7 +115,9 @@ async def convert_directory_files_into_docling_document(
         # Remove any quotes from the source string
         source = source.strip("\"'")
         directory = Path(source)
-        files: list[Path] = [f for f in directory.iterdir() if f.is_file()]
+        files: list[Path] = await asyncio.to_thread(
+            lambda: [f for f in directory.iterdir() if f.is_file()]
+        )
         out: list[ConversionOutput] = []
 
         logger.info(f"Converting {len(files)} files from directory: {source}")
