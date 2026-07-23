@@ -17,6 +17,7 @@ class ToolGroups(str, enum.Enum):
     CONVERSION = "conversion"
     GENERATION = "generation"
     MANIPULATION = "manipulation"
+    CORPUS = "corpus"
     LLAMA_INDEX_RAG = "llama-index-rag"
     LLAMA_STACK_RAG = "llama-stack-rag"
     LLAMA_STACK_IE = "llama-stack-ie"
@@ -30,7 +31,12 @@ class TransportType(str, enum.Enum):
     STREAMABLE_HTTP = "streamable-http"
 
 
-_DEFAULT_TOOLS = [ToolGroups.CONVERSION, ToolGroups.GENERATION, ToolGroups.MANIPULATION]
+_DEFAULT_TOOLS = [
+    ToolGroups.CONVERSION,
+    ToolGroups.GENERATION,
+    ToolGroups.MANIPULATION,
+    ToolGroups.CORPUS,
+]
 
 
 @app.command()
@@ -63,6 +69,10 @@ def main(
     if ToolGroups.MANIPULATION in tools:
         logger.info("loading manipulation tools...")
         import docling_mcp.tools.manipulation
+
+    if ToolGroups.CORPUS in tools:
+        logger.info("loading corpus tools...")
+        import docling_mcp.tools.corpus
 
     if ToolGroups.LLAMA_INDEX_RAG in tools:
         logger.info("loading Llama Index RAG tools...")

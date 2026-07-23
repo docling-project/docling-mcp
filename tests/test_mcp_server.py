@@ -34,6 +34,8 @@ async def test_list_tools(mcp_client: AsyncGenerator[Any, Any]) -> None:
         "get_text_of_document_item_at_anchor",
         "update_text_of_document_item_at_anchor",
         "delete_document_items_at_anchors",
+        "list_converted_documents",
+        "search_across_documents",
     ]
 
     assert tools == gold_tools

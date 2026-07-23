@@ -136,7 +136,7 @@ class SaveDocumentOutput:
 
 @mcp.tool(
     title="Save Docling document",
-    annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False),
+    annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False),
 )
 def save_docling_document(
     document_key: Annotated[

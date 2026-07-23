@@ -1,6 +1,13 @@
 """Define configuration options across tests."""
 
 import os
+import sys
+
+# Keep tests hermetic: use the in-memory document store so persisted documents
+# from earlier runs cannot change conversion results. Set unconditionally,
+# before any docling_mcp import, so an inherited environment cannot leak the
+# real persistent cache into test runs.
+os.environ["DOCLING_MCP_CACHE_PERSIST"] = "false"
 from collections.abc import AsyncGenerator
 from contextlib import AsyncExitStack
 from typing import Any
@@ -33,7 +40,7 @@ class MCPClient:
         # Explicitly use STDIO transport for tests (server default is now streamable-http)
         # Run as module instead of script to ensure proper Typer CLI initialization
         server_params = StdioServerParameters(
-            command="python",
+            command=sys.executable,
             args=["-m", "docling_mcp.servers.mcp_server", "--transport", "stdio"],
             env=test_env,
         )
@@ -79,4 +86,8 @@ async def mcp_client() -> AsyncGenerator[Any, Any]:
     client = MCPClient()
     await client.connect_to_server("docling_mcp/servers/mcp_server.py")
     yield client
+    # Intentionally not awaited: the MCP stdio client's anyio cancel scopes
+    # are entered across tasks under pytest-asyncio, and closing the stack
+    # here raises "Attempted to exit cancel scope in a different task".
+    # Leaked subprocesses are reaped when the pytest process exits.
     # await client.cleanup()

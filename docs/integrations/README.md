@@ -9,6 +9,11 @@ Docling MCP can be easily integrated into MCP-compatible clients using standard 
 Once installed, extend Claude for Desktop so that it can read from your computer's file system, by following the [For Claude Desktop Users](https://modelcontextprotocol.io/quickstart/user) tutorial.
 
 
+## IBM Bob
+
+[IBM Bob](https://bob.ibm.com) reads MCP servers from a global configuration or a project-level `.bob/mcp.json` file. Both local conversion and delegation to a docling-serve endpoint are supported. See the dedicated [integration guide](bob.md) for the setup, example configurations, and a skill that makes Bob convert documents with Docling before working on them.
+
+
 ## LM Studio
 
 [LM Studio](https://lmstudio.ai/) supports MCP tools and allows to run your agentic workloads completely locally. The configuration is done by editing the `mcp.json` file, or with the convenience button below.
