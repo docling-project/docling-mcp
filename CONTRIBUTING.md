@@ -29,17 +29,6 @@ We use [uv](https://docs.astral.sh/uv/) as package and project manager.
 
 To install `uv`, check the documentation on [Installing uv](https://docs.astral.sh/uv/getting-started/installation/).
 
-#### Prerequisites
-
-##### Rust toolchain (macOS)
-
-The `smolagents` optional dependency group pulls in [`litellm`](https://github.com/BerriAI/litellm), which requires a Rust compiler to build on macOS (no pre-built macOS wheels are published). If you are on macOS and plan to install all extras, install Rust first:
-
-```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-source "$HOME/.cargo/env"
-```
-
 #### Create an environment and sync it
 
 You can use the `uv sync` to create a project virtual environment (if it does not already exist) and sync

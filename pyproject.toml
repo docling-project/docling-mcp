@@ -84,9 +84,9 @@ mellea = [
 
 [dependency-groups]
 dev = [
-    "mypy~=2.0.0",
+    "mypy~=2.0",
     "pre-commit-uv~=4.1",
-    "pytest~=9.0.3",
+    "pytest~=9.0",
     "pytest-asyncio>=1.0.0",
     "pytest-check~=2.4",
     "pytest-cov>=6.1.1",
@@ -94,7 +94,7 @@ dev = [
     "ruff>=0.9.6",
 ]
 examples = [
-    "ipykernel~=6.29",
+    "ipykernel~=7.3",
     "ipywidgets~=8.1",
     "nbqa~=1.9",
 ]
@@ -113,6 +113,7 @@ Changelog = "https://github.com/docling-project/docling-mcp/blob/main/CHANGELOG.
 
 [tool.uv]
 default-groups = ["dev", "examples"]
+constraint-dependencies = ["litellm<1.66"]  # Newer versions require a Rust compiler to build on macOS
 
 [tool.hatch.build.targets.sdist]
 include = ["docling_mcp"]
