@@ -6,7 +6,7 @@ from typing import Annotated
 import typer
 
 from docling_mcp.logger import setup_logger
-from docling_mcp.shared import mcp
+from docling_mcp.shared import init_mcp
 
 app = typer.Typer()
 
@@ -52,6 +52,13 @@ def main(
     if tools is None:
         tools = [*_DEFAULT_TOOLS]
 
+    # Construct the FastMCP instance with the final host/port values *before*
+    # importing any tool or prompt module.  This ensures the SDK's built-in
+    # DNS-rebinding-protection logic runs against the real bind address:
+    # loopback addresses get protection enabled; 0.0.0.0 and other addresses
+    # get it disabled, which is correct for container / Kubernetes deployments.
+    mcp = init_mcp(host=host, port=port)
+
     if ToolGroups.CONVERSION in tools:
         logger.info("loading conversion tools...")
         import docling_mcp.tools.conversion
@@ -82,10 +89,7 @@ def main(
     import docling_mcp.prompts.generation
     import docling_mcp.prompts.manipulation
 
-    # Initialize and run the server
     logger.info("starting up Docling MCP-server ...")
-    mcp.settings.host = host
-    mcp.settings.port = port
     mcp.run(transport=transport.value)
 
 
