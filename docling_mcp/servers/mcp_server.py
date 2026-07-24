@@ -6,7 +6,7 @@ from typing import Annotated
 import typer
 
 from docling_mcp.logger import setup_logger
-from docling_mcp.shared import mcp
+from docling_mcp.shared import allowed_roots, mcp
 
 app = typer.Typer()
 
@@ -44,6 +44,18 @@ def main(
             help=f"Tools to be loaded in the server. The default list is {', '.join(_DEFAULT_TOOLS)}"
         ),
     ] = None,
+    allowed_directories: Annotated[
+        list[str] | None,
+        typer.Option(
+            "--allowed-directories",
+            help=(
+                "Filesystem directories the server is allowed to read from. "
+                "Used as a fallback when the client does not advertise the MCP "
+                "Roots capability. When the client sends roots, those replace "
+                "this list at runtime."
+            ),
+        ),
+    ] = None,
 ) -> None:
     """Initialize and run the Docling MCP server."""
     # Create a default project logger
@@ -75,6 +87,22 @@ def main(
     if ToolGroups.LLAMA_STACK_IE in tools:
         logger.info("loading Llama Stack Structured Output tools...")
         import docling_mcp.tools.llama_stack.structured_output
+
+    # Seed the static allowed-roots set from --allowed-directories.
+    # Client-sent Roots will replace this set at runtime when present.
+    if allowed_directories:
+        allowed_roots.set_static_roots(allowed_directories)
+        logger.info(f"static allowed-directories: {allowed_directories}")
+    else:
+        logger.info(
+            "no --allowed-directories given; relying on MCP Roots from client "
+            "or running unconstrained for backward compatibility"
+        )
+
+    # Wire the roots notification handlers onto the FastMCP server.
+    from docling_mcp._roots_wiring import install_roots_handlers
+
+    install_roots_handlers()
 
     # Always load prompts regardless of tool group selection
     logger.info("loading prompts...")
