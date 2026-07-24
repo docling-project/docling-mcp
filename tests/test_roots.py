@@ -11,7 +11,8 @@ from __future__ import annotations
 import os
 import tempfile
 from pathlib import Path
-from unittest.mock import AsyncMock, MagicMock
+from typing import Any
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -324,6 +325,144 @@ async def test_on_list_changed_refreshes_registry() -> None:
     active = allowed_roots.active_roots()
     assert expected_a in active
     assert expected_b in active
+
+
+@pytest.mark.asyncio
+async def test_handle_message_with_session_exposes_session_during_dispatch(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """install_roots_handlers wraps server._handle_message so the active
+    session is available via the ContextVar during dispatch, and the
+    ContextVar is reset to None once the call completes.
+
+    Uses a fresh, isolated fake server (swapped in via monkeypatch on
+    mcp._mcp_server) rather than the real shared singleton, so the wrap is
+    guaranteed to happen fresh regardless of what earlier tests in this
+    module may have already done to the real server.
+    """
+    from docling_mcp import _roots_wiring as wiring
+    from docling_mcp.shared import mcp
+
+    fake_server = MagicMock()
+    fake_server.notification_handlers = {}
+    observed_during_call: list[Any] = []
+    fake_session = MagicMock()
+
+    async def fake_original(
+        message: Any,
+        session: Any,
+        lifespan_context: Any,
+        raise_exceptions: bool = False,
+    ) -> str:
+        observed_during_call.append(wiring._active_session.get())
+        return "handled"
+
+    # A real function (not a MagicMock) — MagicMock auto-vivifies attribute
+    # access, which would make the idempotency guard's getattr(...) truthy
+    # and cause install_roots_handlers() to skip wrapping entirely.
+    fake_server._handle_message = fake_original
+    # Patch mcp (imported from its defining module, docling_mcp.shared, not
+    # via wiring.mcp — mypy strict flags reaching through a module that
+    # doesn't explicitly re-export the name) — same object either way.
+    monkeypatch.setattr(mcp, "_mcp_server", fake_server)
+
+    wiring.install_roots_handlers()
+    wrapped = fake_server._handle_message
+    assert wrapped is not fake_original  # confirms wrapping actually happened
+
+    assert wiring._active_session.get() is None
+    result = await wrapped(MagicMock(), fake_session, MagicMock())
+
+    assert result == "handled"
+    assert observed_during_call == [fake_session]  # session WAS visible mid-call
+    assert wiring._active_session.get() is None  # reset afterward
+
+
+@pytest.mark.asyncio
+async def test_handle_message_with_session_resets_contextvar_on_exception(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """The ContextVar resets even when the wrapped delegate raises."""
+    from docling_mcp import _roots_wiring as wiring
+    from docling_mcp.shared import mcp
+
+    fake_server = MagicMock()
+    fake_server.notification_handlers = {}
+    fake_session = MagicMock()
+
+    async def raising_original(
+        message: Any,
+        session: Any,
+        lifespan_context: Any,
+        raise_exceptions: bool = False,
+    ) -> None:
+        assert wiring._active_session.get() is fake_session
+        raise RuntimeError("boom")
+
+    fake_server._handle_message = raising_original
+    monkeypatch.setattr(mcp, "_mcp_server", fake_server)
+
+    wiring.install_roots_handlers()
+    wrapped = fake_server._handle_message
+
+    with pytest.raises(RuntimeError, match="boom"):
+        await wrapped(MagicMock(), fake_session, MagicMock())
+
+    assert wiring._active_session.get() is None
+
+
+@pytest.mark.asyncio
+async def test_refresh_from_client_swallows_list_roots_exception() -> None:
+    """If session.list_roots() raises, _refresh_from_client logs and
+    returns instead of propagating."""
+    from mcp.types import ClientCapabilities, RootsCapability
+
+    from docling_mcp import _roots_wiring as wiring
+
+    fake_session = MagicMock()
+    fake_session.client_params = MagicMock()
+    fake_session.client_params.capabilities = ClientCapabilities(
+        roots=RootsCapability(listChanged=True)
+    )
+    fake_session.list_roots = AsyncMock(side_effect=RuntimeError("boom"))
+
+    await wiring._refresh_from_client(fake_session)  # does not raise
+
+    fake_session.list_roots.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_on_initialized_noop_when_no_active_session() -> None:
+    """No active session in the ContextVar → _on_initialized is a no-op."""
+    from mcp.types import InitializedNotification
+
+    from docling_mcp import _roots_wiring as wiring
+
+    assert wiring._active_session.get() is None  # default, nothing set
+
+    with patch.object(wiring, "_refresh_from_client", new=AsyncMock()) as mock_refresh:
+        await wiring._on_initialized(
+            InitializedNotification(method="notifications/initialized")
+        )
+
+    mock_refresh.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_on_roots_list_changed_noop_when_no_active_session() -> None:
+    """No active session in the ContextVar → handler is a no-op."""
+    from mcp.types import RootsListChangedNotification
+
+    from docling_mcp import _roots_wiring as wiring
+
+    assert wiring._active_session.get() is None
+
+    with patch.object(wiring, "_refresh_from_client", new=AsyncMock()) as mock_refresh:
+        await wiring._on_roots_list_changed(
+            RootsListChangedNotification(method="notifications/roots/list_changed")
+        )
+
+    mock_refresh.assert_not_awaited()
 
 
 # ---------------------------------------------------------------------------
