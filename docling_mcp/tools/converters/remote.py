@@ -40,8 +40,14 @@ class RemoteDocumentConverter:
         )
         logger.info(f"Initialized remote converter with URL: {settings.service_url}")
 
-    def convert_document(self, source: str) -> ConversionOutput:
-        """Convert document using remote API."""
+    def convert_document(
+        self,
+        source: str,
+        do_ocr: bool | None = None,
+        do_table_structure: bool | None = None,
+        keep_images: bool | None = None,
+    ) -> ConversionOutput:
+        """Convert document using remote API, optionally overriding pipeline opts."""
         source = source.strip("\"'")
         logger.info(f"Converting document via remote API: {source}")
 
@@ -51,11 +57,25 @@ class RemoteDocumentConverter:
             logger.info(f"Document found in cache: {cache_key}")
             return ConversionOutput(True, cache_key)
 
+        # Resolve per-call overrides; fall back to ServiceClientSettings env
+        # defaults (the settings class this remote path actually reads from
+        # as of #116 — do not fall back to ConversionSettings here, that's
+        # the local-converter-only settings object).
+        effective_do_ocr = do_ocr if do_ocr is not None else settings.do_ocr
+        effective_do_table = (
+            do_table_structure
+            if do_table_structure is not None
+            else settings.do_table_structure
+        )
+        effective_keep_images = (
+            keep_images if keep_images is not None else settings.keep_images
+        )
+
         # Configure conversion options
         options = ConvertDocumentsOptions(
-            do_ocr=settings.do_ocr,
-            do_table_structure=settings.do_table_structure,
-            include_images=settings.keep_images,
+            do_ocr=effective_do_ocr,
+            do_table_structure=effective_do_table,
+            include_images=effective_keep_images,
             images_scale=settings.images_scale,
             to_formats=[OutputFormat.JSON],
             abort_on_error=False,

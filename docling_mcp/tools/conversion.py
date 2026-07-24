@@ -64,6 +64,53 @@ def convert_document_into_docling_document(
         str,
         Field(description="The URL or local file path to the document."),
     ],
+    do_ocr: Annotated[
+        bool | None,
+        Field(
+            default=None,
+            description=(
+                "Override OCR for this call. None = use DOCLING_MCP_DO_OCR env "
+                "default (True). Set False on born-digital PDFs to skip the OCR "
+                "step entirely — typically the difference between a multi-minute "
+                "conversion and a sub-second one."
+            ),
+        ),
+    ] = None,
+    do_table_structure: Annotated[
+        bool | None,
+        Field(
+            default=None,
+            description=(
+                "Override table-structure detection for this call. None = use "
+                "DOCLING_MCP_DO_TABLE_STRUCTURE env default (True). Set False "
+                "for plain-text PDFs to skip table layout analysis."
+            ),
+        ),
+    ] = None,
+    keep_images: Annotated[
+        bool | None,
+        Field(
+            default=None,
+            description=(
+                "Override per-page image generation for this call. None = use "
+                "DOCLING_MCP_KEEP_IMAGES env default (False). Set True when the "
+                "caller plans to use the page_thumbnail tool afterward; images "
+                "are generated at convert time, not retrievable after the fact."
+            ),
+        ),
+    ] = None,
+    conversion_mode: Annotated[
+        str | None,
+        Field(
+            default=None,
+            description=(
+                "Override converter selection for this call. One of 'local' or "
+                "'remote'. None = use DOCLING_CONVERSION_MODE env default "
+                "(remote). Use 'local' when DOCLING_SERVICE_URL is not "
+                "configured to avoid the remote-mode bootstrap error."
+            ),
+        ),
+    ] = None,
 ) -> ConversionOutput:
     """Convert a document of any type from a URL or local path and store in local cache.
 
@@ -73,10 +120,21 @@ def convert_document_into_docling_document(
     set to False along with the document's unique cache key. If the document
     was already in the local cache, the conversion is skipped and the output
     boolean is set to True.
+
+    All four pipeline overrides (do_ocr, do_table_structure, keep_images,
+    conversion_mode) are optional. When None, the server falls back to the
+    corresponding env-var default. Set them per-call when you know something
+    about the document the env-var defaults can't (e.g., this PDF is born-
+    digital, skip OCR).
     """
     try:
-        converter = get_converter()
-        result = converter.convert_document(source)
+        converter = get_converter(conversion_mode=conversion_mode)
+        result = converter.convert_document(
+            source,
+            do_ocr=do_ocr,
+            do_table_structure=do_table_structure,
+            keep_images=keep_images,
+        )
 
         # Clean up memory after conversion
         cleanup_memory()

@@ -39,31 +39,67 @@ class LocalDocumentConverter:
                 "Local conversion requires docling-mcp[local] extra. "
                 "Install with: pip install docling-mcp[local]"
             )
-        self._converter: DocumentConverter | None = None
+        # Cache one DocumentConverter per unique pipeline-option tuple so that
+        # repeated calls with the same overrides don't re-instantiate the
+        # underlying models.
+        self._converter_cache: dict[tuple[bool, bool, bool], DocumentConverter] = {}
         logger.info("Initialized local document converter")
 
-    def _get_converter(self) -> "DocumentConverter":
-        """Get or create DocumentConverter instance."""
-        if self._converter is not None:
-            return self._converter
+    def _get_converter(
+        self,
+        do_ocr: bool | None = None,
+        do_table_structure: bool | None = None,
+        keep_images: bool | None = None,
+    ) -> "DocumentConverter":
+        """Get or create DocumentConverter instance for the given pipeline options.
+
+        When an override is None, the corresponding env-var setting is used.
+        Returns a cached converter when the same tuple of options has been
+        requested before, so per-call overrides don't pay the model-load cost
+        on every invocation.
+        """
+        effective_do_ocr = do_ocr if do_ocr is not None else settings.do_ocr
+        effective_do_table = (
+            do_table_structure
+            if do_table_structure is not None
+            else settings.do_table_structure
+        )
+        effective_keep_images = (
+            keep_images if keep_images is not None else settings.keep_images
+        )
+
+        key = (effective_do_ocr, effective_do_table, effective_keep_images)
+        if key in self._converter_cache:
+            return self._converter_cache[key]
 
         pipeline_options = PdfPipelineOptions()
-        pipeline_options.generate_page_images = settings.keep_images
+        pipeline_options.generate_page_images = effective_keep_images
         pipeline_options.images_scale = settings.images_scale
-        pipeline_options.do_ocr = settings.do_ocr
-        pipeline_options.do_table_structure = settings.do_table_structure
+        pipeline_options.do_ocr = effective_do_ocr
+        pipeline_options.do_table_structure = effective_do_table
 
         format_options: dict[InputFormat, FormatOption] = {
             InputFormat.PDF: PdfFormatOption(pipeline_options=pipeline_options),
             InputFormat.IMAGE: PdfFormatOption(pipeline_options=pipeline_options),
         }
 
-        logger.info(f"Creating DocumentConverter with options: {format_options}")
-        self._converter = DocumentConverter(format_options=format_options)
-        return self._converter
+        logger.info(
+            f"Creating DocumentConverter with do_ocr={effective_do_ocr}, "
+            f"do_table_structure={effective_do_table}, "
+            f"keep_images={effective_keep_images}"
+        )
+        converter = DocumentConverter(format_options=format_options)
+        self._converter_cache[key] = converter
+        return converter
 
-    def convert_document(self, source: str) -> ConversionOutput:
-        """Convert document using local converter."""
+    def convert_document(
+        self,
+        source: str,
+        do_ocr: bool | None = None,
+        do_table_structure: bool | None = None,
+        keep_images: bool | None = None,
+    ) -> ConversionOutput:
+        """Convert document using local converter, optionally overriding pipeline opts."""
         source = source.strip("\"'")
         logger.info(f"Converting document locally: {source}")
 
@@ -73,8 +109,12 @@ class LocalDocumentConverter:
             logger.info(f"Document found in cache: {cache_key}")
             return ConversionOutput(True, cache_key)
 
-        # Get converter and convert
-        converter = self._get_converter()
+        # Get converter for the requested pipeline options (None = env default)
+        converter = self._get_converter(
+            do_ocr=do_ocr,
+            do_table_structure=do_table_structure,
+            keep_images=keep_images,
+        )
         result = converter.convert(source)
 
         # Check for errors
