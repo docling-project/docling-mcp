@@ -1,7 +1,7 @@
 fail_fast: true
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.11.6
+    rev: v0.15.22
     hooks:
       # Run the Ruff formatter.
       - id: ruff-format

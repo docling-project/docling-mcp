@@ -256,7 +256,10 @@ async def test_on_initialized_seeds_from_session() -> None:
         wiring._active_session.reset(token)
 
     fake_session.list_roots.assert_awaited_once()
-    assert Path("/tmp/from-client").resolve() in allowed_roots.active_roots()
+    assert (
+        Path("/tmp/from-client").resolve()  # noqa: ASYNC240 - local, non-blocking
+        in allowed_roots.active_roots()
+    )
 
 
 @pytest.mark.asyncio
@@ -312,8 +315,8 @@ async def test_on_list_changed_refreshes_registry() -> None:
         )
     )
 
-    expected_a = Path("/tmp/a").resolve()
-    expected_b = Path("/tmp/b").resolve()
+    expected_a = Path("/tmp/a").resolve()  # noqa: ASYNC240 - local, non-blocking
+    expected_b = Path("/tmp/b").resolve()  # noqa: ASYNC240 - local, non-blocking
     token = wiring._active_session.set(fake_session)
     try:
         await wiring._on_roots_list_changed(

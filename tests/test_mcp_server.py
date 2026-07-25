@@ -91,10 +91,10 @@ async def test_call_tool(mcp_client: AsyncGenerator[Any, Any]) -> None:
 
 
 @patch("docling_mcp._roots_wiring.install_roots_handlers")
-@patch("docling_mcp.servers.mcp_server.mcp")
+@patch("docling_mcp.servers.mcp_server.init_mcp")
 @patch("docling_mcp.servers.mcp_server.allowed_roots")
 def test_main_sets_static_roots_when_allowed_directories_given(
-    mock_allowed_roots: Any, mock_mcp: Any, mock_install_roots_handlers: Any
+    mock_allowed_roots: Any, mock_init_mcp: Any, mock_install_roots_handlers: Any
 ) -> None:
     """--allowed-directories seeds the static roots set and wires the
     roots notification handlers.
@@ -104,7 +104,15 @@ def test_main_sets_static_roots_when_allowed_directories_given(
     because main() imports it with a deferred `from ... import` inside
     the function body — the name doesn't exist on the mcp_server module
     until that line executes, so patching it there would fail.
+
+    init_mcp is patched (not a bare `mcp` module attribute) because
+    main() now builds the FastMCP instance lazily via
+    `mcp = init_mcp(host=host, port=port)` so DNS-rebinding protection
+    sees the real bind address — mcp_server no longer imports `mcp` at
+    module level.
     """
+    mock_mcp = mock_init_mcp.return_value
+
     main(
         transport=TransportType.STDIO,
         tools=None,
@@ -119,10 +127,10 @@ def test_main_sets_static_roots_when_allowed_directories_given(
 
 
 @patch("docling_mcp._roots_wiring.install_roots_handlers")
-@patch("docling_mcp.servers.mcp_server.mcp")
+@patch("docling_mcp.servers.mcp_server.init_mcp")
 @patch("docling_mcp.servers.mcp_server.allowed_roots")
 def test_main_skips_static_roots_when_no_allowed_directories(
-    mock_allowed_roots: Any, mock_mcp: Any, mock_install_roots_handlers: Any
+    mock_allowed_roots: Any, mock_init_mcp: Any, mock_install_roots_handlers: Any
 ) -> None:
     """No --allowed-directories → set_static_roots is never called, but
     the roots notification handlers are still installed (client-sent

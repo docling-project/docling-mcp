@@ -5,7 +5,7 @@ from pathlib import Path
 from docling.datamodel.base_models import OutputFormat
 from docling.datamodel.service.options import ConvertDocumentsOptions
 from docling.service_client import DoclingServiceClient
-from docling_core.types.doc.document import ContentLayer
+from docling_core.types.doc.common.content_layer import ContentLayer
 from docling_core.types.doc.labels import DocItemLabel
 
 from docling_mcp.docling_cache import get_cache_key
@@ -53,9 +53,10 @@ class RemoteDocumentConverter:
 
         # Configure conversion options
         options = ConvertDocumentsOptions(
-            do_ocr=True,
-            do_table_structure=True,
-            include_images=False,
+            do_ocr=settings.do_ocr,
+            do_table_structure=settings.do_table_structure,
+            include_images=settings.keep_images,
+            images_scale=settings.images_scale,
             to_formats=[OutputFormat.JSON],
             abort_on_error=False,
         )

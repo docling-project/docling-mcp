@@ -1,7 +1,6 @@
 """Settings for Docling service client."""
 
 from enum import Enum
-from typing import Optional
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -22,8 +21,8 @@ class ServiceClientSettings(BaseSettings):
     )
 
     # Service configuration
-    service_url: Optional[str] = None
-    service_api_key: Optional[str] = None
+    service_url: str | None = None
+    service_api_key: str | None = None
 
     # Operation mode
     conversion_mode: ConversionMode = ConversionMode.REMOTE
@@ -31,6 +30,12 @@ class ServiceClientSettings(BaseSettings):
     # Timeouts and retries
     service_timeout: float = 300.0
     service_max_retries: int = 3
+
+    # Conversion Settings
+    keep_images: bool = False
+    images_scale: float = 1.0
+    do_ocr: bool = True
+    do_table_structure: bool = True
 
     # Fallback behavior
     fallback_to_local: bool = False  # If remote fails, try local (if available)
