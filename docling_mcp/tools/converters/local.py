@@ -11,6 +11,7 @@ from docling_mcp.settings.service_client import settings
 from docling_mcp.shared import local_document_cache, local_stack_cache
 
 from .base import ConversionOutput
+from .sources import fetched_source
 
 # Import DocumentConverter only if available
 try:
@@ -67,6 +68,15 @@ class LocalDocumentConverter:
         source = source.strip("\"'")
         logger.info(f"Converting document locally: {source}")
 
+        with fetched_source(source) as local_source:
+            return self._convert_local_source(source, local_source)
+
+    def _convert_local_source(self, source: str, local_source: str) -> ConversionOutput:
+        """Convert a locally readable source, recording the original source.
+
+        The cache key stays derived from the original source, not the fetched
+        copy, whose temporary path differs on every call.
+        """
         cache_key = get_cache_key(source)
 
         if cache_key in local_document_cache:
@@ -75,7 +85,7 @@ class LocalDocumentConverter:
 
         # Get converter and convert
         converter = self._get_converter()
-        result = converter.convert(source)
+        result = converter.convert(local_source)
 
         # Check for errors
         has_error = False

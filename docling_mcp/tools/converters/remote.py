@@ -14,6 +14,7 @@ from docling_mcp.settings.service_client import settings
 from docling_mcp.shared import local_document_cache, local_stack_cache
 
 from .base import ConversionOutput
+from .sources import fetched_source
 
 logger = setup_logger()
 
@@ -47,6 +48,15 @@ class RemoteDocumentConverter:
         source = source.strip("\"'")
         logger.info(f"Converting document via remote API: {source}")
 
+        with fetched_source(source) as local_source:
+            return self._convert_local_source(source, local_source)
+
+    def _convert_local_source(self, source: str, local_source: str) -> ConversionOutput:
+        """Convert a locally readable source, recording the original source.
+
+        The cache key stays derived from the original source, not the fetched
+        copy, whose temporary path differs on every call.
+        """
         cache_key = get_cache_key(source)
 
         if cache_key in local_document_cache:
@@ -64,7 +74,7 @@ class RemoteDocumentConverter:
         )
 
         # Convert via remote API
-        result = self.client.convert(source=source, options=options)
+        result = self.client.convert(source=local_source, options=options)
 
         # Check for errors
         if hasattr(result, "status") and hasattr(result.status, "is_error"):

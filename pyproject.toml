@@ -81,6 +81,15 @@ smolagents = [
 mellea = [
     "mellea~=0.3",
 ]
+s3 = [
+    "s3fs>=2024.9.0",
+]
+gcs = [
+    "gcsfs>=2024.9.0",
+]
+azure = [
+    "adlfs>=2024.7.0",
+]
 
 [dependency-groups]
 dev = [
@@ -205,6 +214,7 @@ module = [
     "requests.*",
     "transformers.*",
     "llama_stack_client.*",  # needed since this will be there only on python>=3.12
+    "fsspec.*",
 ]
 ignore_missing_imports = true
 
