@@ -36,6 +36,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Typing :: Typed",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Topic :: Software Development :: Build Tools",
@@ -45,7 +46,7 @@ dependencies = [
     "docling-slim[service-client]~=2.92",
     "docling-core>=2.51.0",
     "httpx>=0.28.1",
-    "mcp[cli]>=1.9.4",
+    "mcp[cli]>=1.9.4,<2.0.0",
     "pydantic~=2.10",
     "pydantic-settings~=2.4",
     "python-dotenv>=1.1.0",
@@ -113,7 +114,6 @@ Changelog = "https://github.com/docling-project/docling-mcp/blob/main/CHANGELOG.
 
 [tool.uv]
 default-groups = ["dev", "examples"]
-constraint-dependencies = ["litellm<1.66"]  # Newer versions require a Rust compiler to build on macOS
 
 [tool.hatch.build.targets.sdist]
 include = ["docling_mcp"]
@@ -122,7 +122,7 @@ include = ["docling_mcp"]
 line-length = 88
 indent-width = 4
 respect-gitignore = true
-include = ["docling_mcp", "tests"]
+include = ["docling_mcp", "examples", "tests"]
 
 [tool.ruff.format]
 skip-magic-trailing-comma = false
@@ -156,13 +156,13 @@ ignore = [
     "F811", # "redefinition of the same function"
     "PL", # Pylint
     "RUF012", # Mutable Class Attributes
-    "UP007", # Option and Union
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["E402", "F401"]  # import violations, module imported but unused
-"docling_mcp/servers/mcp_server.py" = ["F401"]  # module inmported but unused
-"tests/**.py" = ["D"]  # ignore flake8-docstrings in tests
+"docling_mcp/servers/mcp_server.py" = ["F401"]  # module imported but unused
+"tests/**.{py,ipynb}" = ["D"]  # ignore flake8-docstrings in tests
+"examples/**.{py,ipynb}" = ["D"]  # ignore flake8-docstrings in examples
 
 [tool.ruff.lint.pep8-naming]
 classmethod-decorators = [

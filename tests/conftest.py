@@ -1,6 +1,7 @@
 """Define configuration options across tests."""
 
 import os
+import sys
 from collections.abc import AsyncGenerator
 from contextlib import AsyncExitStack
 from typing import Any
@@ -33,7 +34,7 @@ class MCPClient:
         # Explicitly use STDIO transport for tests (server default is now streamable-http)
         # Run as module instead of script to ensure proper Typer CLI initialization
         server_params = StdioServerParameters(
-            command="python",
+            command=sys.executable,
             args=["-m", "docling_mcp.servers.mcp_server", "--transport", "stdio"],
             env=test_env,
         )

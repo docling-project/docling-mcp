@@ -1,58 +1,51 @@
 import copy
 import logging
 import re
-from datetime import datetime
-from enum import Enum
 from io import BytesIO
 from typing import ClassVar
-import json
 
-from pydantic import BaseModel, Field, validator
+from smolagents import Tool
+from smolagents.models import ChatMessage
 
-from smolagents import MCPClient, Tool, ToolCollection
-from smolagents.models import ChatMessage, MessageRole, Model
-
-from mellea.backends import model_ids
-from mellea.backends.model_ids import ModelIdentifier
-from mellea.stdlib.requirements import Requirement, simple_validate
-from mellea.stdlib.sampling import RejectionSamplingStrategy
-
-from docling.datamodel.base_models import ConversionStatus, InputFormat
+from docling.datamodel.base_models import InputFormat
 from docling.datamodel.document import ConversionResult
 from docling.document_converter import DocumentConverter
 from docling_core.types.doc.document import (
-    ContentLayer,
     DocItemLabel,
     DoclingDocument,
-    NodeItem,
     GroupItem,
-    GroupLabel,
-    DocItem,
-    LevelNumber,
     ListItem,
+    NodeItem,
     SectionHeaderItem,
     TableItem,
     TextItem,
     TitleItem,
-    RefItem,
-    PictureItem,
 )
 from docling_core.types.io import DocumentStream
 
+from examples.mellea.agent.base import BaseDoclingAgent, DoclingAgentType
+from examples.mellea.agent.base_functions import (
+    convert_html_to_docling_document,
+    convert_markdown_to_docling_document,
+    find_outline,
+    has_html_code_block,
+    has_markdown_code_block,
+    validate_html_to_docling_document,
+    validate_markdown_to_docling_document,
+    validate_outline_format,
+)
 from examples.mellea.agent_models import setup_local_session
 
 # from examples.smolagents.agent_tools import MCPConfig, setup_mcp_tools
 from examples.mellea.resources.prompts import (
-    SYSTEM_PROMPT_FOR_TASK_ANALYSIS,
-    SYSTEM_PROMPT_FOR_OUTLINE,
-    SYSTEM_PROMPT_FOR_EDITING_DOCUMENT,
-    SYSTEM_PROMPT_FOR_EDITING_TABLE,
-    SYSTEM_PROMPT_EXPERT_WRITER,
     SYSTEM_PROMPT_EXPERT_TABLE_WRITER,
+    SYSTEM_PROMPT_EXPERT_WRITER,
+    SYSTEM_PROMPT_FOR_OUTLINE,
+    SYSTEM_PROMPT_FOR_TASK_ANALYSIS,
 )
-from abc import abstractmethod
-
-from examples.mellea.agent.base import DoclingAgentType, BaseDoclingAgent
+from mellea.backends.model_ids import ModelIdentifier
+from mellea.stdlib.requirements import Requirement, simple_validate
+from mellea.stdlib.sampling import RejectionSamplingStrategy
 
 # Configure logging
 logging.basicConfig(
@@ -60,32 +53,9 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-from examples.mellea.agent.base_functions import (
-    find_json_dicts,
-    find_crefs,
-    has_crefs,
-    create_document_outline,
-    serialize_item_to_markdown,
-    serialize_table_to_html,
-    find_html_code_block,
-    has_html_code_block,
-    find_markdown_code_block,
-    has_markdown_code_block,
-    convert_html_to_docling_table,
-    validate_html_to_docling_table,
-    convert_markdown_to_docling_document,
-    validate_markdown_to_docling_document,
-    insert_document,
-    create_document_outline,
-    find_outline,
-    validate_outline_format,
-    validate_html_to_docling_document,
-    convert_html_to_docling_document,
-)
-
 
 class DoclingWritingAgent(BaseDoclingAgent):
-    task_analysis: DoclingDocument = DoclingDocument(name=f"report")
+    task_analysis: DoclingDocument = DoclingDocument(name="report")
 
     system_prompt_for_task_analysis: ClassVar[str] = SYSTEM_PROMPT_FOR_TASK_ANALYSIS
 
@@ -135,14 +105,11 @@ class DoclingWritingAgent(BaseDoclingAgent):
 
         self.task_analysis = results[0]
 
-        in_topics: bool = False
-        in_questions: bool = False
-
-        for item, level in self.task_analysis.iterate_items():
+        for item, _level in self.task_analysis.iterate_items():
             if isinstance(item, ListItem) and item.text == "topics:":
-                in_topics = True
+                pass
             elif isinstance(item, ListItem) and item.text == "follow-up questions:":
-                in_questions = True
+                pass
 
     def _analyse_task_for_final_destination(self, *, task: str):
         return
@@ -182,7 +149,7 @@ class DoclingWritingAgent(BaseDoclingAgent):
     ) -> DoclingDocument:
         to_item: dict[str, NodeItem] = {}
 
-        for item, level in content.iterate_items(with_groups=True):
+        for item, _level in content.iterate_items(with_groups=True):
             if isinstance(item, GroupItem) and item.self_ref == "#/body":
                 to_item[item.self_ref] = document.body
             elif isinstance(item, GroupItem):
@@ -266,7 +233,7 @@ class DoclingWritingAgent(BaseDoclingAgent):
 
         document = DoclingDocument(name=f"report on task: `{task}`")
 
-        for item, level in outline.iterate_items(with_groups=True):
+        for item, _level in outline.iterate_items(with_groups=True):
             if isinstance(item, TitleItem):
                 headers[0] = item.text
                 document.add_title(text=item.text)
@@ -347,9 +314,11 @@ class DoclingWritingAgent(BaseDoclingAgent):
         self,
         summary: str,
         task: str = "",
-        hierarchy: dict[int, str] = {},
+        hierarchy: dict[int, str] | None = None,
         loop_budget: int = 5,
     ) -> str:
+        if hierarchy is None:
+            hierarchy = {}
         context = ""
         for level, header in hierarchy.items():
             context += "#" * (level + 1) + header + "\n"
@@ -386,9 +355,11 @@ class DoclingWritingAgent(BaseDoclingAgent):
         self,
         summary: str,
         task: str = "",
-        hierarchy: dict[int, str] = {},
+        hierarchy: dict[int, str] | None = None,
         loop_budget: int = 5,
     ) -> DoclingDocument | None:
+        if hierarchy is None:
+            hierarchy = {}
         context = ""
         for level, header in hierarchy.items():
             context += "#" * (level + 1) + header + "\n"
@@ -422,9 +393,11 @@ class DoclingWritingAgent(BaseDoclingAgent):
         self,
         summary: str,
         task: str = "",
-        hierarchy: dict[int, str] = {},
+        hierarchy: dict[int, str] | None = None,
         loop_budget: int = 5,
     ) -> str:
+        if hierarchy is None:
+            hierarchy = {}
         context = ""
         for level, header in hierarchy.items():
             context += "#" * (level + 1) + header + "\n"

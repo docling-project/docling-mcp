@@ -1,15 +1,15 @@
 import logging
+import os
+from typing import Literal
 
+from mcp import StdioServerParameters
+from pydantic import BaseModel, Field
 
-from typing import Optional, Literal, List, Dict, Any
-from pydantic import BaseModel, Field, validator
-
-from smolagents.tools import Tool
 from smolagents import (
     MCPClient,
-    ToolCollection,
     Tool,
 )
+from smolagents.tools import Tool
 
 # Configure logging
 logging.basicConfig(
@@ -30,7 +30,7 @@ class MCPConfig(BaseModel):
     command: str = Field(
         default="mcp-server-lls", description="Command to start stdio MCP server"
     )
-    args: List[str] = Field(
+    args: list[str] = Field(
         default_factory=list, description="Arguments for stdio MCP server"
     )
 
@@ -73,7 +73,6 @@ def test_docling_mcp_tools():
 
 def main():
     """Main function to run the demonstrations."""
-
     test_docling_mcp_tools()
 
 

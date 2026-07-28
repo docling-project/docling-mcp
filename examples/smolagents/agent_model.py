@@ -1,12 +1,13 @@
 import logging
+from typing import Literal
+
+from pydantic import BaseModel, Field
 
 from smolagents import (
-    TransformersModel,
     LiteLLMModel,
+    TransformersModel,
 )
-from typing import Optional, Literal, List, Dict, Any
-from pydantic import BaseModel, Field, validator
-from smolagents.models import MessageRole, ChatMessage, Model
+from smolagents.models import ChatMessage, MessageRole, Model
 
 # Configure logging
 logging.basicConfig(
@@ -56,7 +57,6 @@ def setup_local_model(config: ModelConfig) -> Model:
 
 def test_ollama_smollm2():
     """Main function to run the demonstrations."""
-
     model_config = ModelConfig(
         type="ollama", model_id="ollama/smollm2", device="cpu", torch_dtype="auto"
     )
@@ -79,7 +79,6 @@ def test_ollama_smollm2():
 
 def test_ollama_gptoss():
     """Main function to run the demonstrations."""
-
     model_config = ModelConfig(
         type="ollama",
         model_id="ollama/gpt-oss:20b",  # , device="cpu", torch_dtype="auto"
@@ -103,7 +102,6 @@ def test_ollama_gptoss():
 
 def main():
     """Main function to run the demonstrations."""
-
     test_ollama_smollm2()
 
     test_ollama_gptoss()

@@ -1,26 +1,23 @@
 import copy
 import logging
 import re
+from abc import abstractmethod
 from datetime import datetime
 from enum import Enum
 from io import BytesIO
 from typing import ClassVar
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel
 
-from smolagents import MCPClient, Tool, ToolCollection
-from smolagents.models import ChatMessage, MessageRole, Model
-
-from docling.datamodel.base_models import ConversionStatus, InputFormat
+from docling.datamodel.base_models import InputFormat
 from docling.datamodel.document import ConversionResult
 from docling.document_converter import DocumentConverter
 from docling_core.types.doc.document import (
-    ContentLayer,
     DocItemLabel,
     DoclingDocument,
     GroupItem,
-    LevelNumber,
     ListItem,
+    NodeItem,
     SectionHeaderItem,
     TableItem,
     TextItem,
@@ -31,13 +28,13 @@ from docling_core.types.io import DocumentStream
 from examples.smolagents.agent_model import ModelConfig, setup_local_model
 from examples.smolagents.agent_tools import MCPConfig, setup_mcp_tools
 from examples.smolagents.resources.prompts import (
-    SYSTEM_PROMPT_FOR_TASK_ANALYSIS,
-    SYSTEM_PROMPT_FOR_OUTLINE,
-    SYSTEM_PROMPT_EXPERT_WRITER,
     SYSTEM_PROMPT_EXPERT_TABLE_WRITER,
+    SYSTEM_PROMPT_EXPERT_WRITER,
+    SYSTEM_PROMPT_FOR_OUTLINE,
+    SYSTEM_PROMPT_FOR_TASK_ANALYSIS,
 )
-from abc import abstractmethod
-
+from smolagents import Tool
+from smolagents.models import ChatMessage, MessageRole, Model
 
 # Configure logging
 logging.basicConfig(
@@ -57,7 +54,7 @@ class DoclingAgentType(Enum):
         return self.value
 
     @classmethod
-    def from_string(cls, value: str) -> "AgentType":
+    def from_string(cls, value: str) -> "DoclingAgentType":
         """Create AgentType from string value."""
         for agent_type in cls:
             if agent_type.value == value:
@@ -88,7 +85,7 @@ class BaseDoclingAgent(BaseModel):
 
 
 class DoclingWritingAgent(BaseDoclingAgent):
-    task_analysis: DoclingDocument = DoclingDocument(name=f"report")
+    task_analysis: DoclingDocument = DoclingDocument(name="report")
 
     system_prompt_for_task_analysis: ClassVar[str] = SYSTEM_PROMPT_FOR_TASK_ANALYSIS
 
@@ -155,14 +152,11 @@ class DoclingWritingAgent(BaseDoclingAgent):
 
         self.task_analysis = results[0]
 
-        in_topics: bool = False
-        in_questions: bool = False
-
-        for item, level in self.task_analysis.iterate_items():
+        for item, _level in self.task_analysis.iterate_items():
             if isinstance(item, ListItem) and item.text == "topics:":
-                in_topics = True
+                pass
             elif isinstance(item, ListItem) and item.text == "follow-up questions:":
-                in_questions = True
+                pass
 
     def _analyse_task_for_final_destination(self, *, task: str):
         return
@@ -221,7 +215,7 @@ class DoclingWritingAgent(BaseDoclingAgent):
                 "list: ",
             ]
             lines = []
-            for item, level in document.iterate_items(with_groups=True):
+            for item, _level in document.iterate_items(with_groups=True):
                 if isinstance(item, TitleItem) or isinstance(item, SectionHeaderItem):
                     continue
                 elif isinstance(item, TextItem):
@@ -234,10 +228,11 @@ class DoclingWritingAgent(BaseDoclingAgent):
                     if not good:
                         lines.append(item.text)
 
-            logger.info(f"broken lines: {'\n'.join(lines)}")
+            joined_lines = "\n".join(lines)
+            logger.info(f"broken lines: {joined_lines}")
 
             if len(lines) > 0:
-                message = f"Every content line should start with one out of the following choices: {starts}. The following lines need to be updated: {'\n'.join(lines)}"
+                message = f"Every content line should start with one out of the following choices: {starts}. The following lines need to be updated: {joined_lines}"
                 chat_messages.append(
                     ChatMessage(
                         role=MessageRole.USER,
@@ -270,7 +265,7 @@ class DoclingWritingAgent(BaseDoclingAgent):
             )
         """
 
-        for item, level in content.iterate_items(with_groups=True):
+        for item, _level in content.iterate_items(with_groups=True):
             # print("\t"*level, item)
             # print("\t"*level, item.self_ref, f"({item.label}): ", item.parent)
 
@@ -346,7 +341,7 @@ class DoclingWritingAgent(BaseDoclingAgent):
 
         document = DoclingDocument(name=f"report on task: `{task}`")
 
-        for item, level in outline.iterate_items(with_groups=True):
+        for item, _level in outline.iterate_items(with_groups=True):
             if isinstance(item, TitleItem):
                 headers[0] = item.text
                 document.add_title(text=item.text)
@@ -411,8 +406,14 @@ class DoclingWritingAgent(BaseDoclingAgent):
         return result
 
     def _write_paragraph(
-        self, summary: str, item_type: str, task: str = "", hierarchy: list[str] = []
+        self,
+        summary: str,
+        item_type: str,
+        task: str = "",
+        hierarchy: list[str] | None = None,
     ) -> str:
+        if hierarchy is None:
+            hierarchy = []
         chat_messages = self._init_chat_messages(
             system_prompt=self.system_prompt_expert_writer,
             user_prompt=(
@@ -423,8 +424,10 @@ class DoclingWritingAgent(BaseDoclingAgent):
         return output.content
 
     def _write_list(
-        self, summary: str, task: str = "", hierarchy: list[str] = []
+        self, summary: str, task: str = "", hierarchy: list[str] | None = None
     ) -> DoclingDocument | None:
+        if hierarchy is None:
+            hierarchy = []
         converter = DocumentConverter(allowed_formats=[InputFormat.MD])
 
         chat_messages = self._init_chat_messages(
@@ -455,14 +458,19 @@ class DoclingWritingAgent(BaseDoclingAgent):
 
         return None
 
-    def _write_table(self, summary: str, hierarchy: list[str] = []) -> TableItem | None:
+    def _write_table(
+        self, summary: str, hierarchy: list[str] | None = None
+    ) -> TableItem | None:
+        if hierarchy is None:
+            hierarchy = []
+
         def extract_code_blocks(text):
-            pattern = rf"```html(.*?)```"
+            pattern = r"```html(.*?)```"
             matches = re.findall(pattern, text, re.DOTALL)
             if len(matches) > 0:
                 return matches[0]
 
-            pattern = rf"<html>(.*?)</html>"
+            pattern = r"<html>(.*?)</html>"
             matches = re.findall(pattern, text, re.DOTALL)
             if len(matches) > 0:
                 return matches[0]
@@ -498,7 +506,7 @@ class DoclingWritingAgent(BaseDoclingAgent):
                 doc = conv_result.document
 
                 if doc:
-                    for item, level in doc.iterate_items(with_groups=True):
+                    for item, _level in doc.iterate_items(with_groups=True):
                         if isinstance(item, TableItem):
                             return item
 
@@ -509,8 +517,7 @@ class DoclingWritingAgent(BaseDoclingAgent):
 
 
 def main():
-    """
-    model_config = ModelConfig(
+    """model_config = ModelConfig(
         type="ollama",
         model_id="ollama/smollm2",  # , device="cpu", torch_dtype="auto"
     )

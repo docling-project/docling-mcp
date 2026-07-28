@@ -11,9 +11,9 @@ from termcolor import cprint
 
 
 def step_printer(steps):
-    """
-    Print the steps of an agent's response in a formatted way.
+    """Print the steps of an agent's response in a formatted way.
     Note: stream need to be set to False to use this function.
+
     Args:
     steps: List of steps from an agent's response.
     """

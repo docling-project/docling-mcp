@@ -1,56 +1,13 @@
-import copy
 import logging
-import re
-from datetime import datetime
-from enum import Enum
-from io import BytesIO
-from typing import ClassVar
-import json
-
-from pydantic import BaseModel, Field, validator
-
-from smolagents import MCPClient, Tool, ToolCollection
-from smolagents.models import ChatMessage, MessageRole, Model
-
-from mellea.backends import model_ids
-from mellea.backends.model_ids import ModelIdentifier
-from mellea.stdlib.requirements import Requirement, simple_validate
-from mellea.stdlib.sampling import RejectionSamplingStrategy
-
-from docling.datamodel.base_models import ConversionStatus, InputFormat
-from docling.datamodel.document import ConversionResult
-from docling.document_converter import DocumentConverter
-from docling_core.types.doc.document import (
-    ContentLayer,
-    DocItemLabel,
-    DoclingDocument,
-    NodeItem,
-    GroupItem,
-    GroupLabel,
-    DocItem,
-    LevelNumber,
-    ListItem,
-    SectionHeaderItem,
-    TableItem,
-    TextItem,
-    TitleItem,
-    RefItem,
-    PictureItem,
-)
-from docling_core.types.io import DocumentStream
-
-from examples.mellea.agent_models import setup_local_session
 
 # from examples.smolagents.agent_tools import MCPConfig, setup_mcp_tools
-from examples.mellea.resources.prompts import (
-    SYSTEM_PROMPT_FOR_TASK_ANALYSIS,
-    SYSTEM_PROMPT_FOR_OUTLINE,
-    SYSTEM_PROMPT_FOR_EDITING_DOCUMENT,
-    SYSTEM_PROMPT_FOR_EDITING_TABLE,
-    SYSTEM_PROMPT_EXPERT_WRITER,
-    SYSTEM_PROMPT_EXPERT_TABLE_WRITER,
-)
 from abc import abstractmethod
+from enum import Enum
+
+from pydantic import BaseModel
+from smolagents import Tool
+
+from mellea.backends.model_ids import ModelIdentifier
 
 # Configure logging
 logging.basicConfig(
@@ -71,7 +28,7 @@ class DoclingAgentType(Enum):
         return self.value
 
     @classmethod
-    def from_string(cls, value: str) -> "AgentType":
+    def from_string(cls, value: str) -> "DoclingAgentType":
         """Create AgentType from string value."""
         for agent_type in cls:
             if agent_type.value == value:

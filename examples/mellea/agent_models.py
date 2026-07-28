@@ -1,20 +1,16 @@
+import re
+
 import mellea
-
-from mellea.backends import model_ids
-from mellea.backends.ollama import OllamaModelBackend
-from mellea.backends import ModelOption
-
-from mellea import MelleaSession
-
 import mellea.backends
 import mellea.stdlib
-import mellea.stdlib.context
 import mellea.stdlib.components.chat
+import mellea.stdlib.context
+from mellea import MelleaSession
+from mellea.backends import model_ids
 from mellea.backends.model_ids import ModelIdentifier
+from mellea.backends.ollama import OllamaModelBackend
 from mellea.stdlib.requirements import Requirement, simple_validate
 from mellea.stdlib.sampling import RejectionSamplingStrategy
-
-import re
 
 
 def setup_local_session(
@@ -36,8 +32,7 @@ def setup_local_session(
 
 
 def matches_html_code_block(text: str) -> bool:
-    """
-    Check if a string matches the pattern ```html(.*)?```
+    """Check if a string matches the pattern ```html(.*)?```
 
     Args:
         text (str): The string to check
@@ -54,8 +49,7 @@ def matches_html_code_block(text: str) -> bool:
 
 
 def main():
-    """
-    m = MelleaSession(
+    """M = MelleaSession(
         ctx=mellea.stdlib.context.LinearContext(),
         backend=OllamaModelBackend(
             model_id=model_ids.OPENAI_GPT_OSS_20B #, model_options={ModelOption.SEED: 42}
@@ -65,10 +59,9 @@ def main():
     # Add the system prompt and the goal to the chat history.
     m.ctx.insert(mellea.stdlib.components.chat.Message(role="system", content="You are an expert material-scientist."))
     """
-
     m = setup_local_session(system_prompt="You are an expert material-scientist.")
 
-    answer = m.instruct(
+    m.instruct(
         "Please write me a table in HTML with the most common properties of the most common polymers. The polymers need to be rows, the properties need to be colums.",
         requirements=[
             # "The resulting HTML table should satisfy the following regex ```html(.*)?```",
@@ -85,7 +78,7 @@ def main():
     try:
         for i, _ in enumerate(m.ctx.view_for_generation()):
             print(i, ": ", _)
-    except:
+    except Exception:
         print("fail ...")
 
 
