@@ -121,7 +121,7 @@ include = ["docling_mcp"]
 line-length = 88
 indent-width = 4
 respect-gitignore = true
-include = ["docling_mcp", "tests"]
+include = ["docling_mcp", "examples", "tests"]
 
 [tool.ruff.format]
 skip-magic-trailing-comma = false
@@ -155,13 +155,13 @@ ignore = [
     "F811", # "redefinition of the same function"
     "PL", # Pylint
     "RUF012", # Mutable Class Attributes
-    "UP007", # Option and Union
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["E402", "F401"]  # import violations, module imported but unused
-"docling_mcp/servers/mcp_server.py" = ["F401"]  # module inmported but unused
-"tests/**.py" = ["D"]  # ignore flake8-docstrings in tests
+"docling_mcp/servers/mcp_server.py" = ["F401"]  # module imported but unused
+"tests/**.{py,ipynb}" = ["D"]  # ignore flake8-docstrings in tests
+"examples/**.{py,ipynb}" = ["D"]  # ignore flake8-docstrings in examples
 
 [tool.ruff.lint.pep8-naming]
 classmethod-decorators = [

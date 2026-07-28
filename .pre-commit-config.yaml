@@ -1,15 +1,15 @@
 fail_fast: true
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.22
+    rev: v0.16.0
     hooks:
+      # Run the linter.
+      - id: ruff-check
+        args: [--exit-non-zero-on-fix, --fix]
+        types_or: [ python, pyi, jupyter]
       # Run the Ruff formatter.
       - id: ruff-format
-        args: [--config=pyproject.toml]
-      # Run the Ruff linter.
-      - id: ruff
-        args: [--exit-non-zero-on-fix, --fix, --config=pyproject.toml]
-        files: ^(docling_mcp|tests)/.*\.py$
+        types_or: [ python, pyi, jupyter]
   - repo: local
     hooks:
       - id: system
@@ -27,6 +27,6 @@ repos:
         pass_filenames: false
         files: '\.py$'
   - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: 0.6.16
+    rev: 0.11.33
     hooks:
       - id: uv-lock

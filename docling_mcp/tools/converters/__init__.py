@@ -1,6 +1,8 @@
 """Conversion tools package with remote and local support."""
 
-from typing import TYPE_CHECKING, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from .base import ConversionOutput, DocumentConverterProtocol
 
@@ -10,7 +12,7 @@ if TYPE_CHECKING:
 
 
 # Use lazy import for factory to avoid importing DocumentConverter unnecessarily
-def get_converter() -> Union["RemoteDocumentConverter", "LocalDocumentConverter"]:
+def get_converter() -> RemoteDocumentConverter | LocalDocumentConverter:
     """Get the appropriate converter based on settings."""
     from .factory import get_converter as _get_converter
 

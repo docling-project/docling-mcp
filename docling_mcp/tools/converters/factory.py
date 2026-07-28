@@ -1,6 +1,8 @@
 """Factory for creating document converters based on configuration."""
 
-from typing import TYPE_CHECKING, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from docling_mcp.logger import setup_logger
 from docling_mcp.settings.service_client import ConversionMode, settings
@@ -12,7 +14,7 @@ if TYPE_CHECKING:
 logger = setup_logger()
 
 
-def get_converter() -> Union["RemoteDocumentConverter", "LocalDocumentConverter"]:
+def get_converter() -> RemoteDocumentConverter | LocalDocumentConverter:
     """Get the appropriate converter based on settings."""
     # Import converters lazily to avoid importing DocumentConverter when not needed
     from .remote import RemoteDocumentConverter

@@ -1,15 +1,11 @@
 import json
 import logging
-
-import httpx
 from pathlib import Path
 
-from rich.table import Table
-
-from urllib.parse import urlparse
-
-from llama_stack_client import Agent, AgentEventLogger, LlamaStackClient
+import httpx
+from llama_stack_client import Agent, LlamaStackClient
 from llama_stack_client.lib import get_oauth_token_for_mcp_server
+from rich.table import Table
 
 logging.basicConfig(level=logging.INFO)
 _log = logging.getLogger(__name__)
@@ -34,7 +30,7 @@ def get_and_cache_mcp_headers(
     _log.info(f"Using cache file: {cache_file} for MCP tokens")
     tokens = {}
     if cache_file.exists():
-        with open(cache_file, "r") as f:
+        with open(cache_file) as f:
             tokens = json.load(f)
             for server, token in tokens.items():
                 mcp_headers[server] = {

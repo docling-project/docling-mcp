@@ -1,32 +1,29 @@
 #!/usr/bin/env python3
 
-from enum import Enum
-import os
 import json
-import yaml
 import logging
-import sys
-from typing import Optional, Literal, List, Dict, Any
+import os
+from enum import Enum
 from pathlib import Path
-from pydantic import BaseModel, Field, validator
-from smolagents import (
-    ToolCallingAgent,
-    CodeAgent,
-    MCPClient,
-    ToolCollection,
-    TransformersModel,
-    LiteLLMModel,
-    Tool,
-)
+from typing import Literal
+
+import yaml
 from mcp import StdioServerParameters
 from packaging import version
+from pydantic import BaseModel, Field
 
-from pathlib import Path
 import smolagents
+from smolagents import (
+    CodeAgent,
+    LiteLLMModel,
+    MCPClient,
+    Tool,
+    ToolCallingAgent,
+    TransformersModel,
+)
+from smolagents.agents import PromptTemplates, populate_template
 from smolagents.models import Model
 from smolagents.tools import Tool
-from smolagents.agents import PromptTemplates, populate_template
-
 
 # Configure logging
 logging.basicConfig(
@@ -47,7 +44,7 @@ class MCPConfig(BaseModel):
     command: str = Field(
         default="mcp-server-lls", description="Command to start stdio MCP server"
     )
-    args: List[str] = Field(
+    args: list[str] = Field(
         default_factory=list, description="Arguments for stdio MCP server"
     )
 
@@ -110,7 +107,7 @@ class AgentConfig(BaseModel):
     def from_file(cls, path: Path) -> "AgentConfig":
         """Load configuration from JSON or YAML file."""
         logger.info(f"Loading configuration from {path}")
-        with open(path, "r") as f:
+        with open(path) as f:
             if path.suffix in [".yaml", ".yml"]:
                 import yaml
 
@@ -143,7 +140,7 @@ class DoclingAgentType(Enum):
         return self.value
 
     @classmethod
-    def from_string(cls, value: str) -> "AgentType":
+    def from_string(cls, value: str) -> "DoclingAgentType":
         """Create AgentType from string value."""
         for agent_type in cls:
             if agent_type.value == value:
@@ -192,11 +189,9 @@ class DoclingToolCallingAgent(ToolCallingAgent):
         ]
 
         # Find the appropriate template file
-        chosen_version = None
         template_file = None
         for ver, template in version_templates:
             if current_version >= ver:
-                chosen_version = ver
                 template_file = template
                 break
 
@@ -209,7 +204,7 @@ class DoclingToolCallingAgent(ToolCallingAgent):
             )
 
         file_path = Path(__file__).parent / "resources" / template_file
-        with open(file_path, "r") as fr:
+        with open(file_path) as fr:
             prompt_templates = PromptTemplates(yaml.safe_load(fr))
 
         return prompt_templates
