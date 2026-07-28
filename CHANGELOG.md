@@ -1,3 +1,19 @@
+## [v2.2.0](https://github.com/docling-project/docling-mcp/releases/tag/v2.2.0) - 2026-07-28
+
+### Feature
+
+* **conversion:** Add image scale option and propagate to remote ([#116](https://github.com/docling-project/docling-mcp/issues/116)) ([`6a7ea01`](https://github.com/docling-project/docling-mcp/commit/6a7ea01f9331be5045f9e78bf7d3d363dc6aa142))
+
+### Fix
+
+* **ci:** Guard against mcp 2.0 breaking change, improve CI & style ([#122](https://github.com/docling-project/docling-mcp/issues/122)) ([`606b60b`](https://github.com/docling-project/docling-mcp/commit/606b60b3f07d55b9d169a51165e4c7b3d7d14f47))
+* **server:** Construct FastMCP with the correct bind address at startup ([#117](https://github.com/docling-project/docling-mcp/issues/117)) ([`4d86d81`](https://github.com/docling-project/docling-mcp/commit/4d86d8140be53b8563b067de04fb83fa2a149b65))
+
+### Documentation
+
+* Fix broken link to non-existent docs/development.md ([#112](https://github.com/docling-project/docling-mcp/issues/112)) ([`20b5c67`](https://github.com/docling-project/docling-mcp/commit/20b5c67fbe65d9545d022290f03711a0ab80be72))
+* Improve README clarity and fix small issues ([#111](https://github.com/docling-project/docling-mcp/issues/111)) ([`585f864`](https://github.com/docling-project/docling-mcp/commit/585f8644435a81dbe8bf3ba49e34b60f470d00d7))
+
 ## [v2.1.0](https://github.com/docling-project/docling-mcp/releases/tag/v2.1.0) - 2026-06-05
 
 ### Feature
