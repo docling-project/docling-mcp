@@ -113,7 +113,6 @@ Changelog = "https://github.com/docling-project/docling-mcp/blob/main/CHANGELOG.
 
 [tool.uv]
 default-groups = ["dev", "examples"]
-constraint-dependencies = ["litellm<1.66"]  # Newer versions require a Rust compiler to build on macOS
 
 [tool.hatch.build.targets.sdist]
 include = ["docling_mcp"]
