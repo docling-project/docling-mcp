@@ -1,5 +1,6 @@
 """Test the Docling MCP server tools with a dummy client."""
 
+import inspect
 import json
 from collections.abc import AsyncGenerator
 from typing import Any
@@ -51,7 +52,15 @@ async def test_get_tools(mcp_client: AsyncGenerator[Any, Any]) -> None:
     ) as input_file:
         contents = await input_file.read()
         gold_tool = json.loads(contents)
-        assert gold_tool == sample_tool.model_dump()
+        # Normalise descriptions: Python 3.14 changed inspect.cleandoc to strip
+        # leading indentation from docstring continuation lines, so the MCP SDK
+        # now returns a cleaned description regardless of Python version.
+        sample_dump = sample_tool.model_dump()
+        if gold_tool.get("description"):
+            gold_tool["description"] = inspect.cleandoc(gold_tool["description"])
+        if sample_dump.get("description"):
+            sample_dump["description"] = inspect.cleandoc(sample_dump["description"])
+        assert gold_tool == sample_dump
 
 
 @pytest.mark.asyncio()
