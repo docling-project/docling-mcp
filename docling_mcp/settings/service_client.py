@@ -1,4 +1,4 @@
-"""Settings for Docling service client."""
+"""Settings for the Docling MCP server (service client and conversion pipeline)."""
 
 from enum import Enum
 
@@ -13,32 +13,38 @@ class ConversionMode(str, Enum):
 
 
 class ServiceClientSettings(BaseSettings):
-    """Settings for Docling service client."""
+    """Settings for the Docling MCP server.
+
+    All settings are read from environment variables with the ``DOCLING_MCP_``
+    prefix (or from a ``.env`` file).  The conversion pipeline options
+    (``keep_images``, ``images_scale``, ``do_ocr``, ``do_table_structure``) are
+    shared by both the remote and local converters so that users only need to
+    set them once.
+    """
 
     model_config = SettingsConfigDict(
-        env_prefix="DOCLING_",
+        env_prefix="DOCLING_MCP_",
         env_file=".env",
+        extra="ignore",
     )
-
-    # Service configuration
-    service_url: str | None = None
-    service_api_key: str | None = None
 
     # Operation mode
     conversion_mode: ConversionMode = ConversionMode.REMOTE
 
-    # Timeouts and retries
+    # Remote service connection
+    service_url: str | None = None
+    service_api_key: str | None = None
     service_timeout: float = 300.0
     service_max_retries: int = 3
 
-    # Conversion Settings
+    # Fallback behavior
+    fallback_to_local: bool = False  # If remote fails, try local (if available)
+
+    # Conversion pipeline options (shared by both local and remote converters)
     keep_images: bool = False
     images_scale: float = 1.0
     do_ocr: bool = True
     do_table_structure: bool = True
-
-    # Fallback behavior
-    fallback_to_local: bool = False  # If remote fails, try local (if available)
 
 
 settings = ServiceClientSettings()
