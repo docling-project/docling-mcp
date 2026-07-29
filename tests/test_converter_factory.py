@@ -86,7 +86,7 @@ class TestConverterFactory:
             None  # This will cause RemoteDocumentConverter to fail
         )
 
-        with pytest.raises(ValueError, match="DOCLING_SERVICE_URL must be set"):
+        with pytest.raises(ValueError, match="DOCLING_MCP_SERVICE_URL is not set"):
             get_converter()
 
     @patch("docling_mcp.tools.converters.remote.DoclingServiceClient")
