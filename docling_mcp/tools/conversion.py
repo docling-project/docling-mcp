@@ -6,9 +6,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Annotated
 
-from mcp.server.fastmcp import Context
-from mcp.shared.exceptions import McpError
-from mcp.types import INTERNAL_ERROR, ErrorData, ToolAnnotations
+from mcp.server.mcpserver import Context
+from mcp.shared.exceptions import MCPError
+from mcp.types import INTERNAL_ERROR, ToolAnnotations
 from pydantic import Field
 
 from docling_mcp.logger import setup_logger
@@ -85,9 +85,7 @@ def convert_document_into_docling_document(
 
     except Exception as e:
         logger.exception(f"Error converting document: {source}")
-        raise McpError(
-            ErrorData(code=INTERNAL_ERROR, message=f"Unexpected error: {e!s}")
-        ) from e
+        raise MCPError(INTERNAL_ERROR, f"Unexpected error: {e!s}") from e
 
 
 @mcp.tool(
@@ -100,7 +98,7 @@ async def convert_directory_files_into_docling_document(
         str,
         Field(description="The path to a local directory"),
     ],
-    ctx: Context,  # type: ignore[type-arg]
+    ctx: Context,
 ) -> list[ConversionOutput]:
     """Convert all files from a local directory path and store them in local cache.
 
@@ -124,17 +122,13 @@ async def convert_directory_files_into_docling_document(
         converter = get_converter()
 
         for i, file in enumerate(files):
-            # Track progress
-            await ctx.info(f"Processing file {file}")
-            await ctx.report_progress(i + 1, len(files))
-
             logger.info(f"Processing file {file}")
+            await ctx.report_progress(i + 1, len(files))
 
             try:
                 result = converter.convert_document(str(file))
                 out.append(result)
-
-                await ctx.debug(
+                logger.debug(
                     f"Completed step {i + 1} with Docling document key: {result.document_key}"
                 )
             except Exception as e:
@@ -148,6 +142,4 @@ async def convert_directory_files_into_docling_document(
 
     except Exception as e:
         logger.exception(f"Error converting files in directory: {source}")
-        raise McpError(
-            ErrorData(code=INTERNAL_ERROR, message=f"Unexpected error: {e!s}")
-        ) from e
+        raise MCPError(INTERNAL_ERROR, f"Unexpected error: {e!s}") from e

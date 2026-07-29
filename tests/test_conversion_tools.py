@@ -1,17 +1,17 @@
 """Test the Docling MCP server conversion tools."""
 
 import shutil
-from collections.abc import AsyncGenerator
 from pathlib import Path
-from typing import Any
 
 import pytest
 from mcp.types import TextContent
 
+from tests.conftest import MCPClient
 
-@pytest.mark.asyncio
+
+@pytest.mark.anyio
 async def test_convert_directory_files_into_docling_document(
-    mcp_client: AsyncGenerator[Any, Any], tmp_path: Path
+    mcp_client: MCPClient, tmp_path: Path
 ) -> None:
     test_dir = Path(__file__).parent
     test_files = [
@@ -22,7 +22,7 @@ async def test_convert_directory_files_into_docling_document(
     for item in test_files:
         shutil.copy(item, tmp_path)
 
-    res = await mcp_client.call_tool(  # type: ignore[attr-defined]
+    res = await mcp_client.call_tool(
         "convert_directory_files_into_docling_document", {"source": str(tmp_path)}
     )
 
@@ -36,11 +36,11 @@ async def test_convert_directory_files_into_docling_document(
     )
 
     # returned structured content
-    assert isinstance(res.structuredContent, dict)
-    assert "result" in res.structuredContent
-    assert isinstance(res.structuredContent["result"], list)
-    assert len(res.structuredContent["result"]) == 3
-    for item in res.structuredContent["result"]:
+    assert isinstance(res.structured_content, dict)
+    assert "result" in res.structured_content
+    assert isinstance(res.structured_content["result"], list)
+    assert len(res.structured_content["result"]) == 3
+    for item in res.structured_content["result"]:
         assert isinstance(item, dict)
         assert "from_cache" in item
         assert not item.get("from_cache")
