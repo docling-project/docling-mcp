@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/p/docling-mcp  # Replace <package-name> with your PyPI project name
+      url: https://pypi.org/p/docling-mcp
     permissions:
       id-token: write  # IMPORTANT: mandatory for trusted publishing
     steps:
@@ -32,3 +32,14 @@ jobs:
         with:
           # generating signed digital attestations currently not working with reusable workflows
           attestations: false
+
+  publish-mcp:
+    name: Publish to MCP Registry
+    needs:
+      - build-and-publish
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/publish-mcp.yml
+    with:
+      ref: ${{ github.ref }}

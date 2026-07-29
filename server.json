@@ -1,0 +1,52 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.docling-project/docling-mcp",
+  "title": "Docling MCP",
+  "description": "Convert PDFs and other documents to structured formats via Docling, for AI applications.",
+  "repository": {
+    "url": "https://github.com/docling-project/docling-mcp",
+    "source": "github"
+  },
+  "version": "2.2.0",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "registryBaseUrl": "https://pypi.org",
+      "identifier": "docling-mcp",
+      "version": "2.2.0",
+      "runtimeHint": "uvx",
+      "runtimeArguments": [
+        { "type": "named", "name": "--from", "value": "docling-mcp==2.2.0" },
+        { "type": "positional", "value": "docling-mcp-server" },
+        { "type": "named", "name": "--transport", "value": "stdio" }
+      ],
+      "transport": { "type": "stdio" },
+      "environmentVariables": [
+        {
+          "name": "DOCLING_SERVICE_URL",
+          "description": "Base URL of the Docling Serve instance. Required for remote conversion mode.",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "DOCLING_SERVICE_API_KEY",
+          "description": "API key for authenticating with Docling Serve.",
+          "isRequired": false,
+          "isSecret": true
+        },
+        {
+          "name": "DOCLING_CONVERSION_MODE",
+          "description": "Conversion mode: 'remote' (default), 'local' (needs [local] extra), or 'hybrid'.",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "DOCLING_FALLBACK_TO_LOCAL",
+          "description": "Set to 'true' to fall back to local conversion when Docling Serve is unreachable.",
+          "isRequired": false,
+          "isSecret": false
+        }
+      ]
+    }
+  ]
+}
