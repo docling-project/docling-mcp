@@ -15,10 +15,6 @@ _T = TypeVar("_T")
 
 # Set conversion mode before any docling_mcp module is imported so that the
 # pydantic-settings singleton reads the correct value at first import time.
-os.environ["DOCLING_CONVERSION_MODE"] = "local"
-
-# Set conversion mode before any docling_mcp module is imported so that the
-# pydantic-settings singleton reads the correct value at first import time.
 os.environ["DOCLING_MCP_CONVERSION_MODE"] = "local"
 
 
