@@ -1,3 +1,9 @@
+## [v2.2.1](https://github.com/docling-project/docling-mcp/releases/tag/v2.2.1) - 2026-07-30
+
+### Fix
+
+* Duplicate log records, save tool hint, and test interpreter ([#118](https://github.com/docling-project/docling-mcp/issues/118)) ([`955bf72`](https://github.com/docling-project/docling-mcp/commit/955bf72870958c47abe3fb619268952da4bb81c6))
+
 ## [v2.2.0](https://github.com/docling-project/docling-mcp/releases/tag/v2.2.0) - 2026-07-28
 
 ### Feature

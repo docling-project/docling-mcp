@@ -7,20 +7,33 @@
     "url": "https://github.com/docling-project/docling-mcp",
     "source": "github"
   },
-  "version": "2.2.0",
+  "version": "2.2.1",
   "packages": [
     {
       "registryType": "pypi",
       "registryBaseUrl": "https://pypi.org",
       "identifier": "docling-mcp",
-      "version": "2.2.0",
+      "version": "2.2.1",
       "runtimeHint": "uvx",
       "runtimeArguments": [
-        { "type": "named", "name": "--from", "value": "docling-mcp==2.2.0" },
-        { "type": "positional", "value": "docling-mcp-server" },
-        { "type": "named", "name": "--transport", "value": "stdio" }
+        {
+          "type": "named",
+          "name": "--from",
+          "value": "docling-mcp==2.2.1"
+        },
+        {
+          "type": "positional",
+          "value": "docling-mcp-server"
+        },
+        {
+          "type": "named",
+          "name": "--transport",
+          "value": "stdio"
+        }
       ],
-      "transport": { "type": "stdio" },
+      "transport": {
+        "type": "stdio"
+      },
       "environmentVariables": [
         {
           "name": "DOCLING_MCP_CONVERSION_MODE",
