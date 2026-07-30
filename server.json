@@ -1,0 +1,88 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.docling-project/docling-mcp",
+  "title": "Docling MCP",
+  "description": "Convert PDFs and other documents to structured formats via Docling, for AI applications.",
+  "repository": {
+    "url": "https://github.com/docling-project/docling-mcp",
+    "source": "github"
+  },
+  "version": "2.2.0",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "registryBaseUrl": "https://pypi.org",
+      "identifier": "docling-mcp",
+      "version": "2.2.0",
+      "runtimeHint": "uvx",
+      "runtimeArguments": [
+        { "type": "named", "name": "--from", "value": "docling-mcp==2.2.0" },
+        { "type": "positional", "value": "docling-mcp-server" },
+        { "type": "named", "name": "--transport", "value": "stdio" }
+      ],
+      "transport": { "type": "stdio" },
+      "environmentVariables": [
+        {
+          "name": "DOCLING_MCP_CONVERSION_MODE",
+          "description": "Conversion mode: 'remote' (default) or 'local' (requires docling-mcp[local] extra).",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "DOCLING_MCP_SERVICE_URL",
+          "description": "Base URL of the Docling Serve instance. Required when conversion mode is remote.",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "DOCLING_MCP_SERVICE_API_KEY",
+          "description": "API key for authenticating with Docling Serve.",
+          "isRequired": false,
+          "isSecret": true
+        },
+        {
+          "name": "DOCLING_MCP_SERVICE_TIMEOUT",
+          "description": "Request timeout in seconds for the remote Docling Serve API. Default: 300.0.",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "DOCLING_MCP_SERVICE_MAX_RETRIES",
+          "description": "Maximum number of retry attempts for remote API requests. Default: 3.",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "DOCLING_MCP_FALLBACK_TO_LOCAL",
+          "description": "Set to 'true' to fall back to local conversion when Docling Serve is unreachable.",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "DOCLING_MCP_KEEP_IMAGES",
+          "description": "Set to 'true' to retain page images in converted documents. Default: false.",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "DOCLING_MCP_IMAGES_SCALE",
+          "description": "Image scale factor (e.g. 1.0, 2.0). Increase to avoid tensor batching errors. Default: 1.0.",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "DOCLING_MCP_DO_OCR",
+          "description": "Set to 'false' to disable the OCR pipeline. Default: true.",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "DOCLING_MCP_DO_TABLE_STRUCTURE",
+          "description": "Set to 'false' to disable table structure detection. Default: true.",
+          "isRequired": false,
+          "isSecret": false
+        }
+      ]
+    }
+  ]
+}

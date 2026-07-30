@@ -1,0 +1,69 @@
+name: Publish to MCP Registry
+
+# Publishes server.json to the official MCP Registry (registry.modelcontextprotocol.io)
+# via GitHub OIDC — no stored token required. The `io.github.docling-project/*` namespace
+# is authorised because this workflow runs in the docling-project org. The release workflow
+# calls this after PyPI and the GitHub Release succeed; maintainers can also trigger it manually.
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        description: Immutable release ref whose server.json should be published
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Git ref whose server.json should be published
+        required: true
+        default: main
+        type: string
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  publish-mcp:
+    name: Publish server.json to the MCP Registry
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Wait for PyPI to serve the release with the ownership marker
+        run: |
+          ver="$(python3 -c "import json;print(json.load(open('server.json'))['version'])")"
+          name="$(python3 -c "import json;print(json.load(open('server.json'))['name'])")"
+          echo "Waiting for PyPI docling-mcp ${ver} with marker 'mcp-name: ${name}'"
+          for i in $(seq 1 40); do
+            desc="$(curl -sf "https://pypi.org/pypi/docling-mcp/${ver}/json" \
+              | python3 -c "import sys,json;print(json.load(sys.stdin)['info']['description'])" 2>/dev/null || true)"
+            if printf '%s' "$desc" | grep -q "mcp-name: ${name}"; then
+              echo "Ownership marker present on PyPI ${ver}"; exit 0
+            fi
+            echo "Attempt ${i}/40: not yet — sleeping 20s"; sleep 20
+          done
+          echo "::error::PyPI ${ver} with the ownership marker was not found in time"; exit 1
+
+      - name: Install mcp-publisher
+        run: |
+          version="1.8.0"
+          archive="mcp-publisher_linux_amd64.tar.gz"
+          expected_sha256="1370446bbe74d562608e8005a6ccce02d146a661fbd78674e11cc70b9618d6cf"
+          url="https://github.com/modelcontextprotocol/registry/releases/download/v${version}/${archive}"
+          curl --fail --location --proto '=https' --tlsv1.2 "$url" --output "$archive"
+          printf '%s  %s\n' "$expected_sha256" "$archive" | sha256sum --check --strict
+          tar --extract --gzip --file "$archive" mcp-publisher
+          chmod 0755 mcp-publisher
+          ./mcp-publisher --version
+
+      - name: Authenticate to the MCP Registry (GitHub OIDC)
+        run: ./mcp-publisher login github-oidc
+
+      - name: Validate and publish server.json
+        run: |
+          ./mcp-publisher validate server.json
+          ./mcp-publisher publish

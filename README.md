@@ -15,6 +15,7 @@
 [![License MIT](https://img.shields.io/github/license/docling-project/docling-mcp)](https://opensource.org/licenses/MIT)
 [![PyPI Downloads](https://static.pepy.tech/badge/docling-mcp/month)](https://pepy.tech/projects/docling-mcp)
 [![LF AI & Data](https://img.shields.io/badge/LF%20AI%20%26%20Data-003778?logo=linuxfoundation&logoColor=fff&color=0094ff&labelColor=003778)](https://lfaidata.foundation/projects/)
+[![MCP Registry](https://img.shields.io/badge/listed_in-MCP_Registry-green?logo=modelcontextprotocol)](https://registry.modelcontextprotocol.io)
 
 A document processing service using the Docling-MCP library and MCP (Model Context Protocol) for tool integration.
 
@@ -258,3 +259,6 @@ Docling and Docling MCP is hosted as a project in the [LF AI & Data Foundation](
 
 [docling_document]: https://docling-project.github.io/docling/concepts/docling_document/
 [integrations]: https://docling-project.github.io/docling-mcp/integrations/
+
+<!-- MCP registry ownership marker (proves this PyPI package maps to the server name). -->
+<!-- mcp-name: io.github.docling-project/docling-mcp -->

@@ -13,6 +13,17 @@ CHGLOG_FILE="${CHGLOG_FILE:-CHANGELOG.md}"
 uvx --from=toml-cli toml set --toml-path=pyproject.toml project.version "${TARGET_VERSION}"
 uv lock --upgrade-package docling-mcp
 
+# keep server.json version in sync
+python3 -c "
+import json, pathlib
+p = pathlib.Path('server.json')
+s = json.loads(p.read_text())
+s['version'] = '${TARGET_VERSION}'
+s['packages'][0]['version'] = '${TARGET_VERSION}'
+s['packages'][0]['runtimeArguments'][0]['value'] = 'docling-mcp==${TARGET_VERSION}'
+p.write_text(json.dumps(s, indent=2) + '\n')
+"
+
 # collect release notes
 REL_NOTES=$(mktemp)
 uv run --no-sync semantic-release changelog --unreleased >> "${REL_NOTES}"
@@ -31,7 +42,7 @@ mv "${TMP_CHGLOG}" "${CHGLOG_FILE}"
 # push changes
 git config --global user.name 'github-actions[bot]'
 git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-git add pyproject.toml uv.lock "${CHGLOG_FILE}"
+git add pyproject.toml uv.lock "${CHGLOG_FILE}" server.json
 COMMIT_MSG="chore: bump version to ${TARGET_VERSION} [skip ci]"
 git commit -m "${COMMIT_MSG}"
 git push origin main
