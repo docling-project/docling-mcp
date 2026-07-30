@@ -50,9 +50,9 @@ pip install docling-mcp
 
 Then configure your environment:
 ```bash
-export DOCLING_SERVICE_URL=https://your-docling-service.example.com
-export DOCLING_SERVICE_API_KEY=your-api-key-here
-export DOCLING_CONVERSION_MODE=remote
+export DOCLING_MCP_SERVICE_URL=https://your-docling-service.example.com
+export DOCLING_MCP_SERVICE_API_KEY=your-api-key-here
+export DOCLING_MCP_CONVERSION_MODE=remote
 ```
 
 ### Local Mode (Full Features)
@@ -65,7 +65,7 @@ pip install docling-mcp[local]
 
 Then configure your environment:
 ```bash
-export DOCLING_CONVERSION_MODE=local
+export DOCLING_MCP_CONVERSION_MODE=local
 ```
 
 ### Hybrid Mode (Best of Both)
@@ -78,9 +78,9 @@ pip install docling-mcp[local]
 
 Configure for remote with fallback:
 ```bash
-export DOCLING_SERVICE_URL=https://your-docling-service.example.com
-export DOCLING_CONVERSION_MODE=remote
-export DOCLING_FALLBACK_TO_LOCAL=true
+export DOCLING_MCP_SERVICE_URL=https://your-docling-service.example.com
+export DOCLING_MCP_CONVERSION_MODE=remote
+export DOCLING_MCP_FALLBACK_TO_LOCAL=true
 ```
 
 ## Features
@@ -97,23 +97,54 @@ export DOCLING_FALLBACK_TO_LOCAL=true
 
 ## Configuration
 
-Docling MCP can be configured using environment variables. The following options are available:
+All settings use the `DOCLING_MCP_` prefix and can be supplied as environment
+variables, in a `.env` file in the working directory, or via the `env` block of
+your MCP client config. Copy [`.env.example`](.env.example) as a starting point.
 
-- **`DOCLING_MCP_KEEP_IMAGES`**: Set to `true` to keep page images in the converted documents (default: `false`)
-- **`DOCLING_MCP_IMAGES_SCALE`**: Scale factor for image processing to avoid tensor padding errors (default: `1.0`). Adjusting this value (e.g., `1.0`, `2.0`) can help prevent batching issues when processing images or PDFs.
+### Conversion mode
 
-To set these variables, you can:
-1. Create a `.env` file in your working directory
-2. Set them as environment variables in your system
-3. Pass them in the MCP client configuration (see examples below)
+| Variable | Default | Description |
+|---|---|---|
+| `DOCLING_MCP_CONVERSION_MODE` | `remote` | `remote` or `local` |
 
-Example `.env` file:
-```
-DOCLING_MCP_KEEP_IMAGES=true
-DOCLING_MCP_IMAGES_SCALE=2.0
-```
+### Remote service (required when `DOCLING_MCP_CONVERSION_MODE=remote`)
 
-Example MCP client configuration with environment variables:
+| Variable | Default | Description |
+|---|---|---|
+| `DOCLING_MCP_SERVICE_URL` | — | URL of the Docling Serve instance |
+| `DOCLING_MCP_SERVICE_API_KEY` | — | API key for the service |
+| `DOCLING_MCP_SERVICE_TIMEOUT` | `300.0` | Request timeout in seconds |
+| `DOCLING_MCP_SERVICE_MAX_RETRIES` | `3` | Max retry attempts |
+| `DOCLING_MCP_FALLBACK_TO_LOCAL` | `false` | Fall back to local if service is unreachable (requires `docling-mcp[local]`) |
+
+### Conversion pipeline (applies to both modes)
+
+| Variable | Default | Description |
+|---|---|---|
+| `DOCLING_MCP_KEEP_IMAGES` | `false` | Retain page images in output |
+| `DOCLING_MCP_IMAGES_SCALE` | `1.0` | Image scale factor (increase to avoid tensor padding errors) |
+| `DOCLING_MCP_DO_OCR` | `true` | Run OCR pipeline |
+| `DOCLING_MCP_DO_TABLE_STRUCTURE` | `true` | Detect table structure |
+
+### LlamaIndex RAG (`--tools llama-index-rag`)
+
+| Variable | Default | Description |
+|---|---|---|
+| `DOCLING_MCP_LI_API_BASE` | `http://127.0.0.1:1234/v1` | OpenAI-compatible LLM endpoint |
+| `DOCLING_MCP_LI_API_KEY` | `none` | API key for the LLM endpoint |
+| `DOCLING_MCP_LI_MODEL_ID` | `ibm/granite-3.2-8b` | LLM model identifier |
+| `DOCLING_MCP_LI_EMBEDDING_MODEL` | `BAAI/bge-base-en-v1.5` | HuggingFace embedding model |
+
+### LlamaStack (`--tools llama-stack-rag` / `--tools llama-stack-ie`)
+
+| Variable | Default | Description |
+|---|---|---|
+| `DOCLING_MCP_LLS_URL` | `http://localhost:8321` | LlamaStack server URL |
+| `DOCLING_MCP_LLS_VDB_EMBEDDING` | `all-MiniLM-L6-v2` | Embedding model for vector DB |
+| `DOCLING_MCP_LLS_EXTRACTION_MODEL` | `openai/gpt-oss-20b` | Model used for structured extraction |
+
+### Setting variables in an MCP client config
+
 ```json
 {
   "mcpServers": {
@@ -124,7 +155,9 @@ Example MCP client configuration with environment variables:
         "docling-mcp-server"
       ],
       "env": {
-        "DOCLING_MCP_IMAGES_SCALE": "2.0"
+        "DOCLING_MCP_CONVERSION_MODE": "remote",
+        "DOCLING_MCP_SERVICE_URL": "https://your-docling-service.example.com",
+        "DOCLING_MCP_SERVICE_API_KEY": "your-api-key-here"
       }
     }
   }

@@ -7,7 +7,7 @@ from docling_core.types.doc.labels import DocItemLabel
 
 from docling_mcp.docling_cache import get_cache_key
 from docling_mcp.logger import setup_logger
-from docling_mcp.settings.conversion import settings
+from docling_mcp.settings.service_client import settings
 from docling_mcp.shared import local_document_cache, local_stack_cache
 
 from .base import ConversionOutput

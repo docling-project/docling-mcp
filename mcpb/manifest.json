@@ -33,11 +33,12 @@
       ],
       "env": {
         "PYTHONPATH": "${__dirname}/lib",
-        "DOCLING_SERVICE_URL": "${user_config.service_url}",
-        "DOCLING_SERVICE_API_KEY": "${user_config.service_api_key}",
-        "DOCLING_CONVERSION_MODE": "${user_config.conversion_mode}",
-        "DOCLING_SERVICE_TIMEOUT": "${user_config.service_timeout}",
-        "DOCLING_FALLBACK_TO_LOCAL": "${user_config.fallback_to_local}",
+        "DOCLING_MCP_CONVERSION_MODE": "${user_config.conversion_mode}",
+        "DOCLING_MCP_SERVICE_URL": "${user_config.service_url}",
+        "DOCLING_MCP_SERVICE_API_KEY": "${user_config.service_api_key}",
+        "DOCLING_MCP_SERVICE_TIMEOUT": "${user_config.service_timeout}",
+        "DOCLING_MCP_SERVICE_MAX_RETRIES": "${user_config.service_max_retries}",
+        "DOCLING_MCP_FALLBACK_TO_LOCAL": "${user_config.fallback_to_local}",
         "DOCLING_MCP_KEEP_IMAGES": "${user_config.keep_images}",
         "DOCLING_MCP_IMAGES_SCALE": "${user_config.images_scale}",
         "DOCLING_MCP_DO_OCR": "${user_config.do_ocr}",
@@ -87,6 +88,13 @@
       "title": "Service Timeout (seconds)",
       "description": "Timeout in seconds for remote API requests. Range: 10-3600, Default: 300",
       "default": 300.0,
+      "required": false
+    },
+    "service_max_retries": {
+      "type": "number",
+      "title": "Service Max Retries",
+      "description": "Maximum number of retry attempts for remote API requests. Default: 3",
+      "default": 3,
       "required": false
     },
     "fallback_to_local": {

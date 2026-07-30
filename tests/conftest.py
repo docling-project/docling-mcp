@@ -10,6 +10,10 @@ import pytest_asyncio
 from mcp import ClientSession, StdioServerParameters, Tool
 from mcp.client.stdio import stdio_client
 
+# Set conversion mode before any docling_mcp module is imported so that the
+# pydantic-settings singleton reads the correct value at first import time.
+os.environ["DOCLING_MCP_CONVERSION_MODE"] = "local"
+
 
 class MCPClient:
     def __init__(self) -> None:
