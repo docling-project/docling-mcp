@@ -49,5 +49,12 @@ def init_mcp(host: str, port: int) -> FastMCP:
     return mcp
 
 
+# Server-side state for the MCP Roots capability. Populated at startup
+# from --allowed-directories and refreshed at runtime from
+# notifications/roots/list_changed. See docling_mcp.roots.
+from docling_mcp.roots import AllowedRootsRegistry  # noqa: E402
+
+allowed_roots = AllowedRootsRegistry()
+
 local_document_cache: dict[str, DoclingDocument] = {}
 local_stack_cache: dict[str, list[NodeItem]] = {}

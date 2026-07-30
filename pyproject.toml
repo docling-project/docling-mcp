@@ -205,6 +205,7 @@ module = [
     "requests.*",
     "transformers.*",
     "llama_stack_client.*",  # needed since this will be there only on python>=3.12
+    "llama_index.*",  # optional dependency (llama-index-rag extra); not pinned in base install
 ]
 ignore_missing_imports = true
 

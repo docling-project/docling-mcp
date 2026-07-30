@@ -12,7 +12,7 @@ from mcp.types import INTERNAL_ERROR, ErrorData, ToolAnnotations
 from pydantic import Field
 
 from docling_mcp.logger import setup_logger
-from docling_mcp.shared import local_document_cache, mcp
+from docling_mcp.shared import allowed_roots, local_document_cache, mcp
 
 from .converters.base import ConversionOutput
 from .converters.factory import get_converter
@@ -75,6 +75,16 @@ def convert_document_into_docling_document(
     boolean is set to True.
     """
     try:
+        source = source.strip("\"'")
+
+        # Authorize the source against MCP Roots / --allowed-directories.
+        # Remote URLs and unconstrained registries pass through untouched;
+        # local paths outside any allowed root raise PermissionError.
+        try:
+            allowed_roots.validate_source(source)
+        except PermissionError as e:
+            raise McpError(ErrorData(code=INTERNAL_ERROR, message=str(e))) from e
+
         converter = get_converter()
         result = converter.convert_document(source)
 
@@ -114,6 +124,13 @@ async def convert_directory_files_into_docling_document(
     try:
         # Remove any quotes from the source string
         source = source.strip("\"'")
+
+        # Authorize the directory against MCP Roots / --allowed-directories.
+        try:
+            allowed_roots.validate_source(source)
+        except PermissionError as e:
+            raise McpError(ErrorData(code=INTERNAL_ERROR, message=str(e))) from e
+
         directory = Path(source)
         files: list[Path] = await asyncio.to_thread(
             lambda: [f for f in directory.iterdir() if f.is_file()]

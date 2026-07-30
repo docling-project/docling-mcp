@@ -4,10 +4,13 @@ import inspect
 import json
 from collections.abc import AsyncGenerator
 from typing import Any
+from unittest.mock import patch
 
 import anyio
 import pytest
 from mcp import Tool
+
+from docling_mcp.servers.mcp_server import TransportType, main
 
 
 @pytest.mark.asyncio
@@ -89,3 +92,59 @@ async def test_call_tool(mcp_client: AsyncGenerator[Any, Any]) -> None:
     assert len(res.content) == 1
     assert "validation error" in res.content[0].text
     assert res.structuredContent is None
+
+
+# ---------------------------------------------------------------------------
+# main() — Roots wiring (--allowed-directories / install_roots_handlers)
+# ---------------------------------------------------------------------------
+
+
+@patch("docling_mcp._roots_wiring.install_roots_handlers")
+@patch("docling_mcp.servers.mcp_server.init_mcp")
+@patch("docling_mcp.servers.mcp_server.allowed_roots")
+def test_main_sets_static_roots_when_allowed_directories_given(
+    mock_allowed_roots: Any, mock_init_mcp: Any, mock_install_roots_handlers: Any
+) -> None:
+    """--allowed-directories seeds the static roots set and wires the
+    roots notification handlers.
+
+    install_roots_handlers is patched at its definition site
+    (docling_mcp._roots_wiring), not at docling_mcp.servers.mcp_server,
+    because main() imports it with a deferred `from ... import` inside
+    the function body — the name doesn't exist on the mcp_server module
+    until that line executes, so patching it there would fail.
+
+    init_mcp is patched (not a bare `mcp` module attribute) because
+    main() now builds the FastMCP instance lazily via
+    `mcp = init_mcp(host=host, port=port)` so DNS-rebinding protection
+    sees the real bind address — mcp_server no longer imports `mcp` at
+    module level.
+    """
+    mock_mcp = mock_init_mcp.return_value
+
+    main(
+        transport=TransportType.STDIO,
+        tools=None,
+        allowed_directories=["/some/path", "/other/path"],
+    )
+
+    mock_allowed_roots.set_static_roots.assert_called_once_with(
+        ["/some/path", "/other/path"]
+    )
+    mock_install_roots_handlers.assert_called_once()
+    mock_mcp.run.assert_called_once_with(transport=TransportType.STDIO.value)
+
+
+@patch("docling_mcp._roots_wiring.install_roots_handlers")
+@patch("docling_mcp.servers.mcp_server.init_mcp")
+@patch("docling_mcp.servers.mcp_server.allowed_roots")
+def test_main_skips_static_roots_when_no_allowed_directories(
+    mock_allowed_roots: Any, mock_init_mcp: Any, mock_install_roots_handlers: Any
+) -> None:
+    """No --allowed-directories → set_static_roots is never called, but
+    the roots notification handlers are still installed (client-sent
+    Roots remain fully supported)."""
+    main(transport=TransportType.STDIO, tools=None, allowed_directories=None)
+
+    mock_allowed_roots.set_static_roots.assert_not_called()
+    mock_install_roots_handlers.assert_called_once()
