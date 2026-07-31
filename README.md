@@ -24,18 +24,20 @@ A document processing service using the Docling-MCP library and MCP (Model Conte
 
 [Docling](https://github.com/docling-project/docling) MCP is a service that provides tools for document conversion, processing and generation. It uses the Docling library to convert PDF documents into structured formats and provides a caching mechanism to improve performance. The service exposes functionality through a set of tools that can be called by client applications.
 
-## 🆕 What's New in v2.0
+## Compatibility
 
-**Major Architecture Update**: Docling MCP v2.0 introduces a hybrid architecture with support for both remote API and local conversion modes:
+| docling-mcp | MCP Python SDK |
+|---|---|
+| `>=3.0.0` | `mcp>=2.0.0` |
+| `>=2.0.0,<3.0.0` | `mcp>=1.9.4,<2.0.0` |
 
-- **🚀 90% Size Reduction**: Base package is now ~50MB (down from ~500MB)
-- **⚡ Faster Installation**: No model downloads required for default remote mode
-- **🌐 Remote API Support**: Use Docling Serve for scalable cloud-based conversion
-- **💻 Local Mode Available**: Install `[local]` extra for offline/local conversion
-- **🔄 Automatic Fallback**: Optional fallback from remote to local mode
-- **🎯 Flexible Configuration**: Choose the mode that fits your needs
+If your MCP client application has not yet migrated to MCP SDK v2, pin:
 
-**Migration**: Upgrading from v1.x? See [MIGRATION_v2.md](MIGRATION_v2.md) for detailed instructions.
+```bash
+pip install "docling-mcp<3.0.0"
+```
+
+See [MIGRATION.md](MIGRATION.md) for the full migration guide.
 
 ## Installation Options
 

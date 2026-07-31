@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from io import BytesIO
 from typing import Annotated
 
-from mcp.server.fastmcp import Image as MCPImage
+from mcp.server.mcpserver import Image as MCPImage
 from mcp.types import ToolAnnotations
 from pydantic import Field
 

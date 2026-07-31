@@ -9,8 +9,8 @@ from llama_index.core.base.response.schema import (
     RESPONSE_TYPE,
     Response,
 )
-from mcp.shared.exceptions import McpError
-from mcp.types import INTERNAL_ERROR, ErrorData, ToolAnnotations
+from mcp.shared.exceptions import MCPError
+from mcp.types import INTERNAL_ERROR, ToolAnnotations
 from pydantic import Field
 
 from docling_core.types.doc.document import DoclingDocument
@@ -117,16 +117,12 @@ def search_documents(
         if response.response is not None:
             return SearchDocumentOutput(answer=response.response)
         else:
-            raise McpError(
-                ErrorData(
-                    code=INTERNAL_ERROR,
-                    message="Response object has no response content",
-                )
+            raise MCPError(
+                INTERNAL_ERROR,
+                "Response object has no response content",
             )
     else:
-        raise McpError(
-            ErrorData(
-                code=INTERNAL_ERROR,
-                message=f"Unexpected response type: {type(response)}",
-            )
+        raise MCPError(
+            INTERNAL_ERROR,
+            f"Unexpected response type: {type(response)}",
         )

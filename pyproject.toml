@@ -45,8 +45,7 @@ requires-python = ">=3.10"
 dependencies = [
     "docling-slim[service-client]~=2.92",
     "docling-core>=2.51.0",
-    "httpx>=0.28.1",
-    "mcp[cli]>=1.9.4,<2.0.0",
+    "mcp[cli]>=2.0.0,<3.0.0",
     "pydantic~=2.10",
     "pydantic-settings~=2.4",
     "python-dotenv>=1.1.0",
@@ -162,6 +161,7 @@ ignore = [
 "__init__.py" = ["E402", "F401"]  # import violations, module imported but unused
 "docling_mcp/servers/mcp_server.py" = ["F401"]  # module imported but unused
 "tests/**.{py,ipynb}" = ["D"]  # ignore flake8-docstrings in tests
+"tests/conftest.py" = ["F401"]  # side-effect-only imports for tool registration
 "examples/**.{py,ipynb}" = ["D"]  # ignore flake8-docstrings in examples
 
 [tool.ruff.lint.pep8-naming]
@@ -218,6 +218,7 @@ testpaths = [
 addopts = "-rA --color=yes --tb=short --maxfail=5"
 markers = [
     "asyncio",
+    "anyio",
 ]
 
 [tool.semantic_release]

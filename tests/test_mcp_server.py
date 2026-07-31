@@ -2,23 +2,25 @@
 
 import inspect
 import json
-from collections.abc import AsyncGenerator
-from typing import Any
 
 import anyio
 import pytest
 from mcp import Tool
+from mcp.types import TextContent
+
+from tests.conftest import MCPClient
 
 
-@pytest.mark.asyncio
-async def test_list_tools(mcp_client: AsyncGenerator[Any, Any]) -> None:
-    tools = await mcp_client.list_tools()  # type: ignore[attr-defined]
+@pytest.mark.anyio
+async def test_list_tools(mcp_client: MCPClient) -> None:
+    tools = await mcp_client.list_tools()
     assert isinstance(tools, list)
-    gold_tools = [
+    # Check that all expected tools are registered; order is not guaranteed
+    # when tests share an in-process MCPServer singleton.
+    expected_tools = {
         "is_document_in_local_cache",
         "convert_document_into_docling_document",
         "convert_directory_files_into_docling_document",
-        # "convert_attachments_into_docling_document",
         "create_new_docling_document",
         "export_docling_document_to_markdown",
         "save_docling_document",
@@ -35,14 +37,14 @@ async def test_list_tools(mcp_client: AsyncGenerator[Any, Any]) -> None:
         "get_text_of_document_item_at_anchor",
         "update_text_of_document_item_at_anchor",
         "delete_document_items_at_anchors",
-    ]
+    }
 
-    assert tools == gold_tools
+    assert set(tools) == expected_tools
 
 
-@pytest.mark.asyncio()
-async def test_get_tools(mcp_client: AsyncGenerator[Any, Any]) -> None:
-    tools: list[Tool] = await mcp_client.get_tools()  # type: ignore[attr-defined]
+@pytest.mark.anyio()
+async def test_get_tools(mcp_client: MCPClient) -> None:
+    tools: list[Tool] = await mcp_client.get_tools()
 
     sample_tool = next(
         item for item in tools if item.name == "add_paragraph_to_docling_document"
@@ -63,29 +65,28 @@ async def test_get_tools(mcp_client: AsyncGenerator[Any, Any]) -> None:
         assert gold_tool == sample_dump
 
 
-@pytest.mark.asyncio()
-async def test_call_tool(mcp_client: AsyncGenerator[Any, Any]) -> None:
-    res = await mcp_client.call_tool(  # type: ignore[attr-defined]
+@pytest.mark.anyio()
+async def test_call_tool(mcp_client: MCPClient) -> None:
+    res = await mcp_client.call_tool(
         "create_new_docling_document", {"prompt": "A new Docling document for testing"}
     )
 
-    # always check if there's been a parsing error through `isError`, since no
+    # always check if there's been a parsing error through `is_error`, since no
     # exception will be raised
-    assert not res.isError
+    assert not res.is_error
     assert isinstance(res.content, list)
     assert len(res.content) == 1
     # there are 2 results: text as an MCP TextContent type...
-    assert res.content[0].type == "text"
+    assert isinstance(res.content[0], TextContent)
     assert res.content[0].text.startswith('{\n  "document_key": ')
     # ...the structured output
-    assert res.structuredContent["prompt"] == "A new Docling document for testing"
-    assert len(res.structuredContent["document_key"]) == 32
+    assert res.structured_content["prompt"] == "A new Docling document for testing"
+    assert len(res.structured_content["document_key"]) == 32
 
     # if no structured output, a schema is infered with the field `result`
-    res = await mcp_client.call_tool(  # type: ignore[attr-defined]
-        "create_new_docling_document", {}
-    )
+    res = await mcp_client.call_tool("create_new_docling_document", {})
     assert isinstance(res.content, list)
     assert len(res.content) == 1
+    assert isinstance(res.content[0], TextContent)
     assert "validation error" in res.content[0].text
-    assert res.structuredContent is None
+    assert res.structured_content is None

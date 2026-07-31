@@ -2,7 +2,7 @@
     "name": "add_paragraph_to_docling_document",
     "title": "Add paragraph to Docling document",
     "description": "Add a paragraph of text to an existing document in the local document cache.\n\n    This tool inserts a new paragraph under the specified section header and level\n    into a document that has already been processed and stored in the cache.\n    ",
-    "inputSchema": {
+    "input_schema": {
         "properties": {
             "document_key": {
                 "description": "The unique identifier of the document in the local cache.",
@@ -22,7 +22,7 @@
         "title": "add_paragraph_to_docling_documentArguments",
         "type": "object"
     },
-    "outputSchema": {
+    "output_schema": {
         "properties": {
             "document_key": {
                 "title": "Document Key",
@@ -38,10 +38,10 @@
     "icons": null,
     "annotations": {
         "title": null,
-        "readOnlyHint": false,
-        "destructiveHint": false,
-        "idempotentHint": null,
-        "openWorldHint": null
+        "read_only_hint": false,
+        "destructive_hint": false,
+        "idempotent_hint": null,
+        "open_world_hint": null
     },
     "meta": null,
     "execution": null
