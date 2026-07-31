@@ -1,3 +1,5 @@
+[![MCP Toplist](https://mcptoplist.com/badge/glama%2Fdocling-project%2Fdocling-mcp.svg)](https://mcptoplist.com/server/glama%2Fdocling-project%2Fdocling-mcp)
+
 <p align="center">
   <a href="https://github.com/docling-project/docling-mcp">
     <img loading="lazy" alt="Docling" src="https://github.com/docling-project/docling-mcp/raw/main/docs/assets/docling_mcp.png" width="40%"/>
