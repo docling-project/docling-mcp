@@ -1,3 +1,13 @@
+## [v3.0.0](https://github.com/docling-project/docling-mcp/releases/tag/v3.0.0) - 2026-07-31
+
+### Feature
+
+* **mcp-sdk:** Migrate to MCP Python SDK v2 ([#124](https://github.com/docling-project/docling-mcp/issues/124)) ([`d38eeed`](https://github.com/docling-project/docling-mcp/commit/d38eeed3830b410a473587b42cc62957f68f4ac5))
+
+### Breaking
+
+* requires mcp>=2.0.0. Users whose MCP client applications have not yet migrated to SDK v2 should pin docling-mcp<3.0.0. ([`d38eeed`](https://github.com/docling-project/docling-mcp/commit/d38eeed3830b410a473587b42cc62957f68f4ac5))
+
 ## [v2.2.1](https://github.com/docling-project/docling-mcp/releases/tag/v2.2.1) - 2026-07-30
 
 ### Fix
