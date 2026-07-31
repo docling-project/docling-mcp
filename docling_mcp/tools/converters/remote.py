@@ -27,8 +27,11 @@ class RemoteDocumentConverter:
             raise ValueError(
                 "DOCLING_MCP_SERVICE_URL is not set but "
                 "DOCLING_MCP_CONVERSION_MODE=remote. "
-                "Set it via environment variable or in a .env file. "
-                "See .env.example for all available configuration variables."
+                "To fix this, either:\n"
+                "  - Remote: set DOCLING_MCP_SERVICE_URL (env var or .env) to a "
+                "Docling Serve endpoint, or\n"
+                "  - Local: set DOCLING_MCP_CONVERSION_MODE=local and install the "
+                "local extra: pip install 'docling-mcp[local]'."
             )
 
         # DoclingServiceClient requires api_key to be str, not Optional[str]
