@@ -71,6 +71,15 @@ Then configure your environment:
 export DOCLING_MCP_CONVERSION_MODE=local
 ```
 
+By default, local mode uses Docling's standard OCR/layout pipeline. To use the
+VLM pipeline instead (e.g. [granite-docling](https://huggingface.co/ibm-granite/granite-docling-258M)
+served by a local [Ollama](https://ollama.com) instance), set:
+
+```bash
+export DOCLING_MCP_USE_VLM=true
+export DOCLING_MCP_VLM_HOST=http://localhost:11434
+```
+
 ### Hybrid Mode (Best of Both)
 
 Install with local support and enable automatic fallback:
@@ -128,6 +137,13 @@ your MCP client config. Copy [`.env.example`](.env.example) as a starting point.
 | `DOCLING_MCP_IMAGES_SCALE` | `1.0` | Image scale factor (increase to avoid tensor padding errors) |
 | `DOCLING_MCP_DO_OCR` | `true` | Run OCR pipeline |
 | `DOCLING_MCP_DO_TABLE_STRUCTURE` | `true` | Detect table structure |
+
+### Local VLM pipeline
+
+| Variable | Default | Description |
+|---|---|---|
+| `DOCLING_MCP_USE_VLM` | `false` | Use the `granite_docling` VLM pipeline through Ollama |
+| `DOCLING_MCP_VLM_HOST` | `http://localhost:11434` | Base URL of the Ollama server |
 
 ### LlamaIndex RAG (`--tools llama-index-rag`)
 
