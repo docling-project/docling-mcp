@@ -16,9 +16,18 @@ from docling_mcp.shared import local_document_cache, mcp
 
 from .converters.base import ConversionOutput
 from .converters.factory import get_converter
+from .converters.sources import supported_uri_schemes
 
 # Create a default project logger
 logger = setup_logger()
+
+# Derived from the scheme table so the tool description cannot drift from the
+# schemes actually resolved.
+_SOURCE_DESCRIPTION = (
+    "The URL or local file path to the document. Object-storage URIs "
+    f"({', '.join(f'{s}://' for s in supported_uri_schemes())}) are supported "
+    "when the matching provider extra is installed."
+)
 
 
 def cleanup_memory() -> None:
@@ -62,7 +71,7 @@ def is_document_in_local_cache(
 def convert_document_into_docling_document(
     source: Annotated[
         str,
-        Field(description="The URL or local file path to the document."),
+        Field(description=_SOURCE_DESCRIPTION),
     ],
 ) -> ConversionOutput:
     """Convert a document of any type from a URL or local path and store in local cache.
