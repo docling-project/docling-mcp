@@ -7,6 +7,7 @@ from docling.datamodel.service.options import ConvertDocumentsOptions
 from docling.service_client import DoclingServiceClient
 from docling_core.types.doc.common.content_layer import ContentLayer
 from docling_core.types.doc.labels import DocItemLabel
+from docling_core.types.io import DocumentStream
 
 from docling_mcp.docling_cache import get_cache_key
 from docling_mcp.logger import setup_logger
@@ -14,7 +15,7 @@ from docling_mcp.settings.service_client import settings
 from docling_mcp.shared import local_document_cache, local_stack_cache
 
 from .base import ConversionOutput
-from .sources import fetched_source
+from .sources import fetched_stream
 
 logger = setup_logger()
 
@@ -44,25 +45,27 @@ class RemoteDocumentConverter:
         logger.info(f"Initialized remote converter with URL: {settings.service_url}")
 
     def convert_document(self, source: str) -> ConversionOutput:
-        """Convert document using remote API."""
-        source = source.strip("\"'")
-        logger.info(f"Converting document via remote API: {source}")
+        """Convert document using remote API.
 
-        with fetched_source(source) as local_source:
-            return self._convert_local_source(source, local_source)
-
-    def _convert_local_source(self, source: str, local_source: str) -> ConversionOutput:
-        """Convert a locally readable source, recording the original source.
-
-        The cache key stays derived from the original source, not the fetched
-        copy, whose temporary path differs on every call.
+        The cache is resolved before the source is fetched, so a repeat call
+        for an object-storage URI does not download the body again only to
+        discard it. Object bodies are uploaded from memory rather than
+        staged through a temporary file.
         """
+        source = source.strip("\"'")
         cache_key = get_cache_key(source)
 
         if cache_key in local_document_cache:
             logger.info(f"Document found in cache: {cache_key}")
             return ConversionOutput(True, cache_key)
 
+        logger.info(f"Converting document via remote API: {source}")
+        return self._convert_resolved_source(source, fetched_stream(source), cache_key)
+
+    def _convert_resolved_source(
+        self, source: str, resolved: str | DocumentStream, cache_key: str
+    ) -> ConversionOutput:
+        """Convert a resolved source, recording the original source."""
         # Configure conversion options
         options = ConvertDocumentsOptions(
             do_ocr=settings.do_ocr,
@@ -74,7 +77,7 @@ class RemoteDocumentConverter:
         )
 
         # Convert via remote API
-        result = self.client.convert(source=local_source, options=options)
+        result = self.client.convert(source=resolved, options=options)
 
         # Check for errors
         if hasattr(result, "status") and hasattr(result.status, "is_error"):
