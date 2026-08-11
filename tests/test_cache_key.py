@@ -1,6 +1,7 @@
 """Test the conversion cache key."""
 
 import os
+from enum import Enum
 from pathlib import Path
 from typing import Any
 
@@ -60,27 +61,49 @@ def test_cache_key_detects_same_size_rewrite_with_preserved_mtime(
     assert get_cache_key(str(source)) != key_one
 
 
-def test_cache_key_for_urls_uses_source_string() -> None:
+# Pinned so the source-branch tests below compare only the source, and cannot
+# pass because the conversion context happened to differ between two calls.
+_FIXED_CONTEXT: dict[str, object] = {}
+
+
+def test_url_cache_key_changes_with_query_string() -> None:
     url = "https://example.com/spec.pdf"
 
-    assert get_cache_key(url) != get_cache_key(url + "?v=2")
+    assert get_cache_key(url, conversion=_FIXED_CONTEXT) != get_cache_key(
+        url + "?v=2", conversion=_FIXED_CONTEXT
+    )
+
+
+def test_url_and_file_content_keys_differ_for_the_same_text(tmp_path: Path) -> None:
+    """A URL must not collide with a file whose content is that same URL."""
+    url = "https://example.com/spec.pdf"
+    source = tmp_path / "spec.pdf"
+    source.write_text(url, encoding="utf-8")
+
+    assert get_cache_key(url, conversion=_FIXED_CONTEXT) != get_cache_key(
+        str(source), conversion=_FIXED_CONTEXT
+    )
 
 
 def test_file_and_missing_path_keys_differ(tmp_path: Path) -> None:
     """The same string keys differently once it stops naming a file."""
     source = tmp_path / "doc.pdf"
     source.write_bytes(b"some bytes")
-    content_key = get_cache_key(str(source))
+    content_key = get_cache_key(str(source), conversion=_FIXED_CONTEXT)
 
     source.unlink()
-    source_string_key = get_cache_key(str(source))
 
-    assert content_key != source_string_key
+    assert get_cache_key(str(source), conversion=_FIXED_CONTEXT) != content_key
 
 
 def test_cache_key_for_directories_uses_source_string(tmp_path: Path) -> None:
-    # A directory is not a file, so it must not be hashed as one.
-    assert get_cache_key(str(tmp_path)) == get_cache_key(str(tmp_path))
+    """A directory is not a file, so it must not be hashed as one."""
+    source = tmp_path / "directory"
+    missing_key = get_cache_key(str(source), conversion=_FIXED_CONTEXT)
+
+    source.mkdir()
+
+    assert get_cache_key(str(source), conversion=_FIXED_CONTEXT) == missing_key
 
 
 def test_cache_key_uses_converter_supplied_context(tmp_path: Path) -> None:
@@ -153,27 +176,48 @@ def test_cache_key_covers_every_output_relevant_setting(
         assert changed != baseline, f"{name} does not affect the cache key"
 
 
-@pytest.mark.parametrize("name", sorted(_NOT_OUTPUT_RELEVANT | _NOT_RELEVANT_LOCALLY))
-def test_settings_that_do_not_change_output_are_excluded(
-    tmp_path: Path, name: str
-) -> None:
-    """Ignored settings must not invalidate a cached local conversion."""
+def test_settings_that_do_not_change_output_are_excluded(tmp_path: Path) -> None:
+    """Ignored settings must not invalidate a cached local conversion.
+
+    The expected sets are written out here rather than read from the
+    production constants. Otherwise adding an output-relevant setting to the
+    denylist would make the coverage test above stop checking it while this
+    test congratulates the implementation for excluding it.
+    """
     from docling_mcp.settings.service_client import settings
+
+    assert _NOT_OUTPUT_RELEVANT == {
+        "conversion_mode",
+        "fallback_to_local",
+        "service_api_key",
+        "service_max_retries",
+        "service_timeout",
+    }
+    assert _NOT_RELEVANT_LOCALLY == {"service_url"}
 
     source = tmp_path / "doc.pdf"
     source.write_bytes(b"stable bytes")
     baseline = get_cache_key(str(source), conversion=local_conversion_context())
 
-    with pytest.MonkeyPatch.context() as mp:
-        mp.setattr(settings, name, _other_value(getattr(settings, name)))
-        assert (
-            get_cache_key(str(source), conversion=local_conversion_context())
-            == baseline
-        )
+    for name in sorted(_NOT_OUTPUT_RELEVANT | _NOT_RELEVANT_LOCALLY):
+        current = getattr(settings, name)
+        other = _other_value(current)
+        assert other != current, f"{name} was not actually changed"
+
+        with pytest.MonkeyPatch.context() as mp:
+            mp.setattr(settings, name, other)
+            assert (
+                get_cache_key(str(source), conversion=local_conversion_context())
+                == baseline
+            ), f"{name} unexpectedly affects the local cache key"
 
 
 def _other_value(current: object) -> object:
-    """Return a value of the same type that differs from the current one."""
+    """Return a valid value of the same type that differs from the current one."""
+    if isinstance(current, Enum):
+        alternatives = [member for member in type(current) if member != current]
+        assert alternatives, f"{type(current).__name__} has no other member"
+        return alternatives[0]
     if isinstance(current, bool):
         return not current
     if isinstance(current, int):
@@ -182,4 +226,7 @@ def _other_value(current: object) -> object:
         return current + 1.0
     if isinstance(current, str):
         return current + "-changed"
-    return "changed"
+    if current is None:
+        # Every currently None-valued setting is annotated str | None.
+        return "changed"
+    raise AssertionError(f"unsupported settings value type: {type(current)!r}")
