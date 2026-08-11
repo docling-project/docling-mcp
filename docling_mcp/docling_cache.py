@@ -5,8 +5,9 @@ import importlib.metadata
 import json
 import os
 import sys
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 from typing import Final
+from urllib.parse import urlsplit
 
 from docling_mcp.logger import setup_logger
 
@@ -165,6 +166,20 @@ def _default_conversion_context() -> dict[str, object]:
     return local_conversion_context()
 
 
+def _looks_like_local_path(source: str) -> bool:
+    """Return whether a source should be resolved against the filesystem.
+
+    A URI scheme means the source names a remote object, so it is keyed by
+    its string and never read from disk. Windows drive letters parse as
+    one-character schemes, so they are detected separately and still treated
+    as paths. A schemeless source containing a colon before the first slash
+    (a legal POSIX filename) is treated as a URI and keyed by string.
+    """
+    if PureWindowsPath(source).drive:
+        return True
+    return not urlsplit(source).scheme
+
+
 def get_cache_key(
     source: str,
     conversion: dict[str, object] | None = None,
@@ -173,11 +188,13 @@ def get_cache_key(
 
     Local files are keyed by their content digest, so identical files reached
     through different paths share one conversion and an edited file triggers a
-    new one. Other sources (URLs) are keyed by the source string. The key also
-    covers the conversion configuration, so a result produced under a
-    different mode or pipeline setup is not reused. Converters should pass
-    their own `conversion` context so a fallback conversion is keyed by the
-    converter that actually ran, not by the configured mode.
+    new one. Sources carrying a URI scheme (URLs and object-storage URIs) are
+    keyed by the source string and never read from disk, so a file that
+    happens to sit at the path such a URI collapses to cannot stand in for it.
+    The key also covers the conversion configuration, so a result produced
+    under a different mode or pipeline setup is not reused. Converters should
+    pass their own `conversion` context so a fallback conversion is keyed by
+    the converter that actually ran, not by the configured mode.
     """
     key_data: dict[str, object] = {
         "conversion": conversion
@@ -185,11 +202,13 @@ def get_cache_key(
         else _default_conversion_context(),
     }
 
-    try:
-        path = Path(source)
-        is_file = path.is_file()
-    except OSError:
-        is_file = False
+    path = Path(source)
+    is_file = False
+    if _looks_like_local_path(source):
+        try:
+            is_file = path.is_file()
+        except OSError:
+            is_file = False
 
     if is_file:
         key_data["content"] = _file_content_digest(path)

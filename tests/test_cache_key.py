@@ -10,6 +10,7 @@ import pytest
 from docling_mcp.docling_cache import (
     _NOT_OUTPUT_RELEVANT,
     _NOT_RELEVANT_LOCALLY,
+    _looks_like_local_path,
     get_cache_key,
     local_conversion_context,
     remote_conversion_context,
@@ -72,6 +73,48 @@ def test_url_cache_key_changes_with_query_string() -> None:
     assert get_cache_key(url, conversion=_FIXED_CONTEXT) != get_cache_key(
         url + "?v=2", conversion=_FIXED_CONTEXT
     )
+
+
+@pytest.mark.parametrize(
+    ("source", "expected"),
+    [
+        ("relative.pdf", True),
+        ("./relative.pdf", True),
+        ("/abs/doc.pdf", True),
+        (r"C:\doc.pdf", True),
+        ("C:/doc.pdf", True),
+        (r"\\server\share\doc.pdf", True),
+        ("//server/share/doc.pdf", True),
+        ("https://example.com/spec.pdf", False),
+        ("s3://bucket/key.pdf", False),
+        ("abfs://container/key.pdf", False),
+        ("file:///tmp/doc.pdf", False),
+    ],
+)
+def test_looks_like_local_path(source: str, expected: bool) -> None:
+    """Windows drive letters parse as schemes, so they need separate handling."""
+    assert _looks_like_local_path(source) is expected
+
+
+def test_url_is_never_keyed_by_a_local_file(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A file at the path a URL collapses to must not stand in for the URL.
+
+    Path("https://example.com/spec.pdf") is the relative path
+    "https:/example.com/spec.pdf", so without a scheme check a file planted
+    there would be hashed as the URL's content.
+    """
+    url = "https://example.com/spec.pdf"
+    before = get_cache_key(url, conversion=_FIXED_CONTEXT)
+
+    monkeypatch.chdir(tmp_path)
+    planted = Path(url)
+    planted.parent.mkdir(parents=True, exist_ok=True)
+    planted.write_bytes(b"not the real document")
+    assert planted.is_file()
+
+    assert get_cache_key(url, conversion=_FIXED_CONTEXT) == before
 
 
 def test_url_and_file_content_keys_differ_for_the_same_text(tmp_path: Path) -> None:
