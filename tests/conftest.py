@@ -9,7 +9,7 @@ from typing import Any, TypeVar
 
 import pytest
 from mcp import Client, Tool
-from mcp.types import CallToolResult
+from mcp.types import CallToolResult, Prompt
 
 _T = TypeVar("_T")
 
@@ -51,6 +51,10 @@ class MCPClient:
     async def get_tools(self) -> list[Tool]:
         response = await self._async_call(self._client.list_tools())
         return response.tools
+
+    async def list_prompts(self) -> list[Prompt]:
+        response = await self._async_call(self._client.list_prompts())
+        return response.prompts
 
     async def call_tool(
         self, tool_name: str, arguments: dict[str, Any] | None = None
