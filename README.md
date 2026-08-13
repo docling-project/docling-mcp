@@ -6,6 +6,7 @@
 
 # Docling MCP: making docling agentic
 
+[![CI](https://github.com/docling-project/docling-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/docling-project/docling-mcp/actions/workflows/ci.yml)
 [![PyPI version](https://img.shields.io/pypi/v/docling-mcp)](https://pypi.org/project/docling-mcp/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/docling-mcp)](https://pypi.org/project/docling-mcp/)
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
@@ -15,7 +16,7 @@
 [![License MIT](https://img.shields.io/github/license/docling-project/docling-mcp)](https://opensource.org/licenses/MIT)
 [![PyPI Downloads](https://static.pepy.tech/badge/docling-mcp/month)](https://pepy.tech/projects/docling-mcp)
 [![LF AI & Data](https://img.shields.io/badge/LF%20AI%20%26%20Data-003778?logo=linuxfoundation&logoColor=fff&color=0094ff&labelColor=003778)](https://lfaidata.foundation/projects/)
-[![MCP Registry](https://img.shields.io/badge/listed_in-MCP_Registry-green?logo=modelcontextprotocol)](https://registry.modelcontextprotocol.io)
+[![MCP Registry](https://img.shields.io/badge/MCP_Registry-listed-green?logo=modelcontextprotocol)](https://registry.modelcontextprotocol.io)
 
 A document processing service using the Docling-MCP library and MCP (Model Context Protocol) for tool integration.
 

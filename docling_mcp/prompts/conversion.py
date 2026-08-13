@@ -1,17 +1,24 @@
 """Prompts for converting documents with Docling."""
 
+from typing import Annotated
+
+from pydantic import Field
+
 from docling_mcp.shared import mcp
 
 
-@mcp.prompt()
-def generate_docling_document_from_pdf(file_path: str) -> str:
-    """Convert a local PDF file into a Docling document and return its document key.
-
-    Args:
-        file_path: The absolute or relative path to a local PDF file.
-    """
+@mcp.prompt(title="Convert document")
+def generate_docling_document_from_pdf(
+    file_path: Annotated[
+        str,
+        Field(
+            description="The absolute or relative path to a local file (PDF, DOCX, XLSX, HTML, Markdown, EPUB, …)."
+        ),
+    ],
+) -> str:
+    """Convert a local file into a Docling document and return its document key."""
     return (
-        f"Convert the PDF file at '{file_path}' into a Docling document by calling "
+        f"Convert the file at '{file_path}' into a Docling document by calling "
         "convert_document_into_docling_document with the file path as the source. "
         "Once conversion is complete, return the document_key so I can use it with "
         "other tools. Also confirm whether the document was served from cache "
@@ -19,13 +26,13 @@ def generate_docling_document_from_pdf(file_path: str) -> str:
     )
 
 
-@mcp.prompt()
-def convert_and_summarize(source: str) -> str:
-    """Convert a document and produce a structured summary.
-
-    Args:
-        source: The URL or local file path to the document.
-    """
+@mcp.prompt(title="Convert and summarize")
+def convert_and_summarize(
+    source: Annotated[
+        str, Field(description="The URL or local file path to the document.")
+    ],
+) -> str:
+    """Convert a document and produce a structured summary."""
     return (
         f"Convert the document at '{source}' by calling "
         "convert_document_into_docling_document. "
@@ -38,13 +45,13 @@ def convert_and_summarize(source: str) -> str:
     )
 
 
-@mcp.prompt()
-def convert_directory_and_list(directory: str) -> str:
-    """Convert all files in a directory and list the results.
-
-    Args:
-        directory: The path to a local directory containing documents.
-    """
+@mcp.prompt(title="Convert directory")
+def convert_directory_and_list(
+    directory: Annotated[
+        str, Field(description="The path to a local directory containing documents.")
+    ],
+) -> str:
+    """Convert all files in a directory and list the results."""
     return (
         f"Convert all files in the directory '{directory}' by calling "
         "convert_directory_files_into_docling_document. "

@@ -1,16 +1,20 @@
 """Prompts for generating and rewriting Docling documents."""
 
+from typing import Annotated
+
+from pydantic import Field
+
 from docling_mcp.shared import mcp
 
 
-@mcp.prompt()
-def author_structured_document(topic: str, sections: str) -> str:
-    """Create a new structured Docling document on a given topic.
-
-    Args:
-        topic: The subject of the document to write.
-        sections: Comma-separated list of section headings to include.
-    """
+@mcp.prompt(title="Author structured document")
+def author_structured_document(
+    topic: Annotated[str, Field(description="The subject of the document to write.")],
+    sections: Annotated[
+        str, Field(description="Comma-separated list of section headings to include.")
+    ],
+) -> str:
+    """Create a new structured Docling document on a given topic."""
     return (
         f"Write a well-structured Docling document about '{topic}' "
         f"with the following sections: {sections}. "
@@ -28,15 +32,19 @@ def author_structured_document(topic: str, sections: str) -> str:
     )
 
 
-@mcp.prompt()
-def convert_and_rewrite(source: str, instructions: str) -> str:
-    """Convert a document and rewrite its content following specific instructions.
-
-    Args:
-        source: The URL or local file path to the source document.
-        instructions: Rewriting instructions, e.g. 'translate to French' or
-            'simplify for a non-technical audience'.
-    """
+@mcp.prompt(title="Convert and rewrite")
+def convert_and_rewrite(
+    source: Annotated[
+        str, Field(description="The URL or local file path to the source document.")
+    ],
+    instructions: Annotated[
+        str,
+        Field(
+            description="Rewriting instructions, e.g. 'translate to French' or 'simplify for a non-technical audience'."
+        ),
+    ],
+) -> str:
+    """Convert a document and rewrite its content following specific instructions."""
     return (
         f"Convert the document at '{source}' and rewrite it following these instructions: "
         f"{instructions}\n\n"

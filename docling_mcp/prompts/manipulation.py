@@ -1,15 +1,20 @@
 """Prompts for editing and searching Docling documents."""
 
+from typing import Annotated
+
+from pydantic import Field
+
 from docling_mcp.shared import mcp
 
 
-@mcp.prompt()
-def review_and_edit_document(document_key: str) -> str:
-    """Review the structure of a cached document and interactively edit it.
-
-    Args:
-        document_key: The unique identifier of the document in the local cache.
-    """
+@mcp.prompt(title="Review and edit")
+def review_and_edit_document(
+    document_key: Annotated[
+        str,
+        Field(description="The unique identifier of the document in the local cache."),
+    ],
+) -> str:
+    """Review the structure of a cached document and interactively edit it."""
     return (
         f"I want to review and edit the document with key '{document_key}'.\n\n"
         "Start by calling get_overview_of_document_anchors to display the full document "
@@ -23,17 +28,16 @@ def review_and_edit_document(document_key: str) -> str:
     )
 
 
-@mcp.prompt()
+@mcp.prompt(title="Find and replace")
 def find_and_replace_in_document(
-    document_key: str, search_text: str, replacement_text: str
+    document_key: Annotated[
+        str,
+        Field(description="The unique identifier of the document in the local cache."),
+    ],
+    search_text: Annotated[str, Field(description="The text to search for.")],
+    replacement_text: Annotated[str, Field(description="The text to replace it with.")],
 ) -> str:
-    """Find text in a cached document and replace it at the correct anchor.
-
-    Args:
-        document_key: The unique identifier of the document in the local cache.
-        search_text: The text to search for.
-        replacement_text: The text to replace it with.
-    """
+    """Find text in a cached document and replace it at the correct anchor."""
     return (
         f"In the document with key '{document_key}', find '{search_text}' "
         f"and replace it with '{replacement_text}'.\n\n"
