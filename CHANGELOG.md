@@ -1,3 +1,15 @@
+## [v3.1.0](https://github.com/docling-project/docling-mcp/releases/tag/v3.1.0) - 2026-08-14
+
+### Feature
+
+* Key conversions by file content and conversion config ([#120](https://github.com/docling-project/docling-mcp/issues/120)) ([`6c3dfd7`](https://github.com/docling-project/docling-mcp/commit/6c3dfd71a071d9de5fe6a1286d691f7ac9099059))
+* Accept s3, gs, and abfs source URIs in the converters ([#119](https://github.com/docling-project/docling-mcp/issues/119)) ([`6fc5aa9`](https://github.com/docling-project/docling-mcp/commit/6fc5aa96d2188f223460b649ed6c78875d2674bf))
+
+### Fix
+
+* **prompts:** Use summary-only description, use Annotated pattern ([#129](https://github.com/docling-project/docling-mcp/issues/129)) ([`08ae330`](https://github.com/docling-project/docling-mcp/commit/08ae3305b127932d1dda95191d8cef5e1c9042cb))
+* Clarify missing remote configuration error ([#104](https://github.com/docling-project/docling-mcp/issues/104)) ([`c5540e2`](https://github.com/docling-project/docling-mcp/commit/c5540e27ca739f03b2f48fc775fd1afb6bd92279))
+
 ## [v3.0.0](https://github.com/docling-project/docling-mcp/releases/tag/v3.0.0) - 2026-07-31
 
 ### Feature
