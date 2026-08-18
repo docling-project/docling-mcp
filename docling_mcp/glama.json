@@ -1,0 +1,11 @@
+{
+  "$schema": "https://glama.ai/mcp/schemas/server.json",
+  "maintainers": [
+    "PeterStaar-IBM",
+    "zanetworker",
+    "dolfim-ibm",
+    "vagenas",
+    "cau-git",
+    "ceberam"
+  ]
+}
