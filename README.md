@@ -18,6 +18,7 @@
 [![LF AI & Data](https://img.shields.io/badge/LF%20AI%20%26%20Data-003778?logo=linuxfoundation&logoColor=fff&color=0094ff&labelColor=003778)](https://lfaidata.foundation/projects/)
 [![MCP Registry](https://img.shields.io/badge/MCP_Registry-listed-green?logo=modelcontextprotocol)](https://registry.modelcontextprotocol.io)
 [![docling-mcp MCP server](https://glama.ai/mcp/servers/docling-project/docling-mcp/badges/score.svg)](https://glama.ai/mcp/servers/docling-project/docling-mcp)
+[![MCP Toplist](https://mcptoplist.com/badge/io.github.docling-project%2Fdocling-mcp.svg)](https://mcptoplist.com/server/io.github.docling-project%2Fdocling-mcp)
 
 A document processing service using the Docling-MCP library and MCP (Model Context Protocol) for tool integration.
 
