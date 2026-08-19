@@ -15,7 +15,23 @@ logger = setup_logger()
 
 
 def get_converter() -> RemoteDocumentConverter | LocalDocumentConverter:
-    """Get the appropriate converter based on settings."""
+    """Return the appropriate converter based on the current settings.
+
+    Reads `DOCLING_MCP_CONVERSION_MODE` and, when fallback is enabled,
+    transparently returns a `LocalDocumentConverter` if the remote service
+    is unreachable or misconfigured.
+
+    Returns:
+        A `RemoteDocumentConverter` or `LocalDocumentConverter` instance.
+
+    Raises:
+        ValueError: When the conversion mode is set to `remote` but
+            `DOCLING_MCP_SERVICE_URL` is not configured and fallback is
+            disabled.
+        ImportError: When local conversion is required (either directly or as
+            a fallback) but the `docling-mcp[local]` extra is not installed.
+        ValueError: When an unrecognised conversion mode is encountered.
+    """
     # Import converters lazily to avoid importing DocumentConverter when not needed
     from .remote import RemoteDocumentConverter
 

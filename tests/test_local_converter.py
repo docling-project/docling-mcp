@@ -83,13 +83,12 @@ class TestLocalDocumentConverter:
         converter = LocalDocumentConverter()
         assert converter.is_available() is True
 
-    @patch("docling_mcp.tools.converters.local.LOCAL_CONVERSION_AVAILABLE", False)
+    @patch("docling_mcp.tools.converters.local.LOCAL_CONVERSION_AVAILABLE", True)
     def test_is_available_when_not_installed(self) -> None:
-        """Test is_available returns False when local extra is not installed."""
-        # Can't create converter without LOCAL_CONVERSION_AVAILABLE
-        # So we test the module-level constant directly
-        from docling_mcp.tools import converters
+        """Test is_available returns False when the module flag is patched off post-init."""
+        converter = LocalDocumentConverter()
 
-        with patch.object(converters.local, "LOCAL_CONVERSION_AVAILABLE", False):
-            # Verify the constant is False
-            assert converters.local.LOCAL_CONVERSION_AVAILABLE is False
+        with patch(
+            "docling_mcp.tools.converters.local.LOCAL_CONVERSION_AVAILABLE", False
+        ):
+            assert converter.is_available() is False

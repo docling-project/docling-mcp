@@ -344,8 +344,8 @@ def delete_document_items_at_anchors(
     doc = local_document_cache[document_key]
 
     items = []
-    for _ in document_anchors:
-        ref = RefItem(cref=_)
+    for anchor in document_anchors:
+        ref = RefItem(cref=anchor)
         items.append(ref.resolve(doc=doc))
 
     doc.delete_items(node_items=items)

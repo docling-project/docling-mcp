@@ -7,8 +7,7 @@ from pathlib import Path
 from typing import Annotated
 
 from mcp.server.mcpserver import Context
-from mcp.shared.exceptions import MCPError
-from mcp.types import INTERNAL_ERROR, ToolAnnotations
+from mcp.types import ToolAnnotations
 from pydantic import Field
 
 from docling_mcp.logger import setup_logger
@@ -83,18 +82,13 @@ def convert_document_into_docling_document(
     was already in the local cache, the conversion is skipped and the output
     boolean is set to True.
     """
-    try:
-        converter = get_converter()
-        result = converter.convert_document(source)
+    converter = get_converter()
+    result = converter.convert_document(source)
 
-        # Clean up memory after conversion
-        cleanup_memory()
+    # Clean up memory after conversion
+    cleanup_memory()
 
-        return result
-
-    except Exception as e:
-        logger.exception(f"Error converting document: {source}")
-        raise MCPError(INTERNAL_ERROR, f"Unexpected error: {e!s}") from e
+    return result
 
 
 @mcp.tool(
@@ -118,37 +112,32 @@ async def convert_directory_files_into_docling_document(
     If a document was already in the local cache, the conversion is skipped and the
     output boolean is set to True.
     """
-    try:
-        # Remove any quotes from the source string
-        source = source.strip("\"'")
-        directory = Path(source)
-        files: list[Path] = await asyncio.to_thread(
-            lambda: [f for f in directory.iterdir() if f.is_file()]
-        )
-        out: list[ConversionOutput] = []
+    # Remove any quotes from the source string
+    source = source.strip("\"'")
+    directory = Path(source)
+    files: list[Path] = await asyncio.to_thread(
+        lambda: [f for f in directory.iterdir() if f.is_file()]
+    )
+    out: list[ConversionOutput] = []
 
-        logger.info(f"Converting {len(files)} files from directory: {source}")
-        converter = get_converter()
+    logger.info(f"Converting {len(files)} files from directory: {source}")
+    converter = get_converter()
 
-        for i, file in enumerate(files):
-            logger.info(f"Processing file {file}")
-            await ctx.report_progress(i + 1, len(files))
+    for i, file in enumerate(files):
+        logger.info(f"Processing file {file}")
+        await ctx.report_progress(i + 1, len(files))
 
-            try:
-                result = converter.convert_document(str(file))
-                out.append(result)
-                logger.debug(
-                    f"Completed step {i + 1} with Docling document key: {result.document_key}"
-                )
-            except Exception as e:
-                logger.error(f"Failed to convert {file}: {e}")
-                # Continue with other files
-                continue
+        try:
+            result = converter.convert_document(str(file))
+            out.append(result)
+            logger.debug(
+                f"Completed step {i + 1} with Docling document key: {result.document_key}"
+            )
+        except Exception as e:
+            logger.error(f"Failed to convert {file}: {e}")
+            # Continue with other files
+            continue
 
-        cleanup_memory()
+    cleanup_memory()
 
-        return out
-
-    except Exception as e:
-        logger.exception(f"Error converting files in directory: {source}")
-        raise MCPError(INTERNAL_ERROR, f"Unexpected error: {e!s}") from e
+    return out
