@@ -9,6 +9,14 @@ from docling_mcp.settings.llama_stack import settings
 
 @lru_cache
 def get_llama_stack_client() -> LlamaStackClient:
+    """Return a cached `LlamaStackClient` connected to the configured URL.
+
+    The client is constructed once and reused across calls. The base URL is
+    read from `docling_mcp.settings.llama_stack.settings`.
+
+    Returns:
+        A `LlamaStackClient` instance.
+    """
     client = LlamaStackClient(
         base_url=settings.url,
     )

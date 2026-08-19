@@ -110,7 +110,7 @@ def export_docling_document_to_markdown(
         )
 
     markdown = local_document_cache[document_key].export_to_markdown()
-    if max_size:
+    if max_size is not None:
         markdown = markdown[:max_size]
 
     return ExportDocumentMarkdownOutput(document_key, markdown)
@@ -184,7 +184,7 @@ def page_thumbnail(
 ) -> MCPImage:
     """Generate a thumbnail image for the requested page.
 
-    This tool takes a document that exists in the local cache and generates a thumnail image for the requested page.
+    This tool takes a document that exists in the local cache and generates a thumbnail image for the requested page.
     """
     if document_key not in local_document_cache:
         doc_keys = ", ".join(local_document_cache.keys())
@@ -564,12 +564,12 @@ def add_table_in_html_format_to_docling_document(
     ):
         table = doc.add_table(data=conv_result.document.tables[0].data)
 
-        for _ in table_captions or []:
-            caption = doc.add_text(label=DocItemLabel.CAPTION, text=_)
+        for caption_text in table_captions or []:
+            caption = doc.add_text(label=DocItemLabel.CAPTION, text=caption_text)
             table.captions.append(caption.get_ref())
 
-        for _ in table_footnotes or []:
-            footnote = doc.add_text(label=DocItemLabel.FOOTNOTE, text=_)
+        for footnote_text in table_footnotes or []:
+            footnote = doc.add_text(label=DocItemLabel.FOOTNOTE, text=footnote_text)
             table.footnotes.append(footnote.get_ref())
     else:
         raise ValueError(

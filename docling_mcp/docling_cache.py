@@ -16,20 +16,33 @@ logger = setup_logger()
 
 
 def hash_string(input_string: str) -> str:
-    """Creates a hash-string from the input string."""
+    """Create a SHA-256 hex-digest string from the input.
+
+    Args:
+        input_string: The string to hash.
+
+    Returns:
+        A 64-character lowercase hex string.
+    """
     return hashlib.sha256(input_string.encode(), usedforsecurity=False).hexdigest()
 
 
 def get_cache_dir() -> Path:
-    """Get the cache directory for the application.
+    """Return the cache directory for the application, creating it if needed.
+
+    Resolution order:
+
+    1. `CACHE_DIR` environment variable — used as-is when set.
+    2. PyInstaller frozen executable — a `_cache` directory next to the
+       executable.
+    3. Normal interpreter — walks up from the caller's `__file__` to find
+       the highest ancestor directory that still contains an `__init__.py`,
+       then places `_cache` one level above it (i.e., at the package root).
+       Falls back to the current working directory when `__file__` is
+       unavailable.
 
     Returns:
-        Path: A Path object pointing to the cache directory.
-
-    The function will:
-    1. First check for an environment variable 'CACHE_DIR'
-    2. If not found, create a '_cache' directory in the root of the current package
-    3. Ensure the directory exists before returning
+        A `Path` pointing to an existing cache directory.
     """
     # Check if cache directory is specified in environment variable
     cache_dir = os.environ.get("CACHE_DIR")
@@ -85,6 +98,14 @@ def _file_content_digest(path: Path) -> str:
 
 
 def _package_version(name: str) -> str | None:
+    """Return the installed version of `name`, or `None` if not found.
+
+    Args:
+        name: The distribution package name to look up.
+
+    Returns:
+        The version string, or `None` when the package is not installed.
+    """
     try:
         return importlib.metadata.version(name)
     except importlib.metadata.PackageNotFoundError:
@@ -219,5 +240,5 @@ def get_cache_key(
         key_data["source"] = source
 
     key_str = json.dumps(key_data, sort_keys=True)
-    hash = hash_string(key_str)
-    return hash[:32]
+    cache_hash = hash_string(key_str)
+    return cache_hash[:32]
