@@ -1,3 +1,13 @@
+## [v3.1.1](https://github.com/docling-project/docling-mcp/releases/tag/v3.1.1) - 2026-08-24
+
+### Fix
+
+* Code quality, error handling, and docstring improvements ([#132](https://github.com/docling-project/docling-mcp/issues/132)) ([`f954859`](https://github.com/docling-project/docling-mcp/commit/f95485978b9667ffaa9d04dcf6fd0a054b04fd47))
+
+### Documentation
+
+* Add live rank badge from MCP Toplist ([#131](https://github.com/docling-project/docling-mcp/issues/131)) ([`05e385c`](https://github.com/docling-project/docling-mcp/commit/05e385cad96a08179b97f53feccedbc79a715ff3))
+
 ## [v3.1.0](https://github.com/docling-project/docling-mcp/releases/tag/v3.1.0) - 2026-08-14
 
 ### Feature
