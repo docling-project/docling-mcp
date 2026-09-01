@@ -14,8 +14,11 @@ from docling_core.types.doc.base import ImageRefMode
 class ConversionMode(str, Enum):
     """Conversion operation modes."""
 
-    REMOTE = "remote"  # Use Docling Serve API
-    LOCAL = "local"  # Use local DocumentConverter
+    REMOTE = "remote"
+    """Use the Docling Serve REST API for document conversion."""
+
+    LOCAL = "local"
+    """Use a local DocumentConverter instance (requires the `local` extra)."""
 
 
 class ServiceClientSettings(BaseSettings):
@@ -35,22 +38,88 @@ class ServiceClientSettings(BaseSettings):
     )
 
     # Operation mode
-    conversion_mode: ConversionMode = ConversionMode.REMOTE
+    conversion_mode: Annotated[
+        ConversionMode,
+        Field(
+            description=(
+                "Conversion backend to use. `remote` delegates to a Docling Serve "
+                "API endpoint; `local` runs the DocumentConverter in-process "
+                "(requires the `local` extra)."
+            )
+        ),
+    ] = ConversionMode.REMOTE
 
     # Remote service connection
-    service_url: str | None = None
-    service_api_key: str | None = None
-    service_timeout: float = 300.0
-    service_max_retries: int = 3
+    service_url: Annotated[
+        str | None,
+        Field(
+            description=(
+                "Base URL of the Docling Serve instance. "
+                "Required when `conversion_mode` is `remote`."
+            )
+        ),
+    ] = None
+
+    service_api_key: Annotated[
+        str | None,
+        Field(description="API key for authenticating with Docling Serve."),
+    ] = None
+
+    service_timeout: Annotated[
+        float,
+        Field(
+            description="Request timeout in seconds for the remote Docling Serve API."
+        ),
+    ] = 300.0
+
+    service_max_retries: Annotated[
+        int,
+        Field(description="Maximum number of retry attempts for remote API requests."),
+    ] = 3
 
     # Fallback behavior
-    fallback_to_local: bool = False  # If remote fails, try local (if available)
+    fallback_to_local: Annotated[
+        bool,
+        Field(
+            description=(
+                "If `true`, fall back to local conversion when the remote service "
+                "is unreachable (requires the `local` extra)."
+            )
+        ),
+    ] = False
 
     # Conversion pipeline options (shared by both local and remote converters)
-    keep_images: bool = False
-    images_scale: float = 1.0
-    do_ocr: bool = True
-    do_table_structure: bool = True
+    keep_images: Annotated[
+        bool,
+        Field(
+            description=(
+                "Retain page images in the converted document. "
+                "Required when using `page_thumbnail` or `image_export_mode=embedded`."
+            )
+        ),
+    ] = False
+
+    images_scale: Annotated[
+        float,
+        Field(
+            description=(
+                "Scale factor applied to page images during conversion. "
+                "Increase to avoid tensor padding errors."
+            )
+        ),
+    ] = 1.0
+
+    do_ocr: Annotated[
+        bool,
+        Field(description="Run the OCR pipeline on converted documents."),
+    ] = True
+
+    do_table_structure: Annotated[
+        bool,
+        Field(
+            description="Detect and reconstruct table structure in converted documents."
+        ),
+    ] = True
 
     # Markdown export options
     image_export_mode: Annotated[
