@@ -42,7 +42,8 @@
         "DOCLING_MCP_KEEP_IMAGES": "${user_config.keep_images}",
         "DOCLING_MCP_IMAGES_SCALE": "${user_config.images_scale}",
         "DOCLING_MCP_DO_OCR": "${user_config.do_ocr}",
-        "DOCLING_MCP_DO_TABLE_STRUCTURE": "${user_config.do_table_structure}"
+        "DOCLING_MCP_DO_TABLE_STRUCTURE": "${user_config.do_table_structure}",
+        "DOCLING_MCP_IMAGE_EXPORT_MODE": "${user_config.image_export_mode}"
       }
     }
   },
@@ -130,6 +131,13 @@
       "title": "Enable Table Structure",
       "description": "Enable table structure recognition.",
       "default": true,
+      "required": false
+    },
+    "image_export_mode": {
+      "type": "string",
+      "title": "Image Export Mode",
+      "description": "Controls how images are rendered when exporting to Markdown. Accepted values: 'placeholder' (default, emits <!-- image -->), 'embedded' (base64 data-URI), 'referenced' (file path / URL).",
+      "default": "placeholder",
       "required": false
     }
   },

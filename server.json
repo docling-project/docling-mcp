@@ -94,6 +94,12 @@
           "description": "Set to 'false' to disable table structure detection. Default: true.",
           "isRequired": false,
           "isSecret": false
+        },
+        {
+          "name": "DOCLING_MCP_IMAGE_EXPORT_MODE",
+          "description": "Controls how images are rendered when exporting to Markdown. Accepted values: 'placeholder' (default, emits <!-- image -->), 'embedded' (base64 data-URI), 'referenced' (file path / URL).",
+          "isRequired": false,
+          "isSecret": false
         }
       ]
     }
