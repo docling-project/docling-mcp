@@ -1,3 +1,9 @@
+## [v3.2.0](https://github.com/docling-project/docling-mcp/releases/tag/v3.2.0) - 2026-09-01
+
+### Feature
+
+* Add env variable to control Markdown image rendering ([#133](https://github.com/docling-project/docling-mcp/issues/133)) ([`239677a`](https://github.com/docling-project/docling-mcp/commit/239677a286d2a22a22ef338f8ab6d84e81e48c12))
+
 ## [v3.1.1](https://github.com/docling-project/docling-mcp/releases/tag/v3.1.1) - 2026-08-24
 
 ### Fix

@@ -7,19 +7,19 @@
     "url": "https://github.com/docling-project/docling-mcp",
     "source": "github"
   },
-  "version": "3.1.1",
+  "version": "3.2.0",
   "packages": [
     {
       "registryType": "pypi",
       "registryBaseUrl": "https://pypi.org",
       "identifier": "docling-mcp",
-      "version": "3.1.1",
+      "version": "3.2.0",
       "runtimeHint": "uvx",
       "runtimeArguments": [
         {
           "type": "named",
           "name": "--from",
-          "value": "docling-mcp==3.1.1"
+          "value": "docling-mcp==3.2.0"
         },
         {
           "type": "positional",
