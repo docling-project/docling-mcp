@@ -25,6 +25,7 @@ from docling_core.types.io import DocumentStream
 
 from docling_mcp.docling_cache import get_cache_dir
 from docling_mcp.logger import setup_logger
+from docling_mcp.settings.service_client import settings
 from docling_mcp.shared import local_document_cache, local_stack_cache, mcp
 
 # Create a default project logger
@@ -109,7 +110,9 @@ def export_docling_document_to_markdown(
             f"document-key: {document_key} is not found. Existing document-keys are: {doc_keys}"
         )
 
-    markdown = local_document_cache[document_key].export_to_markdown()
+    markdown = local_document_cache[document_key].export_to_markdown(
+        image_mode=settings.image_export_mode
+    )
     if max_size is not None:
         markdown = markdown[:max_size]
 
@@ -160,7 +163,9 @@ def save_docling_document(
     md_file = str(cache_dir / f"{document_key}.md")
     json_file = str(cache_dir / f"{document_key}.json")
 
-    local_document_cache[document_key].save_as_markdown(filename=md_file, text_width=72)
+    local_document_cache[document_key].save_as_markdown(
+        filename=md_file, text_width=72, image_mode=settings.image_export_mode
+    )
     local_document_cache[document_key].save_as_json(filename=json_file)
 
     return SaveDocumentOutput(md_file, json_file)

@@ -3,8 +3,12 @@
 import os
 import warnings
 from enum import Enum
+from typing import Annotated
 
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from docling_core.types.doc.base import ImageRefMode
 
 
 class ConversionMode(str, Enum):
@@ -17,9 +21,9 @@ class ConversionMode(str, Enum):
 class ServiceClientSettings(BaseSettings):
     """Settings for the Docling MCP server.
 
-    All settings are read from environment variables with the ``DOCLING_MCP_``
-    prefix (or from a ``.env`` file).  The conversion pipeline options
-    (``keep_images``, ``images_scale``, ``do_ocr``, ``do_table_structure``) are
+    All settings are read from environment variables with the `DOCLING_MCP_`
+    prefix (or from a `.env` file).  The conversion pipeline options
+    (`keep_images`, `images_scale`, `do_ocr`, `do_table_structure`) are
     shared by both the remote and local converters so that users only need to
     set them once.
     """
@@ -47,6 +51,20 @@ class ServiceClientSettings(BaseSettings):
     images_scale: float = 1.0
     do_ocr: bool = True
     do_table_structure: bool = True
+
+    # Markdown export options
+    image_export_mode: Annotated[
+        ImageRefMode,
+        Field(
+            description=(
+                "Controls how images are rendered when exporting a document to "
+                "Markdown. Accepted values mirror docling-core's `ImageRefMode`: "
+                "`placeholder` (default, emits `<!-- image -->`), `embedded` "
+                "(base64 data-URI), or `referenced` (file path / URL). "
+                "Set via the `DOCLING_MCP_IMAGE_EXPORT_MODE` environment variable."
+            )
+        ),
+    ] = ImageRefMode.PLACEHOLDER
 
     def model_post_init(self, __context: object) -> None:
         """Warn when deprecated (pre-refactor) environment variable names are set."""
