@@ -44,6 +44,8 @@ class RemoteDocumentConverter:
         self.client = DoclingServiceClient(
             url=settings.service_url,
             api_key=api_key,
+            job_timeout=settings.service_timeout,
+            http_retries=settings.service_max_retries,
         )
         logger.info(f"Initialized remote converter with URL: {settings.service_url}")
 
