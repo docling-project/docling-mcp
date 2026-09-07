@@ -35,12 +35,37 @@ class TestRemoteDocumentConverter:
         """Test successful initialization with service URL."""
         mock_settings.service_url = "https://test.example.com"
         mock_settings.service_api_key = "test-key"
+        mock_settings.service_timeout = 300.0
+        mock_settings.service_max_retries = 3
 
         converter = RemoteDocumentConverter()
 
         assert converter is not None
         mock_client_class.assert_called_once_with(
-            url="https://test.example.com", api_key="test-key"
+            url="https://test.example.com",
+            api_key="test-key",
+            job_timeout=300.0,
+            http_retries=3,
+        )
+
+    @patch("docling_mcp.tools.converters.remote.DoclingServiceClient")
+    @patch("docling_mcp.tools.converters.remote.settings")
+    def test_init_forwards_timeout_and_retry_settings(
+        self, mock_settings: Any, mock_client_class: Any
+    ) -> None:
+        """Non-default timeout and retry settings reach the service client."""
+        mock_settings.service_url = "https://test.example.com"
+        mock_settings.service_api_key = None
+        mock_settings.service_timeout = 1200.0
+        mock_settings.service_max_retries = 7
+
+        RemoteDocumentConverter()
+
+        mock_client_class.assert_called_once_with(
+            url="https://test.example.com",
+            api_key="",
+            job_timeout=1200.0,
+            http_retries=7,
         )
 
     @patch("docling_mcp.tools.converters.remote.local_document_cache", {})

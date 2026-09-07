@@ -119,7 +119,7 @@ your MCP client config. Copy [`.env.example`](.env.example) as a starting point.
 |---|---|---|
 | `DOCLING_MCP_SERVICE_URL` | — | URL of the Docling Serve instance |
 | `DOCLING_MCP_SERVICE_API_KEY` | — | API key for the service |
-| `DOCLING_MCP_SERVICE_TIMEOUT` | `300.0` | Request timeout in seconds |
+| `DOCLING_MCP_SERVICE_TIMEOUT` | `300.0` | Timeout in seconds for a whole conversion job |
 | `DOCLING_MCP_SERVICE_MAX_RETRIES` | `3` | Max retry attempts |
 | `DOCLING_MCP_FALLBACK_TO_LOCAL` | `false` | Fall back to local if service is unreachable (requires `docling-mcp[local]`) |
 
