@@ -130,6 +130,7 @@ _NOT_OUTPUT_RELEVANT: Final[frozenset[str]] = frozenset(
         "service_api_key",
         "service_max_retries",
         "service_timeout",
+        "image_export_mode",
     }
 )
 """Settings that never change what a conversion produces.
