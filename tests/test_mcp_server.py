@@ -19,6 +19,7 @@ async def test_list_tools(mcp_client: MCPClient) -> None:
     # when tests share an in-process MCPServer singleton.
     expected_tools = {
         "is_document_in_local_cache",
+        "drop_document_from_local_cache",
         "convert_document_into_docling_document",
         "convert_directory_files_into_docling_document",
         "create_new_docling_document",

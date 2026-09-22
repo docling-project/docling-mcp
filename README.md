@@ -138,6 +138,14 @@ your MCP client config. Copy [`.env.example`](.env.example) as a starting point.
 |---|---|---|
 | `DOCLING_MCP_IMAGE_EXPORT_MODE` | `placeholder` | How images are rendered in Markdown output: `placeholder` (emits `<!-- image -->`), `embedded` (base64 data-URI), `referenced` (file path / URL) |
 
+
+### Cache
+
+| Variable | Default | Description |
+|---|---|---|
+| `DOCLING_MCP_CACHE_MAX_DOCUMENTS` | `10` | Maximum number of documents to keep in the in-memory cache. When the limit is reached the least-recently-used document is evicted. |
+
+
 ### LlamaIndex RAG (`--tools llama-index-rag`)
 
 | Variable | Default | Description |

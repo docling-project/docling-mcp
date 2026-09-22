@@ -100,6 +100,12 @@
           "description": "Controls how images are rendered when exporting to Markdown. Accepted values: 'placeholder' (default, emits <!-- image -->), 'embedded' (base64 data-URI), 'referenced' (file path / URL).",
           "isRequired": false,
           "isSecret": false
+        },
+        {
+          "name": "DOCLING_MCP_CACHE_MAX_DOCUMENTS",
+          "description": "Maximum number of documents to keep in the in-memory cache. Oldest (least-recently-used) documents are evicted when the limit is reached. Default: 10.",
+          "isRequired": false,
+          "isSecret": false
         }
       ]
     }
