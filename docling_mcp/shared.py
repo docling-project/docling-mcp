@@ -38,10 +38,6 @@ class _LRUCaches:
         self._docs: OrderedDict[str, DoclingDocument] = OrderedDict()
         self._stacks: OrderedDict[str, list[NodeItem]] = OrderedDict()
 
-    # ------------------------------------------------------------------
-    # Internal helpers
-    # ------------------------------------------------------------------
-
     def _evict_lru(self) -> None:
         """Remove the least-recently-used entry from both caches."""
         if self._docs:
@@ -54,10 +50,6 @@ class _LRUCaches:
             self._docs.move_to_end(key)
         if key in self._stacks:
             self._stacks.move_to_end(key)
-
-    # ------------------------------------------------------------------
-    # Insertion / removal (always operate on both sub-caches together)
-    # ------------------------------------------------------------------
 
     def put(
         self,
@@ -101,10 +93,6 @@ class _LRUCaches:
 
     def __len__(self) -> int:
         return len(self._docs)
-
-    # ------------------------------------------------------------------
-    # Proxy objects for dict-compatible access
-    # ------------------------------------------------------------------
 
     @property
     def documents(self) -> _DocumentProxy:
