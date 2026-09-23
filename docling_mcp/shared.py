@@ -143,9 +143,13 @@ class _DocumentProxy:
 class _StackProxy:
     """Read-only dict-compatible view for the stack side of _LRUCaches.
 
-    Supports `__contains__`, `__getitem__`, and `keys()`. Write access is
-    intentionally not supported; callers must use `_LRUCaches.put` directly to
-    ensure the coupled-cache invariant is maintained.
+    Supports `__contains__`, `__getitem__`, and `keys()`. Replacing the list
+    stored under a key (`cache[key] = new_list`) is intentionally not
+    supported; callers must use `_LRUCaches.put` to ensure the coupled-cache
+    invariant is maintained. In-place mutations of the returned list — such as
+    `cache[key].append(item)`, `cache[key].pop()`, or `cache[key][-1] = item`
+    — are permitted and are the intended pattern used by the document-generation
+    tools.
 
     Args:
         cache: The parent _LRUCaches instance.
