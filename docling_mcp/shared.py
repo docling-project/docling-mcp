@@ -101,7 +101,8 @@ class _LRUCaches:
             return removed
 
     def __len__(self) -> int:
-        return len(self._docs)
+        with self._lock:
+            return len(self._docs)
 
 
 class _DocumentProxy:
