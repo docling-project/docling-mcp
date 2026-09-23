@@ -76,8 +76,8 @@ class DropDocumentFromCacheOutput:
         bool,
         Field(
             description=(
-                "``True`` if the document was present in the cache and has been "
-                "removed; ``False`` if the key was not found."
+                "True if the document was present in the cache and has been "
+                "removed; False if the key was not found."
             )
         ),
     ]
@@ -98,9 +98,8 @@ def drop_document_from_local_cache(
     """Remove a document from the local cache and release its memory.
 
     Call this tool when a client is finished with a document and wants to
-    release the memory it occupies.  After a successful call the document key
-    is no longer valid; any subsequent tool call that references it will raise
-    an error.
+    release the memory it occupies. After a successful call the key is no
+    longer present in the cache.
     """
     removed = drop_document(document_key)
     if removed:

@@ -22,12 +22,12 @@ mcp: MCPServer = MCPServer("docling")
 
 
 class _LRUCaches:
-    """Coupled LRU store for ``local_document_cache`` and ``local_stack_cache``.
+    """Coupled LRU store for `local_document_cache` and `local_stack_cache`.
 
     Both caches share a single capacity counter and a single eviction order so
     that one document key always maps to entries in both caches or neither.
     The capacity is read once at construction time from
-    ``settings.cache_max_documents`` (``DOCLING_MCP_CACHE_MAX_DOCUMENTS``); it
+    `settings.cache_max_documents` (`DOCLING_MCP_CACHE_MAX_DOCUMENTS`); it
     cannot be changed after construction.
 
     Args:
@@ -40,9 +40,8 @@ class _LRUCaches:
         self._max_size = max_size
         self._docs: OrderedDict[str, DoclingDocument] = OrderedDict()
         self._stacks: OrderedDict[str, list[NodeItem]] = OrderedDict()
-        # Proxy instances are created once and reused so that callers always
-        # receive the same object regardless of how many times they access the
-        # property.
+        # Assigned here so every access returns the same object; a @property
+        # would allocate a new proxy on each read.
         self.documents: _DocumentProxy = _DocumentProxy(self)
         self.stacks: _StackProxy = _StackProxy(self)
 
@@ -78,6 +77,7 @@ class _LRUCaches:
             stack: The associated node-item stack.
         """
         if key in self._docs:
+            # Re-inserting an existing key must not trigger eviction.
             self._docs[key] = document
             self._stacks[key] = stack
             self._touch(key)
@@ -111,7 +111,7 @@ class _DocumentProxy:
     """Read-only dict-compatible view for the document side of _LRUCaches.
 
     Supports the subset of the dict protocol used by the tool modules:
-    ``__contains__``, ``__getitem__``, and ``keys()``. Write access is
+    `__contains__`, `__getitem__`, and `keys()`. Write access is
     intentionally not supported; callers must use `_LRUCaches.put` directly to
     ensure the coupled-cache invariant is maintained.
 
@@ -138,7 +138,7 @@ class _DocumentProxy:
 class _StackProxy:
     """Read-only dict-compatible view for the stack side of _LRUCaches.
 
-    Supports ``__contains__``, ``__getitem__``, and ``keys()``. Write access is
+    Supports `__contains__`, `__getitem__`, and `keys()`. Write access is
     intentionally not supported; callers must use `_LRUCaches.put` directly to
     ensure the coupled-cache invariant is maintained.
 
@@ -166,7 +166,7 @@ def _build_caches() -> _LRUCaches:
     """Create the module-level LRU caches using the configured max size.
 
     Returns:
-        A new _LRUCaches instance sized from ``settings.cache_max_documents``.
+        A new _LRUCaches instance sized from `settings.cache_max_documents`.
         The capacity is fixed for the lifetime of the process; changing the
         environment variable after import has no effect.
     """
