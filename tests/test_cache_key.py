@@ -235,6 +235,7 @@ def test_settings_that_do_not_change_output_are_excluded(tmp_path: Path) -> None
         "service_api_key",
         "service_max_retries",
         "service_timeout",
+        "image_export_mode",
     }
     assert _NOT_RELEVANT_LOCALLY == {"service_url"}
 
