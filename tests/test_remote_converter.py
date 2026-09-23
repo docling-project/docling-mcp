@@ -68,27 +68,31 @@ class TestRemoteDocumentConverter:
             http_retries=7,
         )
 
-    @patch("docling_mcp.tools.converters.remote.local_document_cache", {})
     @patch("docling_mcp.tools.converters.remote.DoclingServiceClient")
     @patch("docling_mcp.tools.converters.remote.settings")
     def test_convert_document_from_cache(
         self, mock_settings: Any, mock_client_class: Any
     ) -> None:
         """Test document conversion when document is in cache."""
+        import docling_mcp.tools.converters.remote as remote_mod
+        from docling_mcp.shared import _LRUCaches
+
         mock_settings.service_url = "https://test.example.com"
         mock_settings.service_api_key = None
 
-        # Setup cache
         cache_key = "test_key"
-        with patch(
-            "docling_mcp.tools.converters.remote.get_cache_key", return_value=cache_key
+        isolated_caches = _LRUCaches(max_size=10)
+        isolated_caches.put(cache_key, Mock(), [])
+
+        with (
+            patch(
+                "docling_mcp.tools.converters.remote.get_cache_key",
+                return_value=cache_key,
+            ),
+            patch.object(remote_mod, "local_document_cache", isolated_caches.documents),
         ):
-            with patch(
-                "docling_mcp.tools.converters.remote.local_document_cache",
-                {cache_key: Mock()},
-            ):
-                converter = RemoteDocumentConverter()
-                result = converter.convert_document("test.pdf")
+            converter = RemoteDocumentConverter()
+            result = converter.convert_document("test.pdf")
 
         assert isinstance(result, ConversionOutput)
         assert result.from_cache is True
