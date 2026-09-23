@@ -10,6 +10,7 @@ Attributes:
 
 from __future__ import annotations
 
+import threading
 from collections import OrderedDict
 from collections.abc import Iterator
 
@@ -38,6 +39,7 @@ class _LRUCaches:
         if max_size < 1:
             raise ValueError(f"max_size must be >= 1, got {max_size}")
         self._max_size = max_size
+        self._lock = threading.RLock()
         self._docs: OrderedDict[str, DoclingDocument] = OrderedDict()
         self._stacks: OrderedDict[str, list[NodeItem]] = OrderedDict()
         # Assigned here so every access returns the same object; a @property
@@ -76,12 +78,13 @@ class _LRUCaches:
             document: The converted `DoclingDocument`.
             stack: The associated node-item stack.
         """
-        if key not in self._docs and len(self._docs) >= self._max_size:
-            self._evict_lru()
+        with self._lock:
+            if key not in self._docs and len(self._docs) >= self._max_size:
+                self._evict_lru()
 
-        self._docs[key] = document
-        self._stacks[key] = stack
-        self._touch(key)
+            self._docs[key] = document
+            self._stacks[key] = stack
+            self._touch(key)
 
     def drop(self, key: str) -> bool:
         """Remove *key* from both caches.
@@ -92,10 +95,11 @@ class _LRUCaches:
         Returns:
             True if the key was present and removed, False otherwise.
         """
-        removed = key in self._docs
-        self._docs.pop(key, None)
-        self._stacks.pop(key, None)
-        return removed
+        with self._lock:
+            removed = key in self._docs
+            self._docs.pop(key, None)
+            self._stacks.pop(key, None)
+            return removed
 
     def __len__(self) -> int:
         return len(self._docs)
@@ -117,19 +121,23 @@ class _DocumentProxy:
         self._cache = cache
 
     def __contains__(self, key: object) -> bool:
-        return key in self._cache._docs
+        with self._cache._lock:
+            return key in self._cache._docs
 
     def __getitem__(self, key: str) -> DoclingDocument:
-        doc = self._cache._docs[key]
-        self._cache._touch(key)
-        return doc
+        with self._cache._lock:
+            doc = self._cache._docs[key]
+            self._cache._touch(key)
+            return doc
 
     def __len__(self) -> int:
-        return len(self._cache._docs)
+        with self._cache._lock:
+            return len(self._cache._docs)
 
     def keys(self) -> Iterator[str]:
-        """Return an iterator over the cached document keys."""
-        return iter(self._cache._docs)
+        """Return a snapshot of the cached document keys."""
+        with self._cache._lock:
+            return iter(list(self._cache._docs))
 
 
 class _StackProxy:
@@ -147,19 +155,23 @@ class _StackProxy:
         self._cache = cache
 
     def __contains__(self, key: object) -> bool:
-        return key in self._cache._stacks
+        with self._cache._lock:
+            return key in self._cache._stacks
 
     def __getitem__(self, key: str) -> list[NodeItem]:
-        stack = self._cache._stacks[key]
-        self._cache._touch(key)
-        return stack
+        with self._cache._lock:
+            stack = self._cache._stacks[key]
+            self._cache._touch(key)
+            return stack
 
     def __len__(self) -> int:
-        return len(self._cache._stacks)
+        with self._cache._lock:
+            return len(self._cache._stacks)
 
     def keys(self) -> Iterator[str]:
-        """Return an iterator over the cached stack keys."""
-        return iter(self._cache._stacks)
+        """Return a snapshot of the cached stack keys."""
+        with self._cache._lock:
+            return iter(list(self._cache._stacks))
 
 
 def _build_caches() -> _LRUCaches:
