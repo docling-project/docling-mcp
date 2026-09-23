@@ -5,14 +5,14 @@ import pytest
 
 from docling_core.types.doc.document import DoclingDocument
 
-from docling_mcp.shared import _caches
+from docling_mcp.shared import _LRUCaches
 from docling_mcp.tools.manipulation import (
     TextSearchOutput,
     search_for_text_in_document_anchors,
 )
 
 
-def test_search_for_text_in_document_anchors() -> None:
+def test_search_for_text_in_document_anchors(monkeypatch: pytest.MonkeyPatch) -> None:
     source_path = Path("./tests/data/gt_search_results.json")
 
     if not source_path.exists():
@@ -23,16 +23,23 @@ def test_search_for_text_in_document_anchors() -> None:
     with open(source_path) as f:
         golden_results = json.load(f)
 
-    # Load two documents into the local cache to search across
+    import docling_mcp.tools.manipulation as manipulation_mod
+
+    isolated_caches = _LRUCaches(max_size=10)
+    monkeypatch.setattr(
+        manipulation_mod, "local_document_cache", isolated_caches.documents
+    )
+
+    # Load two documents into the isolated cache to search across
     file_path = Path("./tests/data/amt_handbook_sample.json")
     doc = DoclingDocument.load_from_json(filename=file_path)
     doc_1_key = "test_doc_1"
-    _caches.put(doc_1_key, doc, [])
+    isolated_caches.put(doc_1_key, doc, [])
 
     file_path = Path("./tests/data/lorem_ipsum.docx.json")
     doc = DoclingDocument.load_from_json(filename=file_path)
     doc_2_key = "test_doc_2"
-    _caches.put(doc_2_key, doc, [])
+    isolated_caches.put(doc_2_key, doc, [])
 
     # Test exact match searches
     doc_1_result = search_for_text_in_document_anchors(

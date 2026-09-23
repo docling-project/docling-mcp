@@ -12,7 +12,6 @@ from __future__ import annotations
 
 import threading
 from collections import OrderedDict
-from collections.abc import Iterator
 
 from mcp.server.mcpserver import MCPServer
 
@@ -134,10 +133,10 @@ class _DocumentProxy:
         with self._cache._lock:
             return len(self._cache._docs)
 
-    def keys(self) -> Iterator[str]:
+    def keys(self) -> list[str]:
         """Return a snapshot of the cached document keys."""
         with self._cache._lock:
-            return iter(list(self._cache._docs))
+            return list(self._cache._docs)
 
 
 class _StackProxy:
@@ -168,10 +167,10 @@ class _StackProxy:
         with self._cache._lock:
             return len(self._cache._stacks)
 
-    def keys(self) -> Iterator[str]:
+    def keys(self) -> list[str]:
         """Return a snapshot of the cached stack keys."""
         with self._cache._lock:
-            return iter(list(self._cache._stacks))
+            return list(self._cache._stacks)
 
 
 def _build_caches() -> _LRUCaches:

@@ -52,11 +52,13 @@ class TestLocalDocumentConverter:
     @patch("docling_mcp.tools.converters.local.DocumentConverter")
     def test_convert_document_success(self, mock_converter_class: Any) -> None:
         """Test successful document conversion locally."""
-        # Setup mock converter
+        import docling_mcp.tools.converters.local as local_mod
+        from docling_mcp.shared import _LRUCaches
+
+        isolated_caches = _LRUCaches(max_size=10)
         mock_converter = Mock()
         mock_converter_class.return_value = mock_converter
 
-        # Setup mock result
         mock_document = Mock()
         mock_document.add_text = Mock(return_value=Mock())
         mock_result = Mock()
@@ -65,8 +67,13 @@ class TestLocalDocumentConverter:
         mock_converter.convert.return_value = mock_result
 
         cache_key = "test_key"
-        with patch(
-            "docling_mcp.tools.converters.local.get_cache_key", return_value=cache_key
+        with (
+            patch(
+                "docling_mcp.tools.converters.local.get_cache_key",
+                return_value=cache_key,
+            ),
+            patch.object(local_mod, "put_document", isolated_caches.put),
+            patch.object(local_mod, "local_document_cache", isolated_caches.documents),
         ):
             converter = LocalDocumentConverter()
             result = converter.convert_document("test.pdf")
