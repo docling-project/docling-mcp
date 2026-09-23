@@ -8,7 +8,7 @@ from docling_core.types.doc.labels import DocItemLabel
 from docling_mcp.docling_cache import get_cache_key, local_conversion_context
 from docling_mcp.logger import setup_logger
 from docling_mcp.settings.service_client import settings
-from docling_mcp.shared import local_document_cache, local_stack_cache
+from docling_mcp.shared import _caches, local_document_cache
 
 from .base import ConversionOutput
 from .sources import fetched_source
@@ -100,16 +100,12 @@ class LocalDocumentConverter:
         if has_error:
             raise Exception(f"Local conversion failed: {result.errors}")
 
-        # Cache the result
-        local_document_cache[cache_key] = result.document
-
-        # Add source metadata
         item = result.document.add_text(
             label=DocItemLabel.TEXT,
             text=f"source: {source}",
             content_layer=ContentLayer.FURNITURE,
         )
-        local_stack_cache[cache_key] = [item]
+        _caches.put(cache_key, result.document, [item])
 
         logger.info(f"Successfully converted document: {cache_key}")
         return ConversionOutput(False, cache_key)

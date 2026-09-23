@@ -11,7 +11,7 @@ from mcp.types import ToolAnnotations
 from pydantic import Field
 
 from docling_mcp.logger import setup_logger
-from docling_mcp.shared import _caches, local_document_cache, mcp
+from docling_mcp.shared import drop_document, local_document_cache, mcp
 
 from .converters.base import ConversionOutput
 from .converters.factory import get_converter
@@ -102,7 +102,7 @@ def drop_document_from_local_cache(
     is no longer valid; any subsequent tool call that references it will raise
     an error.
     """
-    removed = _caches.drop(document_key)
+    removed = drop_document(document_key)
     if removed:
         logger.info(f"Dropped document from cache: {document_key}")
     else:

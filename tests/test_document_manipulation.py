@@ -5,7 +5,7 @@ import pytest
 
 from docling_core.types.doc.document import DoclingDocument
 
-from docling_mcp.shared import local_document_cache
+from docling_mcp.shared import _caches
 from docling_mcp.tools.manipulation import (
     TextSearchOutput,
     search_for_text_in_document_anchors,
@@ -27,12 +27,12 @@ def test_search_for_text_in_document_anchors() -> None:
     file_path = Path("./tests/data/amt_handbook_sample.json")
     doc = DoclingDocument.load_from_json(filename=file_path)
     doc_1_key = "test_doc_1"
-    local_document_cache[doc_1_key] = doc
+    _caches.put(doc_1_key, doc, [])
 
     file_path = Path("./tests/data/lorem_ipsum.docx.json")
     doc = DoclingDocument.load_from_json(filename=file_path)
     doc_2_key = "test_doc_2"
-    local_document_cache[doc_2_key] = doc
+    _caches.put(doc_2_key, doc, [])
 
     # Test exact match searches
     doc_1_result = search_for_text_in_document_anchors(

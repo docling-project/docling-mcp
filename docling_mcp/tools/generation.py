@@ -26,7 +26,7 @@ from docling_core.types.io import DocumentStream
 from docling_mcp.docling_cache import get_cache_dir
 from docling_mcp.logger import setup_logger
 from docling_mcp.settings.service_client import settings
-from docling_mcp.shared import local_document_cache, local_stack_cache, mcp
+from docling_mcp.shared import _caches, local_document_cache, local_stack_cache, mcp
 
 # Create a default project logger
 logger = setup_logger()
@@ -67,8 +67,7 @@ def create_new_docling_document(
 
     document_key = str(uuid.uuid4()).replace("-", "")
 
-    local_document_cache[document_key] = doc
-    local_stack_cache[document_key] = [item]
+    _caches.put(document_key, doc, [item])
 
     return NewDoclingDocumentOutput(document_key, prompt)
 

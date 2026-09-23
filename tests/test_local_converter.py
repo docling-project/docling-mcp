@@ -49,8 +49,6 @@ class TestLocalDocumentConverter:
         assert result.document_key == cache_key
 
     @patch("docling_mcp.tools.converters.local.LOCAL_CONVERSION_AVAILABLE", True)
-    @patch("docling_mcp.tools.converters.local.local_stack_cache", {})
-    @patch("docling_mcp.tools.converters.local.local_document_cache", {})
     @patch("docling_mcp.tools.converters.local.DocumentConverter")
     def test_convert_document_success(self, mock_converter_class: Any) -> None:
         """Test successful document conversion locally."""

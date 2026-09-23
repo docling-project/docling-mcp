@@ -94,14 +94,16 @@ class TestRemoteDocumentConverter:
         assert result.from_cache is True
         assert result.document_key == cache_key
 
-    @patch("docling_mcp.tools.converters.remote.local_stack_cache", {})
-    @patch("docling_mcp.tools.converters.remote.local_document_cache", {})
     @patch("docling_mcp.tools.converters.remote.DoclingServiceClient")
     @patch("docling_mcp.tools.converters.remote.settings")
     def test_convert_document_success(
         self, mock_settings: Any, mock_client_class: Any
     ) -> None:
         """Test successful document conversion via remote API."""
+        import docling_mcp.tools.converters.remote as remote_mod
+        from docling_mcp.shared import _LRUCaches
+
+        isolated_caches = _LRUCaches(max_size=10)
         mock_settings.service_url = "https://test.example.com"
         mock_settings.service_api_key = None
 
@@ -118,8 +120,13 @@ class TestRemoteDocumentConverter:
         mock_client.convert.return_value = mock_result
 
         cache_key = "test_key"
-        with patch(
-            "docling_mcp.tools.converters.remote.get_cache_key", return_value=cache_key
+        with (
+            patch(
+                "docling_mcp.tools.converters.remote.get_cache_key",
+                return_value=cache_key,
+            ),
+            patch.object(remote_mod, "_caches", isolated_caches),
+            patch.object(remote_mod, "local_document_cache", isolated_caches.documents),
         ):
             converter = RemoteDocumentConverter()
             result = converter.convert_document("test.pdf")

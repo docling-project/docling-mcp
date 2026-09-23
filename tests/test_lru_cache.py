@@ -75,11 +75,12 @@ class TestLRUCaches:
         cache = _LRUCaches(max_size=3)
         assert cache.drop("nonexistent") is False
 
-    def test_stack_proxy_setitem_updates_in_place(self) -> None:
+    def test_put_updates_stack_in_place(self) -> None:
         cache = _LRUCaches(max_size=3)
-        cache.put("k", _make_doc(), [])
+        doc = _make_doc()
+        cache.put("k", doc, [])
         sentinel: list[NodeItem] = []
-        cache.stacks["k"] = sentinel
+        cache.put("k", doc, sentinel)
         assert cache.stacks["k"] is sentinel
 
     def test_eviction_also_clears_stack(self) -> None:

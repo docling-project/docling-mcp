@@ -27,16 +27,24 @@ class _LRUCaches:
     Both caches share a single capacity counter and a single eviction order so
     that one document key always maps to entries in both caches or neither.
     The capacity is read once at construction time from
-    ``settings.cache_max_documents`` (``DOCLING_MCP_CACHE_MAX_DOCUMENTS``).
+    ``settings.cache_max_documents`` (``DOCLING_MCP_CACHE_MAX_DOCUMENTS``); it
+    cannot be changed after construction.
 
     Args:
         max_size: Maximum number of documents to retain. Must be >= 1.
     """
 
     def __init__(self, max_size: int) -> None:
+        if max_size < 1:
+            raise ValueError(f"max_size must be >= 1, got {max_size}")
         self._max_size = max_size
         self._docs: OrderedDict[str, DoclingDocument] = OrderedDict()
         self._stacks: OrderedDict[str, list[NodeItem]] = OrderedDict()
+        # Proxy instances are created once and reused so that callers always
+        # receive the same object regardless of how many times they access the
+        # property.
+        self.documents: _DocumentProxy = _DocumentProxy(self)
+        self.stacks: _StackProxy = _StackProxy(self)
 
     def _evict_lru(self) -> None:
         """Remove the least-recently-used entry from both caches."""
@@ -57,7 +65,12 @@ class _LRUCaches:
         document: DoclingDocument,
         stack: list[NodeItem],
     ) -> None:
-        """Insert or refresh *key* in both caches, evicting LRU if needed.
+        """Insert or refresh *key* atomically in both caches, evicting LRU if needed.
+
+        This is the single authoritative write path. All callers that need to
+        store a document together with its stack must use this method so that
+        eviction, LRU ordering, and the coupled-cache invariant are maintained
+        consistently.
 
         Args:
             key: The document cache key.
@@ -65,7 +78,6 @@ class _LRUCaches:
             stack: The associated node-item stack.
         """
         if key in self._docs:
-            # Refresh existing entry in-place.
             self._docs[key] = document
             self._stacks[key] = stack
             self._touch(key)
@@ -84,7 +96,7 @@ class _LRUCaches:
             key: The document cache key to remove.
 
         Returns:
-            ``True`` if the key was present and removed, ``False`` otherwise.
+            True if the key was present and removed, False otherwise.
         """
         removed = key in self._docs
         self._docs.pop(key, None)
@@ -94,27 +106,14 @@ class _LRUCaches:
     def __len__(self) -> int:
         return len(self._docs)
 
-    @property
-    def documents(self) -> _DocumentProxy:
-        """Dict-like view over the document sub-cache."""
-        return _DocumentProxy(self)
-
-    @property
-    def stacks(self) -> _StackProxy:
-        """Dict-like view over the stack sub-cache."""
-        return _StackProxy(self)
-
 
 class _DocumentProxy:
-    """Thin dict-compatible proxy for the document side of _LRUCaches.
+    """Read-only dict-compatible view for the document side of _LRUCaches.
 
-    Supports the subset of dict used by the tool modules: __contains__,
-    __getitem__, __setitem__, and keys().
-
-    Note:
-        __setitem__ on this proxy inserts a document with an empty stack.
-        Callers that need to write both should use _LRUCaches.put directly,
-        but tool code that only sets the document side still works correctly.
+    Supports the subset of the dict protocol used by the tool modules:
+    ``__contains__``, ``__getitem__``, and ``keys()``. Write access is
+    intentionally not supported; callers must use `_LRUCaches.put` directly to
+    ensure the coupled-cache invariant is maintained.
 
     Args:
         cache: The parent _LRUCaches instance.
@@ -131,23 +130,17 @@ class _DocumentProxy:
         self._cache._touch(key)
         return doc
 
-    def __setitem__(self, key: str, value: DoclingDocument) -> None:
-        existing_stack = self._cache._stacks.get(key, [])
-        self._cache.put(key, value, existing_stack)
-
     def keys(self) -> Iterator[str]:
         """Return an iterator over the cached document keys."""
         return iter(self._cache._docs)
 
 
 class _StackProxy:
-    """Thin dict-compatible proxy for the stack side of _LRUCaches.
+    """Read-only dict-compatible view for the stack side of _LRUCaches.
 
-    Supports __contains__, __getitem__, __setitem__, and keys().
-
-    Note:
-        __setitem__ on this proxy updates the stack for a key that must already
-        exist in the document cache; it does not create new entries.
+    Supports ``__contains__``, ``__getitem__``, and ``keys()``. Write access is
+    intentionally not supported; callers must use `_LRUCaches.put` directly to
+    ensure the coupled-cache invariant is maintained.
 
     Args:
         cache: The parent _LRUCaches instance.
@@ -164,18 +157,19 @@ class _StackProxy:
         self._cache._touch(key)
         return stack
 
-    def __setitem__(self, key: str, value: list[NodeItem]) -> None:
-        self._cache._stacks[key] = value
-        if key in self._cache._docs:
-            self._cache._touch(key)
-
     def keys(self) -> Iterator[str]:
         """Return an iterator over the cached stack keys."""
         return iter(self._cache._stacks)
 
 
 def _build_caches() -> _LRUCaches:
-    """Create the module-level LRU caches using the configured max size."""
+    """Create the module-level LRU caches using the configured max size.
+
+    Returns:
+        A new _LRUCaches instance sized from ``settings.cache_max_documents``.
+        The capacity is fixed for the lifetime of the process; changing the
+        environment variable after import has no effect.
+    """
     from docling_mcp.settings.service_client import settings
 
     return _LRUCaches(max_size=settings.cache_max_documents)
@@ -185,3 +179,15 @@ _caches: _LRUCaches = _build_caches()
 
 local_document_cache: _DocumentProxy = _caches.documents
 local_stack_cache: _StackProxy = _caches.stacks
+
+
+def drop_document(key: str) -> bool:
+    """Remove a document and its associated stack from the in-memory cache.
+
+    Args:
+        key: The document cache key to remove.
+
+    Returns:
+        True if the key was present and removed, False otherwise.
+    """
+    return _caches.drop(key)
