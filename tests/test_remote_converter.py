@@ -125,7 +125,7 @@ class TestRemoteDocumentConverter:
                 "docling_mcp.tools.converters.remote.get_cache_key",
                 return_value=cache_key,
             ),
-            patch.object(remote_mod, "_caches", isolated_caches),
+            patch.object(remote_mod, "put_document", isolated_caches.put),
             patch.object(remote_mod, "local_document_cache", isolated_caches.documents),
         ):
             converter = RemoteDocumentConverter()

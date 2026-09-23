@@ -181,6 +181,21 @@ local_document_cache: _DocumentProxy = _caches.documents
 local_stack_cache: _StackProxy = _caches.stacks
 
 
+def put_document(
+    key: str,
+    document: DoclingDocument,
+    stack: list[NodeItem],
+) -> None:
+    """Insert or refresh a document and its stack in the in-memory cache.
+
+    Args:
+        key: The document cache key.
+        document: The converted `DoclingDocument`.
+        stack: The associated node-item stack.
+    """
+    _caches.put(key, document, stack)
+
+
 def drop_document(key: str) -> bool:
     """Remove a document and its associated stack from the in-memory cache.
 

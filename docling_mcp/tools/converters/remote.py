@@ -12,7 +12,7 @@ from docling_core.types.io import DocumentStream
 from docling_mcp.docling_cache import get_cache_key, remote_conversion_context
 from docling_mcp.logger import setup_logger
 from docling_mcp.settings.service_client import settings
-from docling_mcp.shared import _caches, local_document_cache
+from docling_mcp.shared import local_document_cache, put_document
 
 from .base import ConversionOutput
 from .sources import fetched_stream
@@ -94,7 +94,7 @@ class RemoteDocumentConverter:
             text=f"source: {source}",
             content_layer=ContentLayer.FURNITURE,
         )
-        _caches.put(cache_key, result.document, [item])
+        put_document(cache_key, result.document, [item])
 
         logger.info(f"Successfully converted document: {cache_key}")
         return ConversionOutput(False, cache_key)

@@ -136,7 +136,7 @@ def test_remote_converter_fetches_object_uri(
     mock_settings.service_url = "https://serve.example.com"
     mock_settings.service_api_key = None
     isolated_caches = _LRUCaches(max_size=10)
-    monkeypatch.setattr(remote_mod, "_caches", isolated_caches)
+    monkeypatch.setattr(remote_mod, "put_document", isolated_caches.put)
     monkeypatch.setattr(remote_mod, "local_document_cache", isolated_caches.documents)
 
     _register_memory_scheme(monkeypatch)
@@ -181,7 +181,7 @@ def test_remote_cache_hit_does_not_fetch(
     mock_settings.service_url = "https://serve.example.com"
     mock_settings.service_api_key = None
     isolated_caches = _LRUCaches(max_size=10)
-    monkeypatch.setattr(remote_mod, "_caches", isolated_caches)
+    monkeypatch.setattr(remote_mod, "put_document", isolated_caches.put)
     monkeypatch.setattr(remote_mod, "local_document_cache", isolated_caches.documents)
 
     _register_memory_scheme(monkeypatch)
@@ -220,7 +220,7 @@ def test_local_cache_hit_does_not_fetch(
     from docling_mcp.tools.converters.local import LocalDocumentConverter
 
     isolated_caches = _LRUCaches(max_size=10)
-    monkeypatch.setattr(local_mod, "_caches", isolated_caches)
+    monkeypatch.setattr(local_mod, "put_document", isolated_caches.put)
     monkeypatch.setattr(local_mod, "local_document_cache", isolated_caches.documents)
 
     _register_memory_scheme(monkeypatch)
