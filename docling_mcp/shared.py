@@ -124,6 +124,9 @@ class _DocumentProxy:
         self._cache._touch(key)
         return doc
 
+    def __len__(self) -> int:
+        return len(self._cache._docs)
+
     def keys(self) -> Iterator[str]:
         """Return an iterator over the cached document keys."""
         return iter(self._cache._docs)
@@ -150,6 +153,9 @@ class _StackProxy:
         stack = self._cache._stacks[key]
         self._cache._touch(key)
         return stack
+
+    def __len__(self) -> int:
+        return len(self._cache._stacks)
 
     def keys(self) -> Iterator[str]:
         """Return an iterator over the cached stack keys."""
