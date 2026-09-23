@@ -78,12 +78,14 @@ class _LRUCaches:
             stack: The associated node-item stack.
         """
         with self._lock:
-            if key not in self._docs and len(self._docs) >= self._max_size:
+            existing = key in self._docs
+            if not existing and len(self._docs) >= self._max_size:
                 self._evict_lru()
 
             self._docs[key] = document
             self._stacks[key] = stack
-            self._touch(key)
+            if existing:
+                self._touch(key)
 
     def drop(self, key: str) -> bool:
         """Remove *key* from both caches.
