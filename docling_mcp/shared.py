@@ -76,18 +76,12 @@ class _LRUCaches:
             document: The converted `DoclingDocument`.
             stack: The associated node-item stack.
         """
-        if key in self._docs:
-            # Re-inserting an existing key must not trigger eviction.
-            self._docs[key] = document
-            self._stacks[key] = stack
-            self._touch(key)
-            return
-
-        if len(self._docs) >= self._max_size:
+        if key not in self._docs and len(self._docs) >= self._max_size:
             self._evict_lru()
 
         self._docs[key] = document
         self._stacks[key] = stack
+        self._touch(key)
 
     def drop(self, key: str) -> bool:
         """Remove *key* from both caches.
