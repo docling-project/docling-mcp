@@ -29,20 +29,24 @@ class TestLocalDocumentConverter:
         assert converter is not None
 
     @patch("docling_mcp.tools.converters.local.LOCAL_CONVERSION_AVAILABLE", True)
-    @patch("docling_mcp.tools.converters.local.local_document_cache", {})
     def test_convert_document_from_cache(self) -> None:
         """Test document conversion when document is in cache."""
-        cache_key = "test_key"
+        import docling_mcp.tools.converters.local as local_mod
+        from docling_mcp.shared import _LRUCaches
 
-        with patch(
-            "docling_mcp.tools.converters.local.get_cache_key", return_value=cache_key
+        cache_key = "test_key"
+        isolated_caches = _LRUCaches(max_size=10)
+        isolated_caches.put(cache_key, Mock(), [])
+
+        with (
+            patch(
+                "docling_mcp.tools.converters.local.get_cache_key",
+                return_value=cache_key,
+            ),
+            patch.object(local_mod, "local_document_cache", isolated_caches.documents),
         ):
-            with patch(
-                "docling_mcp.tools.converters.local.local_document_cache",
-                {cache_key: Mock()},
-            ):
-                converter = LocalDocumentConverter()
-                result = converter.convert_document("test.pdf")
+            converter = LocalDocumentConverter()
+            result = converter.convert_document("test.pdf")
 
         assert isinstance(result, ConversionOutput)
         assert result.from_cache is True
