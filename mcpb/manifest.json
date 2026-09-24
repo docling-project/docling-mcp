@@ -43,7 +43,8 @@
         "DOCLING_MCP_IMAGES_SCALE": "${user_config.images_scale}",
         "DOCLING_MCP_DO_OCR": "${user_config.do_ocr}",
         "DOCLING_MCP_DO_TABLE_STRUCTURE": "${user_config.do_table_structure}",
-        "DOCLING_MCP_IMAGE_EXPORT_MODE": "${user_config.image_export_mode}"
+        "DOCLING_MCP_IMAGE_EXPORT_MODE": "${user_config.image_export_mode}",
+        "DOCLING_MCP_CACHE_MAX_DOCUMENTS": "${user_config.cache_max_documents}"
       }
     }
   },
@@ -138,6 +139,13 @@
       "title": "Image Export Mode",
       "description": "Controls how images are rendered when exporting to Markdown. Accepted values: 'placeholder' (default, emits <!-- image -->), 'embedded' (base64 data-URI), 'referenced' (file path / URL).",
       "default": "placeholder",
+      "required": false
+    },
+    "cache_max_documents": {
+      "type": "number",
+      "title": "Cache Max Documents",
+      "description": "Maximum number of documents to keep in the in-memory cache. When the limit is reached the least-recently-used document is evicted. Default: 10.",
+      "default": 10,
       "required": false
     }
   },

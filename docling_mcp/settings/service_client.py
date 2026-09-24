@@ -135,6 +135,19 @@ class ServiceClientSettings(BaseSettings):
         ),
     ] = ImageRefMode.PLACEHOLDER
 
+    cache_max_documents: Annotated[
+        int,
+        Field(
+            description=(
+                "Maximum number of documents to keep in the in-memory cache. "
+                "When the limit is reached, the least-recently-used document is "
+                "evicted before a new one is inserted. "
+                "Set via the `DOCLING_MCP_CACHE_MAX_DOCUMENTS` environment variable."
+            ),
+            gt=0,
+        ),
+    ] = 10
+
     def model_post_init(self, __context: object) -> None:
         """Warn when deprecated (pre-refactor) environment variable names are set."""
         _RENAMED: dict[str, str] = {

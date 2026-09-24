@@ -1,7 +1,6 @@
 """Test resolution of object-storage source URIs."""
 
 import sys
-from collections import defaultdict
 from pathlib import Path
 from typing import Any
 from unittest.mock import Mock, patch
@@ -131,13 +130,14 @@ def test_remote_converter_fetches_object_uri(
 ) -> None:
     """The remote converter converts a fetched local copy of an object URI."""
     import docling_mcp.tools.converters.remote as remote_mod
+    from docling_mcp.shared import _LRUCaches
     from docling_mcp.tools.converters.remote import RemoteDocumentConverter
 
     mock_settings.service_url = "https://serve.example.com"
     mock_settings.service_api_key = None
-    cache: dict[str, DoclingDocument] = {}
-    monkeypatch.setattr(remote_mod, "local_document_cache", cache)
-    monkeypatch.setattr(remote_mod, "local_stack_cache", defaultdict(list))
+    isolated_caches = _LRUCaches(max_size=10)
+    monkeypatch.setattr(remote_mod, "put_document", isolated_caches.put)
+    monkeypatch.setattr(remote_mod, "local_document_cache", isolated_caches.documents)
 
     _register_memory_scheme(monkeypatch)
     fsspec.filesystem("memory").pipe("/bucket/spec.pdf", b"object bytes")
@@ -163,8 +163,8 @@ def test_remote_converter_fetches_object_uri(
     assert sent["source"].stream.getvalue() == b"object bytes"
 
     # The converted document records the original URI as its source.
-    ((key, doc),) = cache.items()
-    assert key == output.document_key
+    assert len(isolated_caches) == 1
+    doc = isolated_caches.documents[output.document_key]
     assert any(t.text == f"source: {OBJECT_URI}" for t in doc.texts)
 
 
@@ -175,12 +175,14 @@ def test_remote_cache_hit_does_not_fetch(
 ) -> None:
     """A cache hit must not touch the object store at all."""
     import docling_mcp.tools.converters.remote as remote_mod
+    from docling_mcp.shared import _LRUCaches
     from docling_mcp.tools.converters.remote import RemoteDocumentConverter
 
     mock_settings.service_url = "https://serve.example.com"
     mock_settings.service_api_key = None
-    monkeypatch.setattr(remote_mod, "local_document_cache", {})
-    monkeypatch.setattr(remote_mod, "local_stack_cache", defaultdict(list))
+    isolated_caches = _LRUCaches(max_size=10)
+    monkeypatch.setattr(remote_mod, "put_document", isolated_caches.put)
+    monkeypatch.setattr(remote_mod, "local_document_cache", isolated_caches.documents)
 
     _register_memory_scheme(monkeypatch)
     fsspec.filesystem("memory").pipe("/bucket/spec.pdf", b"object bytes")
@@ -214,10 +216,12 @@ def test_local_cache_hit_does_not_fetch(
 ) -> None:
     """The local converter also resolves the cache before fetching."""
     import docling_mcp.tools.converters.local as local_mod
+    from docling_mcp.shared import _LRUCaches
     from docling_mcp.tools.converters.local import LocalDocumentConverter
 
-    monkeypatch.setattr(local_mod, "local_document_cache", {})
-    monkeypatch.setattr(local_mod, "local_stack_cache", defaultdict(list))
+    isolated_caches = _LRUCaches(max_size=10)
+    monkeypatch.setattr(local_mod, "put_document", isolated_caches.put)
+    monkeypatch.setattr(local_mod, "local_document_cache", isolated_caches.documents)
 
     _register_memory_scheme(monkeypatch)
     fsspec.filesystem("memory").pipe("/bucket/spec.pdf", b"object bytes")

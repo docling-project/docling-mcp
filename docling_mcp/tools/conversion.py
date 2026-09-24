@@ -11,7 +11,7 @@ from mcp.types import ToolAnnotations
 from pydantic import Field
 
 from docling_mcp.logger import setup_logger
-from docling_mcp.shared import local_document_cache, mcp
+from docling_mcp.shared import drop_document, local_document_cache, mcp
 
 from .converters.base import ConversionOutput
 from .converters.factory import get_converter
@@ -30,9 +30,14 @@ _SOURCE_DESCRIPTION = (
 
 
 def cleanup_memory() -> None:
-    """Force garbage collection to free up memory."""
-    logger.info("Performed memory cleanup")
+    """Run a CPython garbage-collection cycle.
+
+    This releases any cyclic garbage that Python's reference-counter missed.
+    It does not evict documents from the in-memory cache; those are evicted
+    automatically by the LRU policy or by calling drop_document_from_local_cache.
+    """
     gc.collect()
+    logger.info("Performed garbage collection")
 
 
 @dataclass
@@ -61,6 +66,47 @@ def is_document_in_local_cache(
 ) -> IsDoclingDocumentInCacheOutput:
     """Verify if a Docling document is already converted and in the local cache."""
     return IsDoclingDocumentInCacheOutput(document_key in local_document_cache)
+
+
+@dataclass
+class DropDocumentFromCacheOutput:
+    """Output of the drop_document_from_local_cache tool."""
+
+    dropped: Annotated[
+        bool,
+        Field(
+            description=(
+                "True if the document was present in the cache and has been "
+                "removed; False if the key was not found."
+            )
+        ),
+    ]
+
+
+@mcp.tool(
+    title="Drop document from local cache",
+    annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=True),
+)
+def drop_document_from_local_cache(
+    document_key: Annotated[
+        str,
+        Field(
+            description="The unique identifier of the document to remove from the local cache."
+        ),
+    ],
+) -> DropDocumentFromCacheOutput:
+    """Remove a document from the local cache and release its memory.
+
+    Call this tool when a client is finished with a document and wants to
+    release the memory it occupies. After a successful call the key is no
+    longer present in the cache.
+    """
+    removed = drop_document(document_key)
+    if removed:
+        logger.info(f"Dropped document from cache: {document_key}")
+    else:
+        logger.debug(f"drop_document_from_local_cache: key not found: {document_key}")
+    return DropDocumentFromCacheOutput(dropped=removed)
 
 
 @mcp.tool(
