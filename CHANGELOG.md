@@ -1,3 +1,11 @@
+## [v3.2.1](https://github.com/docling-project/docling-mcp/releases/tag/v3.2.1) - 2026-09-24
+
+### Fix
+
+* Bound in-memory document cache with LRU eviction ([#139](https://github.com/docling-project/docling-mcp/issues/139)) ([`b66ec44`](https://github.com/docling-project/docling-mcp/commit/b66ec4449c016a60c9dad88387a40affde3f5fb9))
+* Exclude image_export_mode from conversion cache key ([#138](https://github.com/docling-project/docling-mcp/issues/138)) ([`1cdd9d2`](https://github.com/docling-project/docling-mcp/commit/1cdd9d231e449a81caf44dfd429b83b007da416f))
+* Pass service timeout and retry settings to the remote client ([#135](https://github.com/docling-project/docling-mcp/issues/135)) ([`a8a41e6`](https://github.com/docling-project/docling-mcp/commit/a8a41e6014ba3a148261702e760421086e9c80e3))
+
 ## [v3.2.0](https://github.com/docling-project/docling-mcp/releases/tag/v3.2.0) - 2026-09-01
 
 ### Feature
