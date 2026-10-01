@@ -1,12 +1,12 @@
-"""Tests for the LRU document cache (shared._LRUCaches) and the drop tool."""
+"""Tests for the LRU document cache (shared._LRUCaches) and the remove tool."""
 
 from docling_core.types.doc.document import DoclingDocument
 from docling_core.types.doc.items.node import NodeItem
 
 from docling_mcp.shared import _LRUCaches
 from docling_mcp.tools.conversion import (
-    DropDocumentFromCacheOutput,
-    drop_document_from_local_cache,
+    RemoveDocumentFromCacheOutput,
+    remove_document_from_local_cache,
 )
 from docling_mcp.tools.generation import create_new_docling_document
 
@@ -91,20 +91,20 @@ class TestLRUCaches:
         assert "a" not in cache.stacks
 
 
-class TestDropDocumentTool:
-    """Integration tests for the drop_document_from_local_cache MCP tool."""
+class TestRemoveDocumentTool:
+    """Integration tests for the remove_document_from_local_cache MCP tool."""
 
-    def test_drop_existing_document(self) -> None:
+    def test_remove_existing_document(self) -> None:
         result = create_new_docling_document(prompt="drop-me")
         key = result.document_key
 
-        out = drop_document_from_local_cache(document_key=key)
+        out = remove_document_from_local_cache(document_key=key)
 
-        assert isinstance(out, DropDocumentFromCacheOutput)
+        assert isinstance(out, RemoveDocumentFromCacheOutput)
         assert out.dropped is True
 
-    def test_drop_nonexistent_document(self) -> None:
-        out = drop_document_from_local_cache(document_key="does-not-exist")
+    def test_remove_nonexistent_document(self) -> None:
+        out = remove_document_from_local_cache(document_key="does-not-exist")
 
-        assert isinstance(out, DropDocumentFromCacheOutput)
+        assert isinstance(out, RemoveDocumentFromCacheOutput)
         assert out.dropped is False
