@@ -94,7 +94,7 @@ class ServiceClientSettings(BaseSettings):
         Field(
             description=(
                 "Retain page images in the converted document. "
-                "Required when using `page_thumbnail` or `image_export_mode=embedded`."
+                "Required when using `get_page_thumbnail` or `image_export_mode=embedded`."
             )
         ),
     ] = False

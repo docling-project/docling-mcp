@@ -56,11 +56,16 @@ def create_new_docling_document(
         str, Field(description="The prompt text to include in the new document.")
     ],
 ) -> NewDoclingDocumentOutput:
-    """Create a new Docling document from a provided prompt string.
+    """Create a new, empty Docling document ready for incremental authoring.
 
-    This function generates a new document in the local document cache with the
-    provided prompt text. The document is assigned a unique key derived from an MD5
-    hash of the prompt text.
+    Use this tool when you want to build a document from scratch by subsequently
+    calling add_title_to_docling_document, add_section_heading_to_docling_document,
+    add_paragraph_to_docling_document, open_list_in_docling_document, and related
+    tools. To convert an already-existing file (PDF, DOCX, HTML, etc.) instead,
+    use convert_document_into_docling_document.
+
+    The document is stored in the local cache under a unique key and the prompt
+    text is recorded as a furniture item for reference.
     """
     doc = DoclingDocument(name="Generated Document")
 
@@ -176,10 +181,10 @@ def save_docling_document(
 
 
 @mcp.tool(
-    title="Generate the thumbnail of a page in the Docling document",
+    title="Get page thumbnail of Docling document",
     annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False),
 )
-def page_thumbnail(
+def get_page_thumbnail(
     document_key: Annotated[
         str,
         Field(description="The unique identifier of the document in the local cache."),
@@ -191,10 +196,7 @@ def page_thumbnail(
         int, Field(description="The width of the thumbnail in pixels")
     ] = 300,
 ) -> MCPImage:
-    """Generate a thumbnail image for the requested page.
-
-    This tool takes a document that exists in the local cache and generates a thumbnail image for the requested page.
-    """
+    """Generate a thumbnail image for the requested page of a document in the local cache."""
     if document_key not in local_document_cache:
         doc_keys = ", ".join(local_document_cache.keys())
         raise ValueError(
@@ -389,9 +391,13 @@ def open_list_in_docling_document(
 ) -> UpdateDocumentOutput:
     """Open a new list group in an existing document in the local document cache.
 
-    This tool creates a new list structure within a document that has already been
-    processed and stored in the local cache. It requires that the document already exists
-    and that there is at least one item in the document's stack cache.
+    This tool begins a list context on the document's internal stack. Once a list
+    is open, only add_list_items_to_list_in_docling_document may be called to
+    populate it. Attempting to add a title, section heading, paragraph, or another
+    list before calling close_list_in_docling_document will raise an error. Nested
+    lists are supported: call open_list_in_docling_document again after adding
+    items to start an inner list, then close each list with
+    close_list_in_docling_document in reverse order.
     """
     if document_key not in local_document_cache:
         doc_keys = ", ".join(local_document_cache.keys())
