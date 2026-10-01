@@ -99,23 +99,15 @@ class TestRemoteDocumentConverter:
         assert result.document_key == cache_key
 
     @patch("docling_mcp.tools.converters.remote.DoclingServiceClient")
-    @patch("docling_mcp.tools.converters.remote.settings")
-    def test_convert_document_success(
-        self, mock_settings: Any, mock_client_class: Any
-    ) -> None:
+    def test_convert_document_success(self, mock_client_class: Any) -> None:
         """Test successful document conversion via remote API."""
         import docling_mcp.tools.converters.remote as remote_mod
+        from docling_mcp.settings.service_client import ServiceClientSettings
         from docling_mcp.shared import _LRUCaches
 
         isolated_caches = _LRUCaches(max_size=10)
-        mock_settings.service_url = "https://test.example.com"
-        mock_settings.service_api_key = None
-
-        # Setup mock client
         mock_client = Mock()
         mock_client_class.return_value = mock_client
-
-        # Setup mock result
         mock_document = Mock()
         mock_document.add_text = Mock(return_value=Mock())
         mock_result = Mock()
@@ -123,8 +115,10 @@ class TestRemoteDocumentConverter:
         mock_result.status = Mock(is_error=False)
         mock_client.convert.return_value = mock_result
 
+        real_settings = ServiceClientSettings(service_url="https://test.example.com")
         cache_key = "test_key"
         with (
+            patch("docling_mcp.tools.converters.remote.settings", real_settings),
             patch(
                 "docling_mcp.tools.converters.remote.get_cache_key",
                 return_value=cache_key,
@@ -139,6 +133,48 @@ class TestRemoteDocumentConverter:
         assert result.from_cache is False
         assert result.document_key == cache_key
         mock_client.convert.assert_called_once()
+
+    @patch("docling_mcp.tools.converters.remote.DoclingServiceClient")
+    def test_picture_description_options_forwarded(
+        self, mock_client_class: Any
+    ) -> None:
+        """Picture description settings are forwarded to ConvertDocumentsOptions."""
+        import docling_mcp.tools.converters.remote as remote_mod
+        from docling_mcp.settings.service_client import ServiceClientSettings
+        from docling_mcp.shared import _LRUCaches
+
+        isolated_caches = _LRUCaches(max_size=10)
+        real_settings = ServiceClientSettings(
+            service_url="https://test.example.com",
+            do_picture_description=True,
+            picture_description_preset="smolvlm",
+        )
+
+        mock_client = Mock()
+        mock_client_class.return_value = mock_client
+        mock_document = Mock()
+        mock_document.add_text = Mock(return_value=Mock())
+        mock_result = Mock()
+        mock_result.document = mock_document
+        mock_result.status = Mock(is_error=False)
+        mock_client.convert.return_value = mock_result
+
+        cache_key = "test_key"
+        with (
+            patch("docling_mcp.tools.converters.remote.settings", real_settings),
+            patch(
+                "docling_mcp.tools.converters.remote.get_cache_key",
+                return_value=cache_key,
+            ),
+            patch.object(remote_mod, "put_document", isolated_caches.put),
+            patch.object(remote_mod, "local_document_cache", isolated_caches.documents),
+        ):
+            converter = RemoteDocumentConverter()
+            converter.convert_document("test.pdf")
+
+        options = mock_client.convert.call_args.kwargs["options"]
+        assert options.do_picture_description is True
+        assert options.picture_description_preset == "smolvlm"
 
     @patch("docling_mcp.tools.converters.remote.DoclingServiceClient")
     @patch("docling_mcp.tools.converters.remote.settings")

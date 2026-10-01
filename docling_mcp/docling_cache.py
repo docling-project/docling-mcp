@@ -125,12 +125,13 @@ the process runs.
 
 _NOT_OUTPUT_RELEVANT: Final[frozenset[str]] = frozenset(
     {
+        "cache_max_documents",
         "conversion_mode",
         "fallback_to_local",
+        "image_export_mode",
         "service_api_key",
         "service_max_retries",
         "service_timeout",
-        "image_export_mode",
     }
 )
 """Settings that never change what a conversion produces.

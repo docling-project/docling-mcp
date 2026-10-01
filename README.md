@@ -131,6 +131,8 @@ your MCP client config. Copy [`.env.example`](.env.example) as a starting point.
 | `DOCLING_MCP_IMAGES_SCALE` | `1.0` | Image scale factor (increase to avoid tensor padding errors) |
 | `DOCLING_MCP_DO_OCR` | `true` | Run OCR pipeline |
 | `DOCLING_MCP_DO_TABLE_STRUCTURE` | `true` | Detect table structure |
+| `DOCLING_MCP_DO_PICTURE_DESCRIPTION` | `false` | Run a vision-language model to generate textual descriptions for figures and pictures |
+| `DOCLING_MCP_PICTURE_DESCRIPTION_PRESET` | — | Preset ID for the picture-description VLM (e.g. `smolvlm`, `granite_vision`). When unset the backend default is used. Only applies when `DOCLING_MCP_DO_PICTURE_DESCRIPTION=true` |
 
 ### Markdown export
 

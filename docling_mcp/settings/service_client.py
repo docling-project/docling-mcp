@@ -121,6 +121,33 @@ class ServiceClientSettings(BaseSettings):
         ),
     ] = True
 
+    # Picture description options
+    do_picture_description: Annotated[
+        bool,
+        Field(
+            description=(
+                "Run a vision-language model to generate textual descriptions for "
+                "figures and pictures in converted documents. Disabled by default "
+                "because it requires a VLM to be available on the conversion backend. "
+                "Set via the `DOCLING_MCP_DO_PICTURE_DESCRIPTION` environment variable."
+            )
+        ),
+    ] = False
+
+    picture_description_preset: Annotated[
+        str | None,
+        Field(
+            description=(
+                "Preset ID for the picture-description VLM (e.g. `smolvlm`, "
+                "`granite_vision`). When `None`, the conversion backend applies its "
+                "own default preset. Only used when `do_picture_description` is "
+                "`true`. "
+                "Set via the `DOCLING_MCP_PICTURE_DESCRIPTION_PRESET` environment "
+                "variable."
+            )
+        ),
+    ] = None
+
     # Markdown export options
     image_export_mode: Annotated[
         ImageRefMode,
