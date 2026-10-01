@@ -218,6 +218,12 @@ module = [
 ]
 ignore_missing_imports = true
 
+[[tool.mypy.overrides]]
+# deprecated stubs use PEP 695 type-alias syntax (Python 3.12+),
+# which mypy rejects when python_version = "3.10".
+module = ["deprecated.*"]
+follow_imports = "skip"
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
