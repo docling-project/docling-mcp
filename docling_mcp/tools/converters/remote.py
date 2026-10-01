@@ -77,6 +77,8 @@ class RemoteDocumentConverter:
             do_table_structure=settings.do_table_structure,
             include_images=settings.keep_images,
             images_scale=settings.images_scale,
+            do_picture_description=settings.do_picture_description,
+            picture_description_preset=settings.picture_description_preset,
             to_formats=[OutputFormat.JSON],
             abort_on_error=False,
         )

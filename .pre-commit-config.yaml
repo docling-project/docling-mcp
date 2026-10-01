@@ -1,7 +1,7 @@
 fail_fast: true
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.16.0
+    rev: v0.16.9
     hooks:
       # Run the linter.
       - id: ruff-check
@@ -27,6 +27,6 @@ repos:
         pass_filenames: false
         files: '\.py$'
   - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: 0.11.33
+    rev: 0.12.21
     hooks:
       - id: uv-lock

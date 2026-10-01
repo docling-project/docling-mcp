@@ -43,6 +43,8 @@
         "DOCLING_MCP_IMAGES_SCALE": "${user_config.images_scale}",
         "DOCLING_MCP_DO_OCR": "${user_config.do_ocr}",
         "DOCLING_MCP_DO_TABLE_STRUCTURE": "${user_config.do_table_structure}",
+        "DOCLING_MCP_DO_PICTURE_DESCRIPTION": "${user_config.do_picture_description}",
+        "DOCLING_MCP_PICTURE_DESCRIPTION_PRESET": "${user_config.picture_description_preset}",
         "DOCLING_MCP_IMAGE_EXPORT_MODE": "${user_config.image_export_mode}",
         "DOCLING_MCP_CACHE_MAX_DOCUMENTS": "${user_config.cache_max_documents}"
       }
@@ -132,6 +134,20 @@
       "title": "Enable Table Structure",
       "description": "Enable table structure recognition.",
       "default": true,
+      "required": false
+    },
+    "do_picture_description": {
+      "type": "boolean",
+      "title": "Enable Picture Description",
+      "description": "Run a vision-language model to generate textual descriptions for figures and pictures. Requires a VLM to be available on the conversion backend. Default: false.",
+      "default": false,
+      "required": false
+    },
+    "picture_description_preset": {
+      "type": "string",
+      "title": "Picture Description Preset",
+      "description": "Preset ID for the picture-description VLM (e.g. 'smolvlm', 'granite_vision'). Leave empty to use the backend default. Only applies when do_picture_description is true.",
+      "default": "",
       "required": false
     },
     "image_export_mode": {

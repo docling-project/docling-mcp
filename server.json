@@ -96,6 +96,18 @@
           "isSecret": false
         },
         {
+          "name": "DOCLING_MCP_DO_PICTURE_DESCRIPTION",
+          "description": "Set to 'true' to run a vision-language model to generate textual descriptions for figures and pictures. Requires a VLM to be available on the conversion backend. Default: false.",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "DOCLING_MCP_PICTURE_DESCRIPTION_PRESET",
+          "description": "Preset ID for the picture-description VLM (e.g. 'smolvlm', 'granite_vision'). When unset the backend default is used. Only applies when DOCLING_MCP_DO_PICTURE_DESCRIPTION=true.",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
           "name": "DOCLING_MCP_IMAGE_EXPORT_MODE",
           "description": "Controls how images are rendered when exporting to Markdown. Accepted values: 'placeholder' (default, emits <!-- image -->), 'embedded' (base64 data-URI), 'referenced' (file path / URL).",
           "isRequired": false,
