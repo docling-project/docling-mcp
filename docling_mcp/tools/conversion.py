@@ -34,15 +34,15 @@ def cleanup_memory() -> None:
 
     This releases any cyclic garbage that Python's reference-counter missed.
     It does not evict documents from the in-memory cache; those are evicted
-    automatically by the LRU policy or by calling drop_document_from_local_cache.
+    automatically by the LRU policy or by calling remove_document_from_local_cache.
     """
     gc.collect()
     logger.info("Performed garbage collection")
 
 
 @dataclass
-class IsDoclingDocumentInCacheOutput:
-    """Output of the is_document_in_local_cache tool."""
+class CheckDocumentInCacheOutput:
+    """Output of the check_document_in_local_cache tool."""
 
     in_cache: Annotated[
         bool,
@@ -55,22 +55,22 @@ class IsDoclingDocumentInCacheOutput:
 
 
 @mcp.tool(
-    title="Is Docling document in cache",
+    title="Check if Docling document is in cache",
     annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False),
 )
-def is_document_in_local_cache(
+def check_document_in_local_cache(
     document_key: Annotated[
         str,
         Field(description="The unique identifier of the document in the local cache."),
     ],
-) -> IsDoclingDocumentInCacheOutput:
-    """Verify if a Docling document is already converted and in the local cache."""
-    return IsDoclingDocumentInCacheOutput(document_key in local_document_cache)
+) -> CheckDocumentInCacheOutput:
+    """Check whether a Docling document is already converted and present in the local cache."""
+    return CheckDocumentInCacheOutput(document_key in local_document_cache)
 
 
 @dataclass
-class DropDocumentFromCacheOutput:
-    """Output of the drop_document_from_local_cache tool."""
+class RemoveDocumentFromCacheOutput:
+    """Output of the remove_document_from_local_cache tool."""
 
     dropped: Annotated[
         bool,
@@ -84,17 +84,17 @@ class DropDocumentFromCacheOutput:
 
 
 @mcp.tool(
-    title="Drop document from local cache",
+    title="Remove document from local cache",
     annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=True),
 )
-def drop_document_from_local_cache(
+def remove_document_from_local_cache(
     document_key: Annotated[
         str,
         Field(
             description="The unique identifier of the document to remove from the local cache."
         ),
     ],
-) -> DropDocumentFromCacheOutput:
+) -> RemoveDocumentFromCacheOutput:
     """Remove a document from the local cache and release its memory.
 
     Call this tool when a client is finished with a document and wants to
@@ -103,10 +103,10 @@ def drop_document_from_local_cache(
     """
     removed = drop_document(document_key)
     if removed:
-        logger.info(f"Dropped document from cache: {document_key}")
+        logger.info(f"Removed document from cache: {document_key}")
     else:
-        logger.debug(f"drop_document_from_local_cache: key not found: {document_key}")
-    return DropDocumentFromCacheOutput(dropped=removed)
+        logger.debug(f"remove_document_from_local_cache: key not found: {document_key}")
+    return RemoveDocumentFromCacheOutput(dropped=removed)
 
 
 @mcp.tool(
@@ -119,7 +119,10 @@ def convert_document_into_docling_document(
         Field(description=_SOURCE_DESCRIPTION),
     ],
 ) -> ConversionOutput:
-    """Convert a document of any type from a URL or local path and store in local cache.
+    """Convert a document from a URL or local path into a Docling document.
+
+    Use this tool when you have an existing file (PDF, DOCX, HTML, image, etc.)
+    that you want to load and parse.
 
     This tool takes a document's URL or local file path, converts it using
     the configured converter (remote API or local), and stores the resulting
@@ -187,3 +190,33 @@ async def convert_directory_files_into_docling_document(
     cleanup_memory()
 
     return out
+
+
+@dataclass
+class ListCachedDocumentsOutput:
+    """Output of the list_cached_documents tool."""
+
+    document_keys: Annotated[
+        list[str],
+        Field(
+            description=(
+                "The list of document keys currently held in the local cache. "
+                "Empty when no documents are cached."
+            )
+        ),
+    ]
+
+
+@mcp.tool(
+    title="List cached Docling documents",
+    annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False),
+)
+def list_cached_documents() -> ListCachedDocumentsOutput:
+    """Return the keys of all Docling documents currently held in the local cache.
+
+    Use this tool to discover which documents are available before calling any
+    tool that requires a document_key. An empty list means the cache is empty
+    and a document must first be loaded with convert_document_into_docling_document
+    or created with create_new_docling_document.
+    """
+    return ListCachedDocumentsOutput(document_keys=list(local_document_cache.keys()))

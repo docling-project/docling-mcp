@@ -18,14 +18,15 @@ async def test_list_tools(mcp_client: MCPClient) -> None:
     # Check that all expected tools are registered; order is not guaranteed
     # when tests share an in-process MCPServer singleton.
     expected_tools = {
-        "is_document_in_local_cache",
-        "drop_document_from_local_cache",
+        "check_document_in_local_cache",
+        "remove_document_from_local_cache",
+        "list_cached_documents",
         "convert_document_into_docling_document",
         "convert_directory_files_into_docling_document",
         "create_new_docling_document",
         "export_docling_document_to_markdown",
         "save_docling_document",
-        "page_thumbnail",
+        "get_page_thumbnail",
         "add_title_to_docling_document",
         "add_section_heading_to_docling_document",
         "add_paragraph_to_docling_document",
