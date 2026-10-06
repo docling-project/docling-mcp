@@ -1,3 +1,9 @@
+## [v3.3.0](https://github.com/docling-project/docling-mcp/releases/tag/v3.3.0) - 2026-10-06
+
+### Feature
+
+* **convert:** Add options to run picture description enrichment ([#142](https://github.com/docling-project/docling-mcp/issues/142)) ([`aac3baa`](https://github.com/docling-project/docling-mcp/commit/aac3baa577cd6ce806bc81d365936e65244d2310))
+
 ## [v3.2.1](https://github.com/docling-project/docling-mcp/releases/tag/v3.2.1) - 2026-09-24
 
 ### Fix
