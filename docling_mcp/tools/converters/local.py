@@ -16,7 +16,10 @@ from .sources import fetched_source
 # Import DocumentConverter only if available
 try:
     from docling.datamodel.base_models import InputFormat
-    from docling.datamodel.pipeline_options import PdfPipelineOptions
+    from docling.datamodel.pipeline_options import (
+        PdfPipelineOptions,
+        PictureDescriptionVlmEngineOptions,
+    )
     from docling.document_converter import (
         DocumentConverter,
         FormatOption,
@@ -53,6 +56,13 @@ class LocalDocumentConverter:
         pipeline_options.images_scale = settings.images_scale
         pipeline_options.do_ocr = settings.do_ocr
         pipeline_options.do_table_structure = settings.do_table_structure
+        pipeline_options.do_picture_description = settings.do_picture_description
+        if settings.do_picture_description and settings.picture_description_preset:
+            pipeline_options.picture_description_options = (
+                PictureDescriptionVlmEngineOptions.from_preset(
+                    settings.picture_description_preset
+                )
+            )
 
         format_options: dict[InputFormat, FormatOption] = {
             InputFormat.PDF: PdfFormatOption(pipeline_options=pipeline_options),

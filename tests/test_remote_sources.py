@@ -124,18 +124,18 @@ def test_object_uri_fetched_into_document_stream(
 
 
 @patch("docling_mcp.tools.converters.remote.DoclingServiceClient")
-@patch("docling_mcp.tools.converters.remote.settings")
 def test_remote_converter_fetches_object_uri(
-    mock_settings: Any, mock_client_class: Any, monkeypatch: pytest.MonkeyPatch
+    mock_client_class: Any, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """The remote converter converts a fetched local copy of an object URI."""
     import docling_mcp.tools.converters.remote as remote_mod
+    from docling_mcp.settings.service_client import ServiceClientSettings
     from docling_mcp.shared import _LRUCaches
     from docling_mcp.tools.converters.remote import RemoteDocumentConverter
 
-    mock_settings.service_url = "https://serve.example.com"
-    mock_settings.service_api_key = None
+    real_settings = ServiceClientSettings(service_url="https://serve.example.com")
     isolated_caches = _LRUCaches(max_size=10)
+    monkeypatch.setattr(remote_mod, "settings", real_settings)
     monkeypatch.setattr(remote_mod, "put_document", isolated_caches.put)
     monkeypatch.setattr(remote_mod, "local_document_cache", isolated_caches.documents)
 
@@ -169,18 +169,18 @@ def test_remote_converter_fetches_object_uri(
 
 
 @patch("docling_mcp.tools.converters.remote.DoclingServiceClient")
-@patch("docling_mcp.tools.converters.remote.settings")
 def test_remote_cache_hit_does_not_fetch(
-    mock_settings: Any, mock_client_class: Any, monkeypatch: pytest.MonkeyPatch
+    mock_client_class: Any, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """A cache hit must not touch the object store at all."""
     import docling_mcp.tools.converters.remote as remote_mod
+    from docling_mcp.settings.service_client import ServiceClientSettings
     from docling_mcp.shared import _LRUCaches
     from docling_mcp.tools.converters.remote import RemoteDocumentConverter
 
-    mock_settings.service_url = "https://serve.example.com"
-    mock_settings.service_api_key = None
+    real_settings = ServiceClientSettings(service_url="https://serve.example.com")
     isolated_caches = _LRUCaches(max_size=10)
+    monkeypatch.setattr(remote_mod, "settings", real_settings)
     monkeypatch.setattr(remote_mod, "put_document", isolated_caches.put)
     monkeypatch.setattr(remote_mod, "local_document_cache", isolated_caches.documents)
 

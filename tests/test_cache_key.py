@@ -230,12 +230,13 @@ def test_settings_that_do_not_change_output_are_excluded(tmp_path: Path) -> None
     from docling_mcp.settings.service_client import settings
 
     assert _NOT_OUTPUT_RELEVANT == {
+        "cache_max_documents",
         "conversion_mode",
         "fallback_to_local",
+        "image_export_mode",
         "service_api_key",
         "service_max_retries",
         "service_timeout",
-        "image_export_mode",
     }
     assert _NOT_RELEVANT_LOCALLY == {"service_url"}
 
