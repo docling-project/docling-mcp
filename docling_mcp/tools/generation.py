@@ -6,6 +6,7 @@ from io import BytesIO
 from typing import Annotated
 
 from mcp.server.mcpserver import Image as MCPImage
+from mcp.server.mcpserver.exceptions import ToolError
 from mcp.types import ToolAnnotations
 from pydantic import Field
 
@@ -82,6 +83,19 @@ def create_new_docling_document(
     return NewDoclingDocumentOutput(document_key, prompt)
 
 
+def _check_page_no(doc: DoclingDocument, page_no: int | None) -> None:
+    """Raise a `ToolError` if `page_no` is set but is not a page of `doc`.
+
+    Docling Core exports an empty string for a page that does not exist, which
+    a client cannot tell apart from an existing page without content.
+    """
+    if page_no is not None and page_no not in doc.pages:
+        available = ", ".join(str(k) for k in doc.pages) or "none"
+        raise ToolError(
+            f"page_no={page_no}: not found in the document. Available pages are: {available}"
+        )
+
+
 @dataclass
 class ExportDocumentMarkdownOutput:
     """Output of the export_docling_document_to_markdown tool."""
@@ -107,11 +121,19 @@ def export_docling_document_to_markdown(
     max_size: Annotated[
         int | None, Field(description="The maximum number of characters to return.")
     ] = None,
+    page_no: Annotated[
+        int | None,
+        Field(
+            ge=1,
+            description="Page number to export (1-based). When omitted, all pages are exported.",
+        ),
+    ] = None,
 ) -> ExportDocumentMarkdownOutput:
     """Export a document from the local document cache to markdown format.
 
     This tool converts a Docling document that exists in the local cache into
     a markdown formatted string, which can be used for display or further processing.
+    Set page_no to export a single page instead of the whole document.
     """
     if document_key not in local_document_cache:
         doc_keys = ", ".join(local_document_cache.keys())
@@ -119,8 +141,11 @@ def export_docling_document_to_markdown(
             f"document-key: {document_key} is not found. Existing document-keys are: {doc_keys}"
         )
 
-    markdown = local_document_cache[document_key].export_to_markdown(
-        image_mode=settings.image_export_mode
+    doc = local_document_cache[document_key]
+    _check_page_no(doc, page_no)
+
+    markdown = doc.export_to_markdown(
+        image_mode=settings.image_export_mode, page_no=page_no
     )
     if max_size is not None:
         markdown = markdown[:max_size]
@@ -155,12 +180,23 @@ def save_docling_document(
         str,
         Field(description="The unique identifier of the document in the local cache."),
     ],
+    page_no: Annotated[
+        int | None,
+        Field(
+            ge=1,
+            description=(
+                "Page number to export to the markdown file (1-based). When omitted, "
+                "all pages are exported. The JSON file always contains the full document."
+            ),
+        ),
+    ] = None,
 ) -> SaveDocumentOutput:
     """Save a document from the local document cache to disk in both markdown and JSON formats.
 
     This tool takes a document that exists in the local cache and saves it to the specified
     cache directory with filenames based on the document key. Both markdown and JSON versions
-    of the document are saved.
+    of the document are saved. When page_no is set, only that page is saved in markdown,
+    to a page-specific file, while the JSON file still contains the full document.
     """
     if document_key not in local_document_cache:
         doc_keys = ", ".join(local_document_cache.keys())
@@ -168,14 +204,21 @@ def save_docling_document(
             f"document-key: {document_key} is not found. Existing document-keys are: {doc_keys}"
         )
 
+    doc = local_document_cache[document_key]
+    _check_page_no(doc, page_no)
+
     cache_dir = get_cache_dir()
-    md_file = str(cache_dir / f"{document_key}.md")
+    md_stem = document_key if page_no is None else f"{document_key}-p{page_no}"
+    md_file = str(cache_dir / f"{md_stem}.md")
     json_file = str(cache_dir / f"{document_key}.json")
 
-    local_document_cache[document_key].save_as_markdown(
-        filename=md_file, text_width=72, image_mode=settings.image_export_mode
+    doc.save_as_markdown(
+        filename=md_file,
+        text_width=72,
+        image_mode=settings.image_export_mode,
+        page_no=page_no,
     )
-    local_document_cache[document_key].save_as_json(filename=json_file)
+    doc.save_as_json(filename=json_file)
 
     return SaveDocumentOutput(md_file, json_file)
 
