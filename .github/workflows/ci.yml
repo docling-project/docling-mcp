@@ -8,9 +8,18 @@ on:
       - "**"
       - "!gh-pages"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 jobs:
   code-checks:
     if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.full_name != 'docling-project/docling-mcp' }}
+    permissions:
+      contents: read
     uses: ./.github/workflows/job-checks.yml
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
