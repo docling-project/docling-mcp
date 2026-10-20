@@ -107,7 +107,10 @@ class ExportDocumentMarkdownOutput:
     markdown: Annotated[
         str,
         Field(
-            description="The markdown representation. Contains only the requested page when page_no is set."
+            description=(
+                "Markdown content for the document, "
+                "or for a single page when page_no is provided."
+            )
         ),
     ]
 
