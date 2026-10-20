@@ -10,7 +10,7 @@ license = "MIT"
 license-files = ["LICENSE"]
 authors = [
     {name="Peter Staar", email="taa@zurich.ibm.com"},
-    {name="Adel Zaalouk", email="azaalouk@redhat.com"},    
+    {name="Adel Zaalouk", email="azaalouk@redhat.com"},
     {name="Michele Dolfi", email="dol@zurich.ibm.com"},
     {name="Panos Vagenas", email="pva@zurich.ibm.com"},
     {name="Christoph Auer", email="cau@zurich.ibm.com"},
@@ -18,7 +18,7 @@ authors = [
 ]
 maintainers = [
     {name="Peter Staar", email="taa@zurich.ibm.com"},
-    {name="Adel Zaalouk", email="azaalouk@redhat.com"},    
+    {name="Adel Zaalouk", email="azaalouk@redhat.com"},
     {name="Michele Dolfi", email="dol@zurich.ibm.com"},
     {name="Panos Vagenas", email="pva@zurich.ibm.com"},
     {name="Christoph Auer", email="cau@zurich.ibm.com"},
@@ -92,23 +92,31 @@ azure = [
 ]
 
 [dependency-groups]
+typecheck = [
+    "ty==0.0.33",
+]
+pr-fast-checks = [
+    { include-group = "typecheck" },
+    "docling-core>=2.51.0",
+    "mcp[cli]>=2.0.0,<3.0.0",
+    "pydantic~=2.10",
+    "pydantic-settings~=2.4",
+    "ruff==0.16.10",
+]
 dev = [
-    "mypy~=2.0",
-    "pre-commit-uv~=4.1",
+    { include-group = "typecheck" },
+    "prek>=0.3.10",
     "pytest~=9.0",
     "pytest-asyncio>=1.0.0",
     "pytest-check~=2.4",
     "pytest-cov>=6.1.1",
     "python-semantic-release~=7.32",
-    "ruff>=0.9.6",
+    "ruff==0.16.10",
 ]
 examples = [
     "ipykernel~=7.3",
     "ipywidgets~=8.1",
     "nbqa~=1.9",
-]
-constraints = [
-    'numpy (<2.5.0)',   # numpy 2.5.0+ stubs use PEP 695 syntax, incompatible with mypy python_version < 3.12
 ]
 
 [project.scripts]
@@ -130,7 +138,12 @@ include = ["docling_mcp"]
 line-length = 88
 indent-width = 4
 respect-gitignore = true
-include = ["docling_mcp", "examples", "tests"]
+include = [
+    "docling_mcp/**/*.py",
+    "examples/**/*.{py,ipynb}",
+    "tests/**/*.py",
+    ".github/scripts/**/*.py",
+]
 
 [tool.ruff.format]
 skip-magic-trailing-comma = false
@@ -172,6 +185,7 @@ ignore = [
 "tests/**.{py,ipynb}" = ["D"]  # ignore flake8-docstrings in tests
 "tests/conftest.py" = ["F401"]  # side-effect-only imports for tool registration
 "examples/**.{py,ipynb}" = ["D"]  # ignore flake8-docstrings in examples
+".github/scripts/**.py" = ["D"]  # ignore flake8-docstrings in CI helper scripts
 
 [tool.ruff.lint.pep8-naming]
 classmethod-decorators = [
@@ -199,30 +213,27 @@ section-order = [
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
-[tool.mypy]
-pretty = true
-strict = true
-no_implicit_optional = true
-plugins = "pydantic.mypy"
-python_version = "3.10"
+[tool.ty.rules]
+all = "warn"
 
-[[tool.mypy.overrides]]
-module = [
-    "easyocr.*",
-    "tesserocr.*",
-    "rapidocr_onnxruntime.*",
-    "requests.*",
-    "transformers.*",
-    "llama_stack_client.*",  # needed since this will be there only on python>=3.12
-    "fsspec.*",
+[tool.ty.environment]
+python-version = "3.10"
+
+[tool.ty.src]
+include = ["docling_mcp", "tests", ".github/scripts"]
+
+[tool.ty.analysis]
+allowed-unresolved-imports = [
+  "easyocr.**",
+  "fsspec.**",
+  "llama_stack_client.**",  # only installed on python>=3.12
+  "rapidocr_onnxruntime.**",
+  "tesserocr.**",
+  "transformers.**",
 ]
-ignore_missing_imports = true
 
-[[tool.mypy.overrides]]
-# deprecated stubs use PEP 695 type-alias syntax (Python 3.12+),
-# which mypy rejects when python_version = "3.10".
-module = ["deprecated.*"]
-follow_imports = "skip"
+[tool.ty.terminal]
+output-format = "concise"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
@@ -249,4 +260,3 @@ branch = "main"
 parser_angular_allowed_types = "build,chore,ci,docs,feat,fix,perf,style,refactor,test"
 parser_angular_minor_types = "feat"
 parser_angular_patch_types = "fix,perf"
-

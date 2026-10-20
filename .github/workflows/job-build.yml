@@ -1,29 +1,30 @@
-name: Run checks
+name: Build package
 
 on:
   workflow_call:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+  UV_FROZEN: "1"
+
 jobs:
   build-package:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ['3.12']
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - name: Install uv and set the python version
-        uses: astral-sh/setup-uv@v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: ./.github/actions/setup-ubuntu-ci
         with:
-          python-version: ${{ matrix.python-version }}
-          enable-cache: true
-      - name: Install dependencies
-        run: uv sync --all-extras
+          python_version: "3.12"
+
       - name: Build package
         run: uv build
+
       - name: Check content of wheel
         run: unzip -l dist/*.whl
+
       - name: Store the distribution packages
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: python-package-distributions
           path: dist/
