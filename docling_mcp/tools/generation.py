@@ -90,7 +90,7 @@ def _check_page_no(doc: DoclingDocument, page_no: int | None) -> None:
     a client cannot tell apart from an existing page without content.
     """
     if page_no is not None and page_no not in doc.pages:
-        available = ", ".join(str(k) for k in doc.pages) or "none"
+        available = ", ".join(str(k) for k in sorted(doc.pages)) or "none"
         raise ToolError(
             f"page_no={page_no}: not found in the document. Available pages are: {available}"
         )
@@ -105,7 +105,10 @@ class ExportDocumentMarkdownOutput:
         Field(description="The unique identifier of the document in the local cache."),
     ]
     markdown: Annotated[
-        str, Field(description="The representation of the document in markdown format.")
+        str,
+        Field(
+            description="The markdown representation. Contains only the requested page when page_no is set."
+        ),
     ]
 
 
@@ -247,10 +250,7 @@ def get_page_thumbnail(
         )
 
     doc = local_document_cache[document_key]
-    if page_no not in doc.pages:
-        raise ValueError(
-            f"page_no={page_no}: not found in the document. Available pages are: {', '.join(str(k) for k in doc.pages.keys())}"
-        )
+    _check_page_no(doc, page_no)
 
     im_ref = doc.pages[page_no].image
     if im_ref is None:
