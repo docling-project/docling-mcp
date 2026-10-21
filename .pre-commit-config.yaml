@@ -34,6 +34,6 @@ repos:
         language: system
         files: '^(docling_mcp|tests|\.github/scripts)/.*\.py$'
   - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: 0.12.23
+    rev: 0.13.4
     hooks:
       - id: uv-lock
