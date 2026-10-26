@@ -84,10 +84,14 @@ def create_new_docling_document(
 
 
 def _check_page_no(doc: DoclingDocument, page_no: int | None) -> None:
-    """Raise a `ToolError` if `page_no` is set but is not a page of `doc`.
+    """Validate that page_no, when set, refers to an existing page in doc.
 
-    Docling Core exports an empty string for a page that does not exist, which
-    a client cannot tell apart from an existing page without content.
+    Args:
+        doc: The document whose pages are checked.
+        page_no: The requested page number, or None to skip validation.
+
+    Raises:
+        ToolError: If page_no is set but the document has no such page.
     """
     if page_no is not None and page_no not in doc.pages:
         available = ", ".join(str(k) for k in sorted(doc.pages)) or "none"
