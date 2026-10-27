@@ -1,3 +1,9 @@
+## [v3.4.0](https://github.com/docling-project/docling-mcp/releases/tag/v3.4.0) - 2026-10-27
+
+### Feature
+
+* Add page_no to the markdown export and save tools ([#144](https://github.com/docling-project/docling-mcp/issues/144)) ([`8c75047`](https://github.com/docling-project/docling-mcp/commit/8c75047e7d6b06553dea27a197e027cd4da9910d))
+
 ## [v3.3.0](https://github.com/docling-project/docling-mcp/releases/tag/v3.3.0) - 2026-10-06
 
 ### Feature
