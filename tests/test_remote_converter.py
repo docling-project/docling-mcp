@@ -177,6 +177,47 @@ class TestRemoteDocumentConverter:
         assert options.picture_description_preset == "smolvlm"
 
     @patch("docling_mcp.tools.converters.remote.DoclingServiceClient")
+    def test_ocr_options_forwarded(
+        self, mock_client_class: Any, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """OCR engine and languages are forwarded as ocr_preset and ocr_lang."""
+        import docling_mcp.tools.converters.remote as remote_mod
+        from docling_mcp.settings.service_client import ServiceClientSettings
+        from docling_mcp.shared import _LRUCaches
+
+        isolated_caches = _LRUCaches(max_size=10)
+        monkeypatch.setenv("DOCLING_MCP_OCR_LANG", "en, de")
+        real_settings = ServiceClientSettings(
+            service_url="https://test.example.com", ocr_engine="tesseract"
+        )
+
+        mock_client = Mock()
+        mock_client_class.return_value = mock_client
+        mock_document = Mock()
+        mock_document.add_text = Mock(return_value=Mock())
+        mock_result = Mock()
+        mock_result.document = mock_document
+        mock_result.status = Mock(is_error=False)
+        mock_client.convert.return_value = mock_result
+
+        cache_key = "test_key"
+        with (
+            patch("docling_mcp.tools.converters.remote.settings", real_settings),
+            patch(
+                "docling_mcp.tools.converters.remote.get_cache_key",
+                return_value=cache_key,
+            ),
+            patch.object(remote_mod, "put_document", isolated_caches.put),
+            patch.object(remote_mod, "local_document_cache", isolated_caches.documents),
+        ):
+            converter = RemoteDocumentConverter()
+            converter.convert_document("test.pdf")
+
+        options = mock_client.convert.call_args.kwargs["options"]
+        assert options.ocr_preset == "tesseract"
+        assert options.ocr_lang == ["en", "de"]
+
+    @patch("docling_mcp.tools.converters.remote.DoclingServiceClient")
     @patch("docling_mcp.tools.converters.remote.settings")
     def test_is_available_healthy(
         self, mock_settings: Any, mock_client_class: Any

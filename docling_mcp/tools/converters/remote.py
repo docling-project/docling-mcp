@@ -74,6 +74,8 @@ class RemoteDocumentConverter:
         # Configure conversion options
         options = ConvertDocumentsOptions(
             do_ocr=settings.do_ocr,
+            ocr_preset=settings.ocr_engine,
+            ocr_lang=settings.ocr_lang,
             do_table_structure=settings.do_table_structure,
             include_images=settings.keep_images,
             images_scale=settings.images_scale,

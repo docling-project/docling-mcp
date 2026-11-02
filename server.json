@@ -90,6 +90,18 @@
           "isSecret": false
         },
         {
+          "name": "DOCLING_MCP_OCR_ENGINE",
+          "description": "OCR engine kind: 'auto' (default), 'easyocr', 'tesseract', 'tesserocr', 'ocrmac', 'rapidocr'. Must be installed on the conversion backend.",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "DOCLING_MCP_OCR_LANG",
+          "description": "Comma-separated OCR languages (e.g. 'iso:en,iso:de' or 'eng,deu'). When unset the engine's default languages apply.",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
           "name": "DOCLING_MCP_DO_TABLE_STRUCTURE",
           "description": "Set to 'false' to disable table structure detection. Default: true.",
           "isRequired": false,

@@ -86,6 +86,58 @@ class TestLocalDocumentConverter:
         assert result.from_cache is False
         assert result.document_key == cache_key
 
+    @pytest.mark.parametrize(
+        ("ocr_engine", "expected_options"),
+        [
+            ("auto", "OcrAutoOptions"),
+            ("tesseract", "TesseractCliOcrOptions"),
+        ],
+    )
+    @patch("docling_mcp.tools.converters.local.LOCAL_CONVERSION_AVAILABLE", True)
+    @patch("docling_mcp.tools.converters.local.DocumentConverter")
+    def test_ocr_engine_selects_pipeline_ocr_options(
+        self,
+        mock_converter_class: Any,
+        ocr_engine: str,
+        expected_options: str,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        """The OCR engine kind maps onto the matching docling OcrOptions class."""
+        from docling.datamodel.base_models import InputFormat
+
+        from docling_mcp.settings.service_client import ServiceClientSettings
+
+        monkeypatch.setenv("DOCLING_MCP_OCR_LANG", "eng, deu")
+        real_settings = ServiceClientSettings(ocr_engine=ocr_engine)
+
+        with patch("docling_mcp.tools.converters.local.settings", real_settings):
+            LocalDocumentConverter()._get_converter()
+
+        format_options = mock_converter_class.call_args.kwargs["format_options"]
+        ocr_options = format_options[InputFormat.PDF].pipeline_options.ocr_options
+        assert type(ocr_options).__name__ == expected_options
+        assert ocr_options.lang == ["eng", "deu"]
+
+    @patch("docling_mcp.tools.converters.local.LOCAL_CONVERSION_AVAILABLE", True)
+    @patch("docling_mcp.tools.converters.local.DocumentConverter")
+    def test_empty_ocr_lang_keeps_engine_default(
+        self, mock_converter_class: Any
+    ) -> None:
+        """An unset OCR language list leaves the engine's own default languages."""
+        from docling.datamodel.base_models import InputFormat
+        from docling.datamodel.pipeline_options import TesseractCliOcrOptions
+
+        from docling_mcp.settings.service_client import ServiceClientSettings
+
+        real_settings = ServiceClientSettings(ocr_engine="tesseract")
+
+        with patch("docling_mcp.tools.converters.local.settings", real_settings):
+            LocalDocumentConverter()._get_converter()
+
+        format_options = mock_converter_class.call_args.kwargs["format_options"]
+        ocr_options = format_options[InputFormat.PDF].pipeline_options.ocr_options
+        assert ocr_options.lang == TesseractCliOcrOptions().lang
+
     @patch("docling_mcp.tools.converters.local.LOCAL_CONVERSION_AVAILABLE", True)
     def test_is_available_when_installed(self) -> None:
         """Test is_available returns True when local extra is installed."""

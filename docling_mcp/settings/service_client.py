@@ -5,8 +5,8 @@ import warnings
 from enum import Enum
 from typing import Annotated
 
-from pydantic import Field
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import Field, field_validator
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 from docling_core.types.doc.base import ImageRefMode
 
@@ -120,6 +120,40 @@ class ServiceClientSettings(BaseSettings):
             description="Detect and reconstruct table structure in converted documents."
         ),
     ] = True
+
+    # OCR engine options
+    ocr_engine: Annotated[
+        str,
+        Field(
+            description=(
+                "OCR engine kind: `auto` (default), `easyocr`, `tesseract`, "
+                "`tesserocr`, `ocrmac`, `rapidocr`. The engine must be installed "
+                "on the conversion backend. Sent as `ocr_preset` in remote mode. "
+                "Set via the `DOCLING_MCP_OCR_ENGINE` environment variable."
+            )
+        ),
+    ] = "auto"
+
+    ocr_lang: Annotated[
+        list[str],
+        NoDecode,
+        Field(
+            description=(
+                "Comma-separated OCR languages, passed to the engine unchanged "
+                "(e.g. `iso:en,iso:de` or `eng,deu`). Empty means the engine's "
+                "default languages. "
+                "Set via the `DOCLING_MCP_OCR_LANG` environment variable."
+            )
+        ),
+    ] = []
+
+    @field_validator("ocr_lang", mode="before")
+    @classmethod
+    def _split_ocr_lang(cls, value: object) -> object:
+        """Split a comma-separated string into a list of language codes."""
+        if isinstance(value, str):
+            return [code.strip() for code in value.split(",") if code.strip()]
+        return value
 
     # Picture description options
     do_picture_description: Annotated[

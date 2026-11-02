@@ -42,6 +42,8 @@
         "DOCLING_MCP_KEEP_IMAGES": "${user_config.keep_images}",
         "DOCLING_MCP_IMAGES_SCALE": "${user_config.images_scale}",
         "DOCLING_MCP_DO_OCR": "${user_config.do_ocr}",
+        "DOCLING_MCP_OCR_ENGINE": "${user_config.ocr_engine}",
+        "DOCLING_MCP_OCR_LANG": "${user_config.ocr_lang}",
         "DOCLING_MCP_DO_TABLE_STRUCTURE": "${user_config.do_table_structure}",
         "DOCLING_MCP_DO_PICTURE_DESCRIPTION": "${user_config.do_picture_description}",
         "DOCLING_MCP_PICTURE_DESCRIPTION_PRESET": "${user_config.picture_description_preset}",
@@ -127,6 +129,20 @@
       "title": "Enable OCR",
       "description": "Enable Optical Character Recognition for scanned documents.",
       "default": true,
+      "required": false
+    },
+    "ocr_engine": {
+      "type": "string",
+      "title": "OCR Engine",
+      "description": "OCR engine kind: 'auto' (default), 'easyocr', 'tesseract', 'tesserocr', 'ocrmac', 'rapidocr'. Must be installed on the conversion backend.",
+      "default": "auto",
+      "required": false
+    },
+    "ocr_lang": {
+      "type": "string",
+      "title": "OCR Languages",
+      "description": "Comma-separated OCR languages (e.g. 'iso:en,iso:de' or 'eng,deu'). When unset the engine's default languages apply.",
+      "default": "",
       "required": false
     },
     "do_table_structure": {

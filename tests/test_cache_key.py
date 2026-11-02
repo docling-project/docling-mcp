@@ -271,6 +271,8 @@ def _other_value(current: object) -> object:
         return current + 1.0
     if isinstance(current, str):
         return current + "-changed"
+    if isinstance(current, list):
+        return [*current, "changed"]
     if current is None:
         # Every currently None-valued setting is annotated str | None.
         return "changed"
