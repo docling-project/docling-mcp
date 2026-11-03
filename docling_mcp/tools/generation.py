@@ -267,6 +267,7 @@ def get_page_thumbnail(
     im = im_ref.pil_image
     if im is None:
         raise RuntimeError("Server error. The image cannot be loaded in PIL.")
+    im = im.copy()
     width = size
     scale = float(width) / im.size[0]
     im.thumbnail((width, int(im.size[1] * scale)))
