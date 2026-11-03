@@ -14,7 +14,7 @@ from docling_mcp.logger import setup_logger
 from docling_mcp.settings.service_client import settings
 from docling_mcp.shared import local_document_cache, put_document
 
-from .base import ConversionOutput
+from .base import ConversionFailedError, ConversionOutput, ConverterValueError
 from .sources import fetched_stream
 
 logger = setup_logger()
@@ -26,7 +26,7 @@ class RemoteDocumentConverter:
     def __init__(self) -> None:
         """Initialize remote converter."""
         if not settings.service_url:
-            raise ValueError(
+            raise ConverterValueError(
                 "DOCLING_MCP_SERVICE_URL is not set but "
                 "DOCLING_MCP_CONVERSION_MODE=remote. "
                 "To fix this, either:\n"
@@ -89,7 +89,9 @@ class RemoteDocumentConverter:
         # Check for errors
         if hasattr(result, "status") and hasattr(result.status, "is_error"):
             if result.status.is_error:
-                raise Exception(f"Remote conversion failed: {result.errors}")
+                raise ConversionFailedError(
+                    f"Remote conversion failed: {result.errors}"
+                )
 
         item = result.document.add_text(
             label=DocItemLabel.TEXT,

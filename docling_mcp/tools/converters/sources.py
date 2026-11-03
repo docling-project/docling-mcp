@@ -13,6 +13,8 @@ from docling_core.types.io import DocumentStream
 
 from docling_mcp.logger import setup_logger
 
+from .base import ConverterValueError
+
 logger = setup_logger()
 
 _FSSPEC_SCHEMES: Final[dict[str, tuple[str, str]]] = {
@@ -90,7 +92,7 @@ def fetched_source(source: str) -> Iterator[str]:
     try:
         import fsspec
     except ImportError as exc:
-        raise ValueError(_install_hint(scheme, package, extra)) from exc
+        raise ConverterValueError(_install_hint(scheme, package, extra)) from exc
 
     suffix = PurePosixPath(urlsplit(source).path).suffix
     handle = tempfile.NamedTemporaryFile(suffix=suffix, delete=False)
@@ -100,7 +102,7 @@ def fetched_source(source: str) -> Iterator[str]:
             with fsspec.open(source, "rb") as remote_file:
                 shutil.copyfileobj(remote_file, handle, _COPY_BUFFER_SIZE)
         except ImportError as exc:
-            raise ValueError(_install_hint(scheme, package, extra)) from exc
+            raise ConverterValueError(_install_hint(scheme, package, extra)) from exc
         finally:
             handle.close()
         logger.info(f"Fetched object-storage source to {tmp_path}: {source}")
@@ -141,13 +143,13 @@ def fetched_stream(source: str) -> str | DocumentStream:
     try:
         import fsspec
     except ImportError as exc:
-        raise ValueError(_install_hint(scheme, package, extra)) from exc
+        raise ConverterValueError(_install_hint(scheme, package, extra)) from exc
 
     try:
         with fsspec.open(source, "rb") as remote_file:
             body = remote_file.read()
     except ImportError as exc:
-        raise ValueError(_install_hint(scheme, package, extra)) from exc
+        raise ConverterValueError(_install_hint(scheme, package, extra)) from exc
 
     name = PurePosixPath(urlsplit(source).path).name
     logger.info(f"Fetched object-storage source into memory: {source}")

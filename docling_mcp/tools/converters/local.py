@@ -10,7 +10,7 @@ from docling_mcp.logger import setup_logger
 from docling_mcp.settings.service_client import settings
 from docling_mcp.shared import local_document_cache, put_document
 
-from .base import ConversionOutput
+from .base import ConversionFailedError, ConversionOutput, ConverterImportError
 from .sources import fetched_source
 
 # Import DocumentConverter only if available
@@ -39,7 +39,7 @@ class LocalDocumentConverter:
     def __init__(self) -> None:
         """Initialize local converter."""
         if not LOCAL_CONVERSION_AVAILABLE:
-            raise ImportError(
+            raise ConverterImportError(
                 "Local conversion requires docling-mcp[local] extra. "
                 "Install with: pip install docling-mcp[local]"
             )
@@ -108,7 +108,7 @@ class LocalDocumentConverter:
                 has_error = result.status.error
 
         if has_error:
-            raise Exception(f"Local conversion failed: {result.errors}")
+            raise ConversionFailedError(f"Local conversion failed: {result.errors}")
 
         item = result.document.add_text(
             label=DocItemLabel.TEXT,
