@@ -11,7 +11,7 @@ from mcp.server.mcpserver.exceptions import ToolError
 from mcp.types import ImageContent, TextContent
 from PIL import Image as PILImage
 
-from docling_core.types.doc.base import BoundingBox, Size
+from docling_core.types.doc.base import BoundingBox, CoordOrigin, ImageRefMode, Size
 from docling_core.types.doc.common.reference import ImageRef, ProvenanceItem
 from docling_core.types.doc.document import DoclingDocument
 from docling_core.types.doc.labels import DocItemLabel
@@ -28,6 +28,7 @@ from docling_mcp.tools.generation import (
     add_table_in_html_format_to_docling_document,
     create_new_docling_document,
     export_docling_document_to_markdown,
+    get_page_thumbnail,
     save_docling_document,
 )
 from tests.conftest import MCPClient
@@ -264,20 +265,68 @@ async def test_page_thumbnail_through_mcp(
         arguments["page_no"] = page_no
     selected_page = 1 if page_no is None else page_no
 
-    res = await mcp_client.call_tool("get_page_thumbnail", arguments)
+    for width, expected_size in ((20, (20, 10)), (60, (60, 30))):
+        arguments["size"] = width
+        res = await mcp_client.call_tool("get_page_thumbnail", arguments)
 
-    assert not res.is_error
-    assert len(res.content) == 1
-    content = res.content[0]
-    assert isinstance(content, ImageContent)
-    assert content.mime_type == "image/png"
-    image_bytes = base64.b64decode(content.data, validate=True)
-    image_path = tmp_path / f"{PAGED_KEY}-{selected_page}.png"
-    assert image_path.read_bytes() == image_bytes
-    with PILImage.open(BytesIO(image_bytes)) as image:
-        assert image.format == "PNG"
-        assert image.size == (20, 10)
-        assert image.getpixel((0, 0)) == colors[selected_page]
+        assert not res.is_error
+        assert len(res.content) == 1
+        content = res.content[0]
+        assert isinstance(content, ImageContent)
+        assert content.mime_type == "image/png"
+        image_bytes = base64.b64decode(content.data, validate=True)
+        image_path = tmp_path / f"{PAGED_KEY}-{selected_page}.png"
+        assert image_path.read_bytes() == image_bytes
+        with PILImage.open(BytesIO(image_bytes)) as image:
+            assert image.format == "PNG"
+            assert image.size == expected_size
+            assert image.getpixel((0, 0)) == colors[selected_page]
+
+
+def test_page_thumbnail_preserves_cached_page_image_for_picture_export(
+    isolated_caches: _LRUCaches,
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    monkeypatch.setattr(settings, "image_export_mode", ImageRefMode.REFERENCED)
+    red = (255, 0, 0)
+    doc = DoclingDocument(name="page-crop")
+    doc.add_page(
+        page_no=1,
+        size=Size(width=80, height=40),
+        image=ImageRef.from_pil(PILImage.new("RGB", (80, 40), red), dpi=72),
+    )
+    doc.add_picture(
+        prov=ProvenanceItem(
+            page_no=1,
+            bbox=BoundingBox(l=40, t=20, r=80, b=40, coord_origin=CoordOrigin.TOPLEFT),
+            charspan=(0, 0),
+        )
+    )
+    isolated_caches.put(PAGED_KEY, doc, [])
+
+    first_thumb = get_page_thumbnail(document_key=PAGED_KEY, page_no=1, size=20)
+    assert first_thumb.path is not None
+    with PILImage.open(first_thumb.path) as thumb_img:
+        assert thumb_img.size == (20, 10)
+
+    second_thumb = get_page_thumbnail(document_key=PAGED_KEY, page_no=1, size=60)
+    assert second_thumb.path is not None
+    with PILImage.open(second_thumb.path) as thumb_img:
+        assert thumb_img.size == (60, 30)
+
+    assert doc.pages[1].image is not None
+    assert doc.pages[1].image.pil_image is not None
+    assert doc.pages[1].image.pil_image.size == (80, 40)
+
+    saved = save_docling_document(document_key=PAGED_KEY)
+    md_text = Path(saved.md_file).read_text(encoding="utf-8")
+    artifacts = list((tmp_path / f"{PAGED_KEY}_artifacts").glob("*.png"))
+    assert len(artifacts) == 1
+    assert artifacts[0].name in md_text
+    with PILImage.open(artifacts[0]) as exported_img:
+        assert exported_img.size == (40, 20)
+        assert list(exported_img.get_flattened_data()) == [red] * (40 * 20)
 
 
 @pytest.mark.anyio
