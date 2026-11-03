@@ -461,7 +461,17 @@ def open_list_in_docling_document(
             f"Stack size is zero for document with document-key: {document_key}. Abort document generation"
         )
 
-    item = local_document_cache[document_key].add_group(label=GroupLabel.LIST)
+    # Nest the new list inside the list that is currently open, if any.
+    parent = local_stack_cache[document_key][-1]
+    if not (
+        isinstance(parent, GroupItem)
+        and parent.label in (GroupLabel.LIST, GroupLabel.ORDERED_LIST)
+    ):
+        parent = None
+
+    item = local_document_cache[document_key].add_group(
+        label=GroupLabel.LIST, parent=parent
+    )
     local_stack_cache[document_key].append(item)
 
     return UpdateDocumentOutput(document_key)
