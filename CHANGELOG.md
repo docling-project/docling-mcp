@@ -1,3 +1,13 @@
+## [v3.5.0](https://github.com/docling-project/docling-mcp/releases/tag/v3.5.0) - 2026-11-04
+
+### Feature
+
+* Add OCR engine and language settings ([#150](https://github.com/docling-project/docling-mcp/issues/150)) ([`53bf56e`](https://github.com/docling-project/docling-mcp/commit/53bf56ed715a0da131c287c961b1ca6b7d4a3af7))
+
+### Fix
+
+* **generation:** Prevent get_page_thumbnail from mutating cached page images ([#151](https://github.com/docling-project/docling-mcp/issues/151)) ([`3879a97`](https://github.com/docling-project/docling-mcp/commit/3879a978919a87a052b23d769c798ffde8bc9d5b))
+
 ## [v3.4.0](https://github.com/docling-project/docling-mcp/releases/tag/v3.4.0) - 2026-10-27
 
 ### Feature
