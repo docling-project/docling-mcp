@@ -130,6 +130,8 @@ your MCP client config. Copy [`.env.example`](.env.example) as a starting point.
 | `DOCLING_MCP_KEEP_IMAGES` | `false` | Retain page images in output |
 | `DOCLING_MCP_IMAGES_SCALE` | `1.0` | Image scale factor (increase to avoid tensor padding errors) |
 | `DOCLING_MCP_DO_OCR` | `true` | Run OCR pipeline |
+| `DOCLING_MCP_OCR_ENGINE` | `auto` | OCR engine by its docling engine kind: `auto`, `easyocr`, `tesseract` (system binary), `tesserocr` (Python bindings), `ocrmac`, `rapidocr`. The engine must be installed on the conversion backend. In remote mode it is sent as the Docling Serve `ocr_preset`, so server-defined preset names also work there |
+| `DOCLING_MCP_OCR_LANG` | — | Comma-separated OCR languages, passed to the engine unchanged. `iso:en,iso:de` works with any engine (docling ≥ 2.127, recommended with `auto`); bare codes are engine-specific (`eng` for Tesseract, `en` for EasyOCR or Docling Serve). Unset means the engine's defaults |
 | `DOCLING_MCP_DO_TABLE_STRUCTURE` | `true` | Detect table structure |
 | `DOCLING_MCP_DO_PICTURE_DESCRIPTION` | `false` | Run a vision-language model to generate textual descriptions for figures and pictures |
 | `DOCLING_MCP_PICTURE_DESCRIPTION_PRESET` | — | Preset ID for the picture-description VLM (e.g. `smolvlm`, `granite_vision`). When unset the backend default is used. Only applies when `DOCLING_MCP_DO_PICTURE_DESCRIPTION=true` |

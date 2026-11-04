@@ -1527,7 +1527,7 @@ requires-dist = [
     { name = "mellea", marker = "extra == 'mellea'", specifier = "~=0.3" },
     { name = "ollama", marker = "extra == 'smolagents'", specifier = ">=0.1.0" },
     { name = "pydantic", specifier = "~=2.10" },
-    { name = "pydantic-settings", specifier = "~=2.4" },
+    { name = "pydantic-settings", specifier = "~=2.7" },
     { name = "python-dotenv", specifier = ">=1.1.0" },
     { name = "s3fs", marker = "extra == 's3'", specifier = ">=2024.9.0" },
     { name = "smolagents", extras = ["mcp", "litellm"], marker = "extra == 'smolagents'", specifier = ">=1.0.0" },
@@ -1557,7 +1557,7 @@ pr-fast-checks = [
     { name = "docling-core", specifier = ">=2.51.0" },
     { name = "mcp", extras = ["cli"], specifier = ">=2.0.0,<3.0.0" },
     { name = "pydantic", specifier = "~=2.10" },
-    { name = "pydantic-settings", specifier = "~=2.4" },
+    { name = "pydantic-settings", specifier = "~=2.7" },
     { name = "ruff", specifier = "==0.16.10" },
     { name = "ty", specifier = "==0.0.33" },
 ]

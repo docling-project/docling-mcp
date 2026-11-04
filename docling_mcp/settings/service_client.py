@@ -5,8 +5,8 @@ import warnings
 from enum import Enum
 from typing import Annotated
 
-from pydantic import Field
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import Field, field_validator
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 from docling_core.types.doc.base import ImageRefMode
 
@@ -121,6 +121,34 @@ class ServiceClientSettings(BaseSettings):
         ),
     ] = True
 
+    # OCR engine options
+    ocr_engine: Annotated[
+        str,
+        Field(
+            description=(
+                "OCR engine kind: `auto` (default), `easyocr`, `tesseract`, "
+                "`tesserocr`, `ocrmac`, `rapidocr`. The engine must be installed "
+                "on the conversion backend. Sent as `ocr_preset` in remote mode. "
+                "An empty value selects `auto`. "
+                "Set via the `DOCLING_MCP_OCR_ENGINE` environment variable."
+            ),
+            examples=["auto", "tesseract"],
+        ),
+    ] = "auto"
+
+    ocr_lang: Annotated[
+        list[str],
+        NoDecode,
+        Field(
+            description=(
+                "Comma-separated OCR languages, passed to the engine unchanged. "
+                "Empty means the engine's default languages. "
+                "Set via the `DOCLING_MCP_OCR_LANG` environment variable."
+            ),
+            examples=[["iso:en", "iso:de"], ["eng", "deu"]],
+        ),
+    ] = []
+
     # Picture description options
     do_picture_description: Annotated[
         bool,
@@ -174,6 +202,22 @@ class ServiceClientSettings(BaseSettings):
             gt=0,
         ),
     ] = 10
+
+    @field_validator("ocr_engine", mode="before")
+    @classmethod
+    def _normalize_ocr_engine(cls, value: object) -> object:
+        """Strip the engine kind and fall back to `auto` when it is empty."""
+        if isinstance(value, str):
+            return value.strip() or "auto"
+        return value
+
+    @field_validator("ocr_lang", mode="before")
+    @classmethod
+    def _split_ocr_lang(cls, value: object) -> object:
+        """Split a comma-separated string into a list of language codes."""
+        if isinstance(value, str):
+            return [code.strip() for code in value.split(",") if code.strip()]
+        return value
 
     def model_post_init(self, __context: object) -> None:
         """Warn when deprecated (pre-refactor) environment variable names are set."""

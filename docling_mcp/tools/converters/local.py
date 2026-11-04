@@ -1,6 +1,7 @@
 """Local document converter using DocumentConverter."""
 
 from pathlib import Path
+from typing import cast
 
 from docling_core.types.doc.common.content_layer import ContentLayer
 from docling_core.types.doc.labels import DocItemLabel
@@ -17,6 +18,7 @@ from .sources import fetched_source
 try:
     from docling.datamodel.base_models import InputFormat
     from docling.datamodel.pipeline_options import (
+        OcrOptions,
         PdfPipelineOptions,
         PictureDescriptionVlmEngineOptions,
     )
@@ -25,6 +27,7 @@ try:
         FormatOption,
         PdfFormatOption,
     )
+    from docling.models.factories import get_ocr_factory
 
     LOCAL_CONVERSION_AVAILABLE = True
 except ImportError:
@@ -55,6 +58,14 @@ class LocalDocumentConverter:
         pipeline_options.generate_page_images = settings.keep_images
         pipeline_options.images_scale = settings.images_scale
         pipeline_options.do_ocr = settings.do_ocr
+        if settings.do_ocr:
+            ocr_kwargs = {"lang": settings.ocr_lang} if settings.ocr_lang else {}
+            pipeline_options.ocr_options = cast(
+                "OcrOptions",
+                get_ocr_factory().create_options(
+                    kind=settings.ocr_engine, **ocr_kwargs
+                ),
+            )
         pipeline_options.do_table_structure = settings.do_table_structure
         pipeline_options.do_picture_description = settings.do_picture_description
         if settings.do_picture_description and settings.picture_description_preset:
