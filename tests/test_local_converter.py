@@ -5,6 +5,13 @@ from unittest.mock import Mock, patch
 
 import pytest
 
+from docling.datamodel.base_models import InputFormat
+from docling.datamodel.pipeline_options import (
+    OcrAutoOptions,
+    OcrOptions,
+    TesseractCliOcrOptions,
+)
+
 from docling_mcp.tools.converters.base import ConversionOutput
 from docling_mcp.tools.converters.local import (
     LocalDocumentConverter,
@@ -87,10 +94,11 @@ class TestLocalDocumentConverter:
         assert result.document_key == cache_key
 
     @pytest.mark.parametrize(
-        ("ocr_engine", "expected_options"),
+        ("ocr_engine", "ocr_lang", "expected_options", "expected_lang"),
         [
-            ("auto", "OcrAutoOptions"),
-            ("tesseract", "TesseractCliOcrOptions"),
+            # docling canonicalizes `iso:` tags to language-script pairs.
+            ("auto", "iso:en, iso:de", OcrAutoOptions, ["iso:en-Latn", "iso:de-Latn"]),
+            ("tesseract", "eng, deu", TesseractCliOcrOptions, ["eng", "deu"]),
         ],
     )
     @patch("docling_mcp.tools.converters.local.LOCAL_CONVERSION_AVAILABLE", True)
@@ -99,15 +107,15 @@ class TestLocalDocumentConverter:
         self,
         mock_converter_class: Any,
         ocr_engine: str,
-        expected_options: str,
+        ocr_lang: str,
+        expected_options: type[OcrOptions],
+        expected_lang: list[str],
         monkeypatch: pytest.MonkeyPatch,
     ) -> None:
         """The OCR engine kind maps onto the matching docling OcrOptions class."""
-        from docling.datamodel.base_models import InputFormat
-
         from docling_mcp.settings.service_client import ServiceClientSettings
 
-        monkeypatch.setenv("DOCLING_MCP_OCR_LANG", "eng, deu")
+        monkeypatch.setenv("DOCLING_MCP_OCR_LANG", ocr_lang)
         real_settings = ServiceClientSettings(ocr_engine=ocr_engine)
 
         with patch("docling_mcp.tools.converters.local.settings", real_settings):
@@ -115,8 +123,8 @@ class TestLocalDocumentConverter:
 
         format_options = mock_converter_class.call_args.kwargs["format_options"]
         ocr_options = format_options[InputFormat.PDF].pipeline_options.ocr_options
-        assert type(ocr_options).__name__ == expected_options
-        assert ocr_options.lang == ["eng", "deu"]
+        assert isinstance(ocr_options, expected_options)
+        assert ocr_options.lang == expected_lang
 
     @patch("docling_mcp.tools.converters.local.LOCAL_CONVERSION_AVAILABLE", True)
     @patch("docling_mcp.tools.converters.local.DocumentConverter")
@@ -124,9 +132,6 @@ class TestLocalDocumentConverter:
         self, mock_converter_class: Any
     ) -> None:
         """An unset OCR language list leaves the engine's own default languages."""
-        from docling.datamodel.base_models import InputFormat
-        from docling.datamodel.pipeline_options import TesseractCliOcrOptions
-
         from docling_mcp.settings.service_client import ServiceClientSettings
 
         real_settings = ServiceClientSettings(ocr_engine="tesseract")
@@ -137,6 +142,16 @@ class TestLocalDocumentConverter:
         format_options = mock_converter_class.call_args.kwargs["format_options"]
         ocr_options = format_options[InputFormat.PDF].pipeline_options.ocr_options
         assert ocr_options.lang == TesseractCliOcrOptions().lang
+
+    def test_empty_ocr_engine_falls_back_to_auto(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """A cleared engine setting is a configuration slip, not a request for ''."""
+        from docling_mcp.settings.service_client import ServiceClientSettings
+
+        monkeypatch.setenv("DOCLING_MCP_OCR_ENGINE", "  ")
+        assert ServiceClientSettings().ocr_engine == "auto"
+        assert ServiceClientSettings(ocr_engine=" tesseract ").ocr_engine == "tesseract"
 
     @patch("docling_mcp.tools.converters.local.LOCAL_CONVERSION_AVAILABLE", True)
     def test_is_available_when_installed(self) -> None:
