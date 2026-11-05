@@ -6,6 +6,29 @@ from typing import Annotated, Protocol
 from pydantic import Field
 
 
+class ConverterError(Exception):
+    """Failure whose message is written for the end user.
+
+    Converters raise this family for anticipated problems (a missing extra, a
+    bad configuration, a failed conversion). The tool layer can then expose
+    these messages to clients while treating any other exception, such as one
+    raised inside docling, as a crash. The subclasses below keep the built-in
+    base types that callers already catch.
+    """
+
+
+class ConverterValueError(ConverterError, ValueError):
+    """Invalid configuration or input, with a user-facing message."""
+
+
+class ConverterImportError(ConverterError, ImportError):
+    """Missing optional dependency, with a user-facing install hint."""
+
+
+class ConversionFailedError(ConverterError):
+    """The conversion backend reported errors for a document."""
+
+
 @dataclass
 class ConversionOutput:
     """Output of document conversion."""

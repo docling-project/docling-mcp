@@ -1,11 +1,13 @@
 """Test the Docling MCP server conversion tools."""
 
 import shutil
+import sys
 from pathlib import Path
 
 import pytest
 from mcp.types import TextContent
 
+import docling_mcp.tools.conversion
 from tests.conftest import MCPClient
 
 
@@ -45,3 +47,36 @@ async def test_convert_directory_files_into_docling_document(
         assert "from_cache" in item
         assert not item.get("from_cache")
         assert item.get("document_key", None)
+
+
+@pytest.mark.anyio
+async def test_converter_error_message_reaches_client(
+    mcp_client: MCPClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setitem(sys.modules, "s3fs", None)  # simulate the [s3] extra missing
+
+    res = await mcp_client.call_tool(
+        "convert_document_into_docling_document", {"source": "s3://bucket/file.pdf"}
+    )
+
+    assert res.is_error
+    assert isinstance(res.content[0], TextContent)
+    assert "docling-mcp[s3]" in res.content[0].text
+
+
+@pytest.mark.anyio
+async def test_unexpected_error_message_stays_hidden(
+    mcp_client: MCPClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def _crash() -> None:
+        raise RuntimeError("internal secret detail")
+
+    monkeypatch.setattr(docling_mcp.tools.conversion, "get_converter", _crash)
+
+    res = await mcp_client.call_tool(
+        "convert_document_into_docling_document", {"source": "file.pdf"}
+    )
+
+    assert res.is_error
+    assert isinstance(res.content[0], TextContent)
+    assert "internal secret detail" not in res.content[0].text

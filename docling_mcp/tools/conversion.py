@@ -2,18 +2,21 @@
 
 import asyncio
 import gc
+from collections.abc import Iterator
+from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Annotated
 
 from mcp.server.mcpserver import Context
+from mcp.server.mcpserver.exceptions import ToolError
 from mcp.types import ToolAnnotations
 from pydantic import Field
 
 from docling_mcp.logger import setup_logger
 from docling_mcp.shared import drop_document, local_document_cache, mcp
 
-from .converters.base import ConversionOutput
+from .converters.base import ConversionOutput, ConverterError
 from .converters.factory import get_converter
 from .converters.sources import supported_uri_schemes
 
@@ -27,6 +30,23 @@ _SOURCE_DESCRIPTION = (
     f"({', '.join(f'{s}://' for s in supported_uri_schemes())}) are supported "
     "when the matching provider extra is installed."
 )
+
+
+@contextmanager
+def _converter_errors_as_tool_errors() -> Iterator[None]:
+    """Expose the converters' user-facing errors to the MCP client.
+
+    The MCP SDK hides the message of any exception that is not a `ToolError`.
+    Only `ConverterError` is translated; other exceptions, such as those raised
+    inside docling, keep the SDK default and stay in the server log.
+
+    Raises:
+        ToolError: With the message of the `ConverterError` that was raised.
+    """
+    try:
+        yield
+    except ConverterError as exc:
+        raise ToolError(str(exc)) from exc
 
 
 def cleanup_memory() -> None:
@@ -131,8 +151,9 @@ def convert_document_into_docling_document(
     was already in the local cache, the conversion is skipped and the output
     boolean is set to True.
     """
-    converter = get_converter()
-    result = converter.convert_document(source)
+    with _converter_errors_as_tool_errors():
+        converter = get_converter()
+        result = converter.convert_document(source)
 
     # Clean up memory after conversion
     cleanup_memory()
@@ -170,7 +191,8 @@ async def convert_directory_files_into_docling_document(
     out: list[ConversionOutput] = []
 
     logger.info(f"Converting {len(files)} files from directory: {source}")
-    converter = get_converter()
+    with _converter_errors_as_tool_errors():
+        converter = get_converter()
 
     for i, file in enumerate(files):
         logger.info(f"Processing file {file}")
