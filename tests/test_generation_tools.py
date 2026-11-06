@@ -14,6 +14,7 @@ from PIL import Image as PILImage
 from docling_core.types.doc.base import BoundingBox, CoordOrigin, ImageRefMode, Size
 from docling_core.types.doc.common.reference import ImageRef, ProvenanceItem
 from docling_core.types.doc.document import DoclingDocument
+from docling_core.types.doc.items.text import ListItem as DoclingListItem
 from docling_core.types.doc.labels import DocItemLabel
 
 import docling_mcp.tools.generation as generation_mod
@@ -85,19 +86,19 @@ def test_table_in_html_format_to_docling_document(doc_key: str) -> None:
     assert reply.document_key == doc_key
 
 
+def _add_item(doc_key: str, text: str) -> None:
+    add_list_items_to_list_in_docling_document(
+        document_key=doc_key, list_items=[ListItem(text, "-")]
+    )
+
+
 def test_open_list_nests_inside_open_list(doc_key: str) -> None:
     open_list_in_docling_document(document_key=doc_key)
-    add_list_items_to_list_in_docling_document(
-        document_key=doc_key, list_items=[ListItem("outer a", "-")]
-    )
+    _add_item(doc_key, "outer a")
     open_list_in_docling_document(document_key=doc_key)
-    add_list_items_to_list_in_docling_document(
-        document_key=doc_key, list_items=[ListItem("inner b", "-")]
-    )
+    _add_item(doc_key, "inner b")
     close_list_in_docling_document(document_key=doc_key)
-    add_list_items_to_list_in_docling_document(
-        document_key=doc_key, list_items=[ListItem("outer c", "-")]
-    )
+    _add_item(doc_key, "outer c")
     close_list_in_docling_document(document_key=doc_key)
 
     doc = local_document_cache[doc_key]
@@ -105,8 +106,40 @@ def test_open_list_nests_inside_open_list(doc_key: str) -> None:
     assert outer.parent is not None
     assert outer.parent.cref == "#/body"
     assert inner.parent is not None
-    assert inner.parent.cref == outer.self_ref
+    inner_parent = inner.parent.resolve(doc)
+    assert isinstance(inner_parent, DoclingListItem)
+    assert inner_parent.text == "outer a"
     assert doc.export_to_markdown() == "- outer a\n    - inner b\n- outer c"
+    assert (
+        "<li style=\"list-style-type: '- ';\">\nouter a\n<ul>" in doc.export_to_html()
+    )
+
+
+def test_open_list_nests_three_levels(doc_key: str) -> None:
+    open_list_in_docling_document(document_key=doc_key)
+    _add_item(doc_key, "level 1")
+    open_list_in_docling_document(document_key=doc_key)
+    _add_item(doc_key, "level 2")
+    open_list_in_docling_document(document_key=doc_key)
+    _add_item(doc_key, "level 3")
+    close_list_in_docling_document(document_key=doc_key)
+    close_list_in_docling_document(document_key=doc_key)
+    close_list_in_docling_document(document_key=doc_key)
+
+    doc = local_document_cache[doc_key]
+    _, second, third = doc.groups
+    assert second.parent is not None
+    assert second.parent.resolve(doc).text == "level 1"
+    assert third.parent is not None
+    assert third.parent.resolve(doc).text == "level 2"
+    assert doc.export_to_markdown() == "- level 1\n    - level 2\n        - level 3"
+
+
+def test_open_list_in_empty_list_raises(doc_key: str) -> None:
+    open_list_in_docling_document(document_key=doc_key)
+
+    with pytest.raises(ValueError, match="The open list has no items yet"):
+        open_list_in_docling_document(document_key=doc_key)
 
 
 @pytest.fixture

@@ -18,6 +18,7 @@ from docling_core.types.doc.common.content_layer import ContentLayer
 from docling_core.types.doc.common.scalars import LevelNumber
 from docling_core.types.doc.document import DoclingDocument
 from docling_core.types.doc.items.group import GroupItem
+from docling_core.types.doc.items.node import NodeItem
 from docling_core.types.doc.labels import (
     DocItemLabel,
     GroupLabel,
@@ -444,10 +445,10 @@ def open_list_in_docling_document(
 
     This tool begins a list context on the document's internal stack. Once a list
     is open, only add_list_items_to_list_in_docling_document may be called to
-    populate it. Attempting to add a title, section heading, paragraph, or another
-    list before calling close_list_in_docling_document will raise an error. Nested
-    lists are supported: call open_list_in_docling_document again after adding
-    items to start an inner list, then close each list with
+    populate it. Attempting to add a title, section heading or paragraph before
+    calling close_list_in_docling_document will raise an error. Nested lists are
+    supported: call open_list_in_docling_document again after adding items to
+    start an inner list under the last item, then close each list with
     close_list_in_docling_document in reverse order.
     """
     if document_key not in local_document_cache:
@@ -461,16 +462,22 @@ def open_list_in_docling_document(
             f"Stack size is zero for document with document-key: {document_key}. Abort document generation"
         )
 
-    # Nest the new list inside the list that is currently open, if any.
+    # Nest the new list under the last item of the list that is currently open,
+    # if any, as docling-core expects for nested lists.
     parent = local_stack_cache[document_key][-1]
-    if not (
-        isinstance(parent, GroupItem)
-        and parent.label in (GroupLabel.LIST, GroupLabel.ORDERED_LIST)
+    list_parent: NodeItem | None = None
+    if isinstance(parent, GroupItem) and parent.label in (
+        GroupLabel.LIST,
+        GroupLabel.ORDERED_LIST,
     ):
-        parent = None
+        if not parent.children:
+            raise ValueError(
+                "The open list has no items yet. Please add a list item before opening a nested list!"
+            )
+        list_parent = parent.children[-1].resolve(local_document_cache[document_key])
 
     item = local_document_cache[document_key].add_group(
-        label=GroupLabel.LIST, parent=parent
+        label=GroupLabel.LIST, parent=list_parent
     )
     local_stack_cache[document_key].append(item)
 
