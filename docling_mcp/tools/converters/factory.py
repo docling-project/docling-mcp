@@ -7,6 +7,8 @@ from typing import TYPE_CHECKING
 from docling_mcp.logger import setup_logger
 from docling_mcp.settings.service_client import ConversionMode, settings
 
+from .base import ConverterImportError, ConverterValueError
+
 if TYPE_CHECKING:
     from .local import LocalDocumentConverter
     from .remote import RemoteDocumentConverter
@@ -69,7 +71,7 @@ def get_converter() -> RemoteDocumentConverter | LocalDocumentConverter:
                 logger.info("Falling back to local converter (service unavailable)")
                 return LocalDocumentConverter()
             else:
-                raise ImportError(
+                raise ConverterImportError(
                     "Remote service unavailable and local fallback requires docling-mcp[local] extra. "
                     "Install with: pip install docling-mcp[local]"
                 )
@@ -82,11 +84,11 @@ def get_converter() -> RemoteDocumentConverter | LocalDocumentConverter:
         from .local import LOCAL_CONVERSION_AVAILABLE, LocalDocumentConverter
 
         if not LOCAL_CONVERSION_AVAILABLE:
-            raise ImportError(
+            raise ConverterImportError(
                 "Local conversion mode requires docling-mcp[local] extra. "
                 "Install with: pip install docling-mcp[local]"
             )
         logger.info("Using local converter")
         return LocalDocumentConverter()
 
-    raise ValueError(f"Unknown conversion mode: {settings.conversion_mode}")
+    raise ConverterValueError(f"Unknown conversion mode: {settings.conversion_mode}")
