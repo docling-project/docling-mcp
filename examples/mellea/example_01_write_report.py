@@ -1,7 +1,8 @@
 import os
 from datetime import datetime
 
-from examples.mellea.agents import DoclingWritingAgent, logger
+from examples.mellea.agent.writer import DoclingWritingAgent
+from examples.mellea.agents import logger
 from mellea.backends import model_ids
 
 

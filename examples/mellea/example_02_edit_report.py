@@ -4,7 +4,8 @@ from docling_core.types.doc.document import (
     DoclingDocument,
 )
 
-from examples.mellea.agents import DoclingEditingAgent, logger
+from examples.mellea.agent.editor import DoclingEditingAgent
+from examples.mellea.agents import logger
 from mellea.backends import model_ids
 
 
