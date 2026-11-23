@@ -1,3 +1,11 @@
+## [v3.5.1](https://github.com/docling-project/docling-mcp/releases/tag/v3.5.1) - 2026-11-23
+
+### Fix
+
+* **examples:** Use the Pydantic AI V2 names in the pydanticai notebooks ([#158](https://github.com/docling-project/docling-mcp/issues/158)) ([`8e98307`](https://github.com/docling-project/docling-mcp/commit/8e983076d15589d56fba6b3533d83d7e966e9f33))
+* **examples:** Import the mellea agents from their own modules ([#157](https://github.com/docling-project/docling-mcp/issues/157)) ([`90f638e`](https://github.com/docling-project/docling-mcp/commit/90f638e99808159400d15c697a9008e63e55c9c4))
+* **generation:** Nest a list opened inside an open list ([#153](https://github.com/docling-project/docling-mcp/issues/153)) ([`29bf88b`](https://github.com/docling-project/docling-mcp/commit/29bf88b340e0fe45ac707e72d8df144514a9d165))
+
 ## [v3.5.0](https://github.com/docling-project/docling-mcp/releases/tag/v3.5.0) - 2026-11-04
 
 ### Feature

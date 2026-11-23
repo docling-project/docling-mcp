@@ -1643,7 +1643,7 @@ wheels = [
 
 [[package]]
 name = "docling-mcp"
-version = "3.5.0"
+version = "3.5.1"
 source = { editable = "." }
 default-groups = ["dev", "examples"]
 dependencies = [
